@@ -12,6 +12,7 @@
     "test": "vitest run",
     "data:build": "tsx scripts/build-listings-json.ts",
     "data:enrich": "tsx scripts/enrich-sp500.ts",
+    "data:gen": "tsx scripts/generate-university-labs.ts",
     "db:start": "supabase start",
     "db:reset": "supabase db reset",
     "db:migrate": "supabase migration up",

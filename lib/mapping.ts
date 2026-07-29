@@ -13,7 +13,7 @@
 export type CostType = "free" | "paid" | "stipend" | "unknown";
 export type ListingStatus = "pending" | "approved" | "rejected";
 export type ListingKind = "program" | "company" | "opportunity" | "camp" | "research_lab";
-export type ListingSource = "yc" | "sp500" | "curated";
+export type ListingSource = "yc" | "sp500" | "curated" | "openalex";
 
 export interface ListingRecord {
   external_id: string;

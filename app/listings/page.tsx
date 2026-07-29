@@ -32,7 +32,9 @@ function faviconFor(url: string | null): string | null {
   }
 }
 
-function statusBadge(l: ListingView): { text: string; cls: string } {
+function statusBadge(l: ListingView): { text: string; cls: string } | null {
+  // Generated research groups (OpenAlex): we don't know their HS policy — show no status.
+  if (l.badges.includes("openalex")) return null;
   if (l.kind === "company") {
     return l.is_recruiting
       ? { text: "Hiring", cls: "hiring" }
@@ -107,7 +109,7 @@ export default async function ListingsPage({
                     )}
                   </h2>
                 </div>
-                <span className={`badge ${badge.cls}`}>{badge.text}</span>
+                {badge && <span className={`badge ${badge.cls}`}>{badge.text}</span>}
               </div>
 
               <p className="kindline">

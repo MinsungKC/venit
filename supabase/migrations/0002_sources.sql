@@ -5,3 +5,4 @@
 
 alter type listing_source add value if not exists 'sp500';
 alter type listing_source add value if not exists 'curated';
+alter type listing_source add value if not exists 'openalex';

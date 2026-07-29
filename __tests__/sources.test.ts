@@ -2,6 +2,7 @@ import { describe, it, expect } from "vitest";
 import { mapSp500Row } from "../lib/sources/sp500";
 import { mapCuratedEntry } from "../lib/sources/curated";
 import { mapYcCompany, type YcCompany } from "../lib/sources/yc";
+import { mapUniversityLab } from "../lib/sources/universityLabs";
 
 describe("mapSp500Row", () => {
   it("maps a constituent row and derives tags from sector + sub-industry", () => {
@@ -74,5 +75,27 @@ describe("mapYcCompany", () => {
     expect(l.is_recruiting).toBe(true);
     expect(l.subindustry).toBe("Manufacturing and Robotics");
     expect(l.tag_labels).toEqual(["Hardware", "Robotics"]);
+  });
+});
+
+describe("mapUniversityLab", () => {
+  it("maps an OpenAlex research group to a located research_lab with field tags", () => {
+    const l = mapUniversityLab({
+      id: "A5023888391",
+      name: "Napoleone Ferrara",
+      url: "https://orcid.org/0000-0001-0000-0000",
+      university: "University of California, San Diego",
+      location: "San Diego, California",
+      field: "Biochemistry, Genetics and Molecular Biology",
+      primary_topic: "Angiogenesis and VEGF in Cancer",
+      tags: ["Cancer Research", "Molecular Biology"],
+    });
+    expect(l.source).toBe("openalex");
+    expect(l.kind).toBe("research_lab");
+    expect(l.location_name).toBe("San Diego, California"); // §0.5: labs need a location
+    expect(l.is_recruiting).toBe(false); // HS policy unknown
+    expect(l.badges).toContain("openalex");
+    expect(l.short_description).toContain("University of California, San Diego");
+    expect(l.tag_labels).toEqual(["Cancer Research", "Molecular Biology"]);
   });
 });
