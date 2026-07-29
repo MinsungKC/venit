@@ -1,16 +1,16 @@
 /**
- * Import the vendored yc-oss snapshot into Postgres (local Supabase by default).
+ * Import every source (yc, S&P 500, curated) into Postgres (local Supabase by default).
  * Idempotent: upserts interest tags and listings, re-links tags each run.
  *
  *   npm run db:import        (expects DATABASE_URL, defaults to local Supabase)
  *
- * Uses node-postgres directly against the DB so the seed does not depend on RLS or
- * service keys. Each listing + its tag links are inserted in one transaction, so the
- * deferred "approved needs >=1 tag" constraint (migration 0001) is satisfied at commit.
+ * Uses node-postgres directly so the seed does not depend on RLS or service keys. Each
+ * listing + its tag links go in one transaction, satisfying the deferred "approved needs
+ * >=1 tag" constraint (migration 0001) at commit.
  */
 import "dotenv/config";
 import { Client } from "pg";
-import { loadCompanies } from "../lib/source";
+import { loadAllListings } from "../lib/sources";
 import { buildDataset, type ListingRecord } from "../lib/mapping";
 
 const DATABASE_URL =
@@ -18,14 +18,12 @@ const DATABASE_URL =
   "postgresql://postgres:postgres@127.0.0.1:54322/postgres";
 
 async function main() {
-  const companies = loadCompanies();
-  const { listings, tags } = buildDataset(companies);
+  const { listings, tags } = buildDataset(loadAllListings());
 
   const client = new Client({ connectionString: DATABASE_URL });
   await client.connect();
 
   try {
-    // 1. Upsert tags, collect slug -> id.
     const tagId = new Map<string, number>();
     for (const t of tags) {
       const res = await client.query<{ id: number }>(
@@ -38,7 +36,6 @@ async function main() {
       tagId.set(t.slug, res.rows[0].id);
     }
 
-    // 2. Upsert listings + relink tags, one transaction per listing.
     let inserted = 0;
     let updated = 0;
     for (const l of listings) {
@@ -48,16 +45,18 @@ async function main() {
           `insert into listings (
              external_id, source, kind, title, slug, url,
              short_description, long_description, location_name, is_remote,
-             team_size, industry, subindustry, cost_type, is_recruiting, badges, status
-           ) values ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15,$16,$17)
+             team_size, industry, subindustry, cost_type, is_recruiting,
+             grade_min, grade_max, badges, status
+           ) values ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15,$16,$17,$18,$19)
            on conflict (source, external_id) do update set
-             title = excluded.title, url = excluded.url,
+             kind = excluded.kind, title = excluded.title, url = excluded.url,
              short_description = excluded.short_description,
              long_description = excluded.long_description,
              location_name = excluded.location_name, is_remote = excluded.is_remote,
              team_size = excluded.team_size, industry = excluded.industry,
-             subindustry = excluded.subindustry, is_recruiting = excluded.is_recruiting,
-             badges = excluded.badges, status = excluded.status
+             subindustry = excluded.subindustry, cost_type = excluded.cost_type,
+             is_recruiting = excluded.is_recruiting, grade_min = excluded.grade_min,
+             grade_max = excluded.grade_max, badges = excluded.badges, status = excluded.status
            returning id, (xmax = 0) as inserted`,
           listingParams(l),
         );
@@ -83,10 +82,11 @@ async function main() {
       }
     }
 
-    const hiring = listings.filter((l) => l.is_recruiting).length;
+    const bySource = new Map<string, number>();
+    for (const l of listings) bySource.set(l.source, (bySource.get(l.source) ?? 0) + 1);
     console.log(
       `db:import — ${inserted} inserted, ${updated} updated; ${tags.length} tags; ` +
-        `${hiring} hiring / ${listings.length - hiring} not actively recruiting.`,
+        `sources ${[...bySource].map(([s, n]) => `${s}:${n}`).join(" ")}.`,
     );
   } finally {
     await client.end();
@@ -98,7 +98,7 @@ function listingParams(l: ListingRecord) {
     l.external_id, l.source, l.kind, l.title, l.slug, l.url,
     l.short_description, l.long_description, l.location_name, l.is_remote,
     l.team_size, l.industry, l.subindustry, l.cost_type, l.is_recruiting,
-    JSON.stringify(l.badges), l.status,
+    l.grade_min, l.grade_max, JSON.stringify(l.badges), l.status,
   ];
 }
 

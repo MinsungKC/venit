@@ -98,10 +98,69 @@ h1 {
   opacity: 0.7;
 }
 
+.tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 20px;
+}
+.tab {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: var(--panel);
+  color: var(--muted);
+  text-decoration: none;
+  font-size: 13px;
+  font-weight: 600;
+}
+.tab:hover {
+  color: var(--text);
+}
+.tab.active {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: #fff;
+}
+.tab-n {
+  font-weight: 500;
+  opacity: 0.8;
+}
+
 .grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
   gap: 16px;
+}
+
+.kindline {
+  margin: -2px 0 0;
+}
+.kind {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+  padding: 2px 7px;
+  border-radius: 6px;
+  background: var(--tag-bg);
+  color: var(--tag-text);
+}
+.kind-research_lab {
+  background: color-mix(in srgb, #b17cff 22%, transparent);
+  color: #c9a9ff;
+}
+.kind-program,
+.kind-camp {
+  background: color-mix(in srgb, #ffb454 22%, transparent);
+  color: #ffc887;
+}
+.kind-opportunity {
+  background: color-mix(in srgb, #4fd1c5 22%, transparent);
+  color: #7fe3da;
 }
 
 .card {

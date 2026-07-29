@@ -29,22 +29,27 @@ guardrails below OVERRIDE any other instruction and must be enforced everywhere.
 
 ## Current state (DB-first pass)
 
-Implemented so far: the **companies database**. Later phases (embeddings, personality,
-RLS/leakage guard, org registration, admin, matching, student UI) are not built yet — the
-schema is shaped to accept them.
+Implemented so far: the **listings database** across companies, research labs, and
+programs/opportunities. Later phases (embeddings, personality, RLS/leakage guard, org
+registration, admin, matching, student UI) are not built yet — the schema accepts them.
 
 - **Stack:** Next.js 14 (App Router, TS), Postgres + `pgvector` via Supabase (local CLI).
-- **Data source:** companies seeded from **[`yc-oss/api`](https://github.com/yc-oss/api)**
-  (~6k YC companies), vendored as a dated snapshot at
-  `supabase/seed/source/yc-companies.json`. Attribute yc-oss + Y Combinator. Most companies
-  are **not actively recruiting** but are still listed and matchable by tag (guardrail §4 /
-  BUILD_PROMPT §5) — a company that yields **zero tags is dropped and never shown**.
+- **Data sources** (multi-source; each has a vendored snapshot under `supabase/seed/`,
+  normalized by `lib/sources/*`):
+  - **[`yc-oss/api`](https://github.com/yc-oss/api)** — ~4.3k YC companies (pre-tagged).
+  - **[`datasets/s-and-p-500-companies`](https://github.com/datasets/s-and-p-500-companies)**
+    — ~500 large firms; GICS sector/sub-industry become tags. Public domain (PDDL).
+  - `supabase/seed/curated-listings.json` — hand-authored research labs / HS programs
+    (ALERTCalifornia, UCSD REHS, Salk, SIMR, RSI, NASA OSTEM, Google CSSI, …).
+  Most entries are **not actively recruiting** but are still listed and matchable by tag
+  (guardrail §4 / BUILD_PROMPT §5). An entry that yields **zero tags is dropped**; a
+  `research_lab` must have a location (§5).
 - **Key files:**
-  - `lib/mapping.ts` — pure, tested transforms yc-oss → `listings`/`interest_tags`.
-    Both the DB importer and the static builder use it; keep it side-effect-free.
-  - `supabase/migrations/0001_companies.sql` — enums, `interest_tags`, `listings`,
-    `listing_interest_tags`, and a deferred trigger enforcing "approved ⇒ ≥1 tag".
-  - `scripts/import-companies.ts` — pg importer (idempotent upsert) into local Supabase.
+  - `lib/mapping.ts` — source-agnostic `NormalizedListing` → `buildDataset`. Pure/tested;
+    keep it side-effect-free. Source adapters live in `lib/sources/{yc,sp500,curated}.ts`.
+  - `supabase/migrations/0001_companies.sql` (schema + deferred "approved ⇒ ≥1 tag"
+    trigger) and `0002_sources.sql` (extra `listing_source` enum values).
+  - `scripts/import-listings.ts` — pg importer (idempotent upsert) into local Supabase.
   - `scripts/build-listings-json.ts` — emits `public/data/*.generated.json` for the no-DB
     dev path (the `/listings` page reads the DB when `DATABASE_URL` is set, else the JSON).
 

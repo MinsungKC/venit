@@ -15,8 +15,8 @@
     "db:reset": "supabase db reset",
     "db:migrate": "supabase migration up",
     "db:studio": "node -e \"console.log('Supabase Studio: http://127.0.0.1:54323')\"",
-    "db:import": "tsx scripts/import-companies.ts",
-    "db:seed": "supabase db reset --no-seed && tsx scripts/import-companies.ts"
+    "db:import": "tsx scripts/import-listings.ts",
+    "db:seed": "supabase db reset --no-seed && tsx scripts/import-listings.ts"
   },
   "dependencies": {
     "next": "14.2.15",

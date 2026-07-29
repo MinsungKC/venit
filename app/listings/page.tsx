@@ -1,10 +1,49 @@
 import Link from "next/link";
-import { getListings } from "@/lib/listings";
+import { getListings, type ListingView } from "@/lib/listings";
+import type { ListingKind } from "@/lib/mapping";
 
 export const dynamic = "force-dynamic";
 
-export default async function ListingsPage() {
-  const { listings, total, source } = await getListings(90);
+const KIND_LABEL: Record<ListingKind, string> = {
+  company: "Company",
+  research_lab: "Research Lab",
+  program: "Program",
+  opportunity: "Opportunity",
+  camp: "Camp",
+};
+
+const KIND_PLURAL: Record<ListingKind, string> = {
+  company: "Companies",
+  research_lab: "Research Labs",
+  program: "Programs",
+  opportunity: "Opportunities",
+  camp: "Camps",
+};
+
+const KIND_ORDER: ListingKind[] = ["company", "research_lab", "program", "opportunity", "camp"];
+
+function statusBadge(l: ListingView): { text: string; cls: string } {
+  if (l.kind === "company") {
+    return l.is_recruiting
+      ? { text: "Hiring", cls: "hiring" }
+      : { text: "Not actively recruiting", cls: "quiet" };
+  }
+  return l.is_recruiting
+    ? { text: "Accepting students", cls: "hiring" }
+    : { text: "Not currently accepting", cls: "quiet" };
+}
+
+export default async function ListingsPage({
+  searchParams,
+}: {
+  searchParams: { kind?: string };
+}) {
+  const kind = KIND_ORDER.includes(searchParams.kind as ListingKind)
+    ? (searchParams.kind as ListingKind)
+    : undefined;
+
+  const { listings, total, counts, source } = await getListings({ kind, limit: 120 });
+  const grandTotal = Object.values(counts).reduce((a, b) => a + b, 0);
 
   return (
     <main className="container">
@@ -13,51 +52,71 @@ export default async function ListingsPage() {
           <Link href="/" className="back">
             ← OppMatch
           </Link>
-          <h1>Companies</h1>
+          <h1>Opportunities</h1>
         </div>
         <p className="count">
-          Showing {listings.length.toLocaleString()} of {total.toLocaleString()} companies
+          {listings.length.toLocaleString()} shown of {total.toLocaleString()}
           <span className="src"> · {source === "database" ? "live database" : "static seed"}</span>
         </p>
       </header>
 
-      <section className="grid">
-        {listings.map((l) => (
-          <article className="card" key={l.slug}>
-            <div className="card-top">
-              <h2 className="card-title">
-                {l.url ? (
-                  <a href={l.url} target="_blank" rel="noopener noreferrer">
-                    {l.title}
-                  </a>
-                ) : (
-                  l.title
-                )}
-              </h2>
-              <span className={`badge ${l.is_recruiting ? "hiring" : "quiet"}`}>
-                {l.is_recruiting ? "Hiring" : "Not actively recruiting"}
-              </span>
-            </div>
-
-            {l.short_description && <p className="desc">{l.short_description}</p>}
-
-            <p className="meta">
-              {l.is_remote ? "Remote" : l.location_name ?? "—"}
-              {l.industry ? ` · ${l.industry}` : ""}
-              {l.team_size ? ` · ${l.team_size.toLocaleString()} people` : ""}
-            </p>
-
-            {l.tags.length > 0 && (
-              <ul className="tags" aria-label="Interest tags">
-                {l.tags.slice(0, 8).map((t) => (
-                  <li className="tag" key={t}>
-                    {t}
-                  </li>
-                ))}
-              </ul>
-            )}
-          </article>
+      <nav className="tabs" aria-label="Filter by kind">
+        <Link className={`tab ${!kind ? "active" : ""}`} href="/listings">
+          All <span className="tab-n">{grandTotal.toLocaleString()}</span>
+        </Link>
+        {KIND_ORDER.filter((k) => counts[k]).map((k) => (
+          <Link
+            key={k}
+            className={`tab ${kind === k ? "active" : ""}`}
+            href={`/listings?kind=${k}`}
+          >
+            {KIND_PLURAL[k]} <span className="tab-n">{counts[k].toLocaleString()}</span>
+          </Link>
         ))}
+      </nav>
+
+      <section className="grid">
+        {listings.map((l) => {
+          const badge = statusBadge(l);
+          return (
+            <article className="card" key={l.slug}>
+              <div className="card-top">
+                <h2 className="card-title">
+                  {l.url ? (
+                    <a href={l.url} target="_blank" rel="noopener noreferrer">
+                      {l.title}
+                    </a>
+                  ) : (
+                    l.title
+                  )}
+                </h2>
+                <span className={`badge ${badge.cls}`}>{badge.text}</span>
+              </div>
+
+              <p className="kindline">
+                <span className={`kind kind-${l.kind}`}>{KIND_LABEL[l.kind]}</span>
+              </p>
+
+              {l.short_description && <p className="desc">{l.short_description}</p>}
+
+              <p className="meta">
+                {l.is_remote ? "Remote" : l.location_name ?? "—"}
+                {l.industry ? ` · ${l.industry}` : ""}
+                {l.team_size ? ` · ${l.team_size.toLocaleString()} people` : ""}
+              </p>
+
+              {l.tags.length > 0 && (
+                <ul className="tags" aria-label="Interest tags">
+                  {l.tags.slice(0, 8).map((t) => (
+                    <li className="tag" key={t}>
+                      {t}
+                    </li>
+                  ))}
+                </ul>
+              )}
+            </article>
+          );
+        })}
       </section>
     </main>
   );

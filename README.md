@@ -1,23 +1,27 @@
 # OppMatch
 
-A free platform matching high-school students to **companies, programs, and
-opportunities** by shared interest tags. This first pass ships the **companies
-database**: a browsable, tag-matched set of ~4,300 companies — most of which are
-**not actively recruiting** but are still discoverable by fit (you find the best-fit
-company; the company can find fitting students).
+A free platform matching high-school students to **companies, research labs, programs,
+and opportunities** by shared interest tags. This pass ships the **listings database**:
+a browsable, tag-matched set of ~4,800 entries — niche startups, large well-known
+companies, university research labs, and pre-college programs. Many are **not actively
+recruiting** but are still discoverable by fit (you find the best-fit place; the place
+can find fitting students).
 
 > See `CLAUDE.md` for the non-negotiable privacy/ranking guardrails and `BUILD_PROMPT.md`
 > for the full roadmap. Later phases (embeddings, hidden personality ranking, org
 > self-registration, admin, matching, student UI) are not built yet.
 
-## Data source
+## Data sources
 
-Companies are seeded from **[`yc-oss/api`](https://github.com/yc-oss/api)** — a free,
-public JSON dataset of Y Combinator companies. A dated snapshot is vendored at
-`supabase/seed/source/yc-companies.json` for reproducible builds. Data derives from Y
-Combinator's public index; credit **yc-oss** and **Y Combinator**. Companies with no
-tags, and dead (`Inactive`) companies, are excluded — every listed company shares ≥ 1
-interest tag (guardrail §4).
+All snapshots are vendored under `supabase/seed/` for reproducible builds, and normalized
+by the shared, tested mapping in `lib/mapping.ts` + `lib/sources/*`. Every listed entry
+shares ≥ 1 interest tag; entries with no tags (and dead companies) are excluded (§4).
+
+| Source | Kind | Notes |
+| --- | --- | --- |
+| **[`yc-oss/api`](https://github.com/yc-oss/api)** | companies | ~4,300 YC startups, pre-tagged. Credit **yc-oss** + **Y Combinator**. |
+| **[`datasets/s-and-p-500-companies`](https://github.com/datasets/s-and-p-500-companies)** | companies | ~500 large firms; GICS sector/sub-industry become tags. Open Data Commons **PDDL** (public domain). |
+| `supabase/seed/curated-listings.json` | research labs, programs, opportunities | Hand-authored (ALERTCalifornia, UCSD REHS, Salk, SIMR, RSI, NASA OSTEM, Google CSSI, BofA Student Leaders, …). Verify specifics before relying on them. |
 
 ## Quick start (no database required)
 
@@ -48,11 +52,15 @@ The importer is idempotent; re-running upserts.
 
 ## Schema (this pass)
 
-- `interest_tags` — the matchable vocabulary (seeded from yc tags; embeddings added later).
-- `listings` — the unified entity (`kind='company'` for now; nullable columns leave room
-  for programs/camps/labs). `is_recruiting` is a **display badge, never a filter**.
+- `interest_tags` — the matchable vocabulary (seeded from yc tags, GICS sectors, and
+  curated tags; embeddings added later).
+- `listings` — the unified entity across `kind` = company | research_lab | program |
+  opportunity | camp. `is_recruiting` is a **display badge, never a filter**.
 - `listing_interest_tags` — the join. A deferred trigger enforces that an `approved`
   listing has ≥ 1 tag.
+
+`/listings` supports a `?kind=` filter (e.g. `?kind=research_lab`). Research labs carry a
+location per guardrail §5.
 
 ## Scripts
 

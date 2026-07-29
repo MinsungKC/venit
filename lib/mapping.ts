@@ -1,41 +1,24 @@
 /**
- * Pure transforms from the yc-oss company shape to our `listings` + `interest_tags`
- * model. Kept side-effect-free so the same logic feeds both the Postgres importer
- * (scripts/import-companies.ts) and the static builder (scripts/build-listings-json.ts),
- * and so it is unit-testable without a database (__tests__/mapping.test.ts).
+ * Source-agnostic core: normalized listings from ANY source (yc, S&P 500, curated
+ * research labs / programs) are merged into our `listings` + `interest_tags` model.
  *
- * Guardrail (BUILD_PROMPT §0.4 / §2c): a listing that shares zero interest tags can
- * never be shown, so `buildDataset` drops any company that yields no tags and never
- * emits an `approved` listing without at least one tag.
+ * Each source adapter (lib/sources/*) produces `NormalizedListing[]`; `buildDataset`
+ * dedupes across sources, guarantees slug uniqueness, and aggregates the tag vocabulary.
+ *
+ * Guardrail (BUILD_PROMPT §0.4 / §2c): a listing that shares zero interest tags can never
+ * be shown, so `buildDataset` drops any item with no tags and never emits an `approved`
+ * listing without at least one tag.
  */
-
-/** Subset of the yc-oss company object we consume. */
-export interface YcCompany {
-  id: number;
-  name: string;
-  slug: string;
-  website?: string | null;
-  one_liner?: string | null;
-  long_description?: string | null;
-  team_size?: number | null;
-  all_locations?: string | null;
-  industry?: string | null;
-  subindustry?: string | null;
-  tags?: string[] | null;
-  regions?: string[] | null;
-  status?: string | null;
-  isHiring?: boolean | null;
-  top_company?: boolean | null;
-  nonprofit?: boolean | null;
-}
 
 export type CostType = "free" | "paid" | "stipend" | "unknown";
 export type ListingStatus = "pending" | "approved" | "rejected";
+export type ListingKind = "program" | "company" | "opportunity" | "camp" | "research_lab";
+export type ListingSource = "yc" | "sp500" | "curated";
 
 export interface ListingRecord {
   external_id: string;
-  source: "yc";
-  kind: "company";
+  source: ListingSource;
+  kind: ListingKind;
   title: string;
   slug: string;
   url: string | null;
@@ -50,14 +33,23 @@ export interface ListingRecord {
   is_recruiting: boolean;
   badges: string[];
   status: ListingStatus;
+  grade_min: number | null;
+  grade_max: number | null;
   /** Interest-tag slugs linked to this listing (always ≥ 1 for emitted rows). */
   tag_slugs: string[];
 }
 
+/** What a source adapter emits: a full listing minus derived slug/tag_slugs. */
+export type NormalizedListing = Omit<ListingRecord, "tag_slugs" | "slug"> & {
+  slug?: string | null;
+  /** Human-readable interest-tag labels; slugged + linked by buildDataset. */
+  tag_labels: string[];
+};
+
 export interface TagRecord {
   slug: string;
   label: string;
-  /** Most common yc industry among companies carrying this tag (a coarse domain). */
+  /** Most common industry among listings carrying this tag (a coarse domain). */
   domain: string | null;
   is_niche: boolean;
   status: "active" | "pending";
@@ -67,9 +59,6 @@ export interface Dataset {
   listings: ListingRecord[];
   tags: TagRecord[];
 }
-
-/** yc statuses we treat as dead and exclude entirely. */
-const DEAD_STATUSES = new Set(["Inactive", "Dead"]);
 
 export function slugify(input: string): string {
   return input
@@ -89,110 +78,71 @@ export function truncate(text: string, max = 300): string {
   return (cut > max * 0.6 ? slice.slice(0, cut) : slice).trimEnd() + "…";
 }
 
-/** First location string; yc joins multiples with ";". */
+/** First location string; sources join multiples with ";". */
 export function locationName(all_locations?: string | null): string | null {
   if (!all_locations) return null;
   const first = all_locations.split(";")[0]?.trim();
   return first || null;
 }
 
-export function isRemote(c: YcCompany): boolean {
-  const regions = c.regions ?? [];
-  if (regions.some((r) => /remote/i.test(r))) return true;
-  return /\bremote\b/i.test(c.all_locations ?? "");
+/** Map a numeric price to a cost type (used by program/opportunity sources). */
+export function priceToCost(price?: number | null): CostType {
+  if (price == null) return "unknown";
+  return price > 0 ? "paid" : "free";
 }
 
-/**
- * A company is not itself a paid/free program, so cost is `unknown` — the field
- * exists for programs/opportunities added in later passes.
- */
-export function costType(_c: YcCompany): CostType {
-  return "unknown";
-}
-
-export function badgesFor(c: YcCompany): string[] {
-  const b: string[] = [];
-  if (c.top_company) b.push("top_company");
-  if (c.nonprofit) b.push("nonprofit");
-  return b;
-}
-
-/** Interest tags for a single company: its yc tags (deduped, slugged). */
-export function tagLabels(c: YcCompany): string[] {
-  const seen = new Map<string, string>(); // slug -> label
-  for (const raw of c.tags ?? []) {
+/** Dedupe + slug labels, preserving first-seen human label per slug. */
+export function labelsToSlugPairs(labels: string[]): { slug: string; label: string }[] {
+  const seen = new Map<string, string>();
+  for (const raw of labels) {
     const label = raw.trim();
     if (!label) continue;
     const slug = slugify(label);
     if (slug && !seen.has(slug)) seen.set(slug, label);
   }
-  return [...seen.values()];
-}
-
-/** Map one company to a listing shell (tags filled in by buildDataset). */
-export function mapCompany(c: YcCompany): Omit<ListingRecord, "tag_slugs"> {
-  return {
-    external_id: String(c.id),
-    source: "yc",
-    kind: "company",
-    title: c.name.trim(),
-    slug: c.slug?.trim() || slugify(c.name),
-    url: c.website?.trim() || null,
-    short_description: c.one_liner ? truncate(c.one_liner, 300) : null,
-    long_description: c.long_description?.trim() || null,
-    location_name: locationName(c.all_locations),
-    is_remote: isRemote(c),
-    team_size: typeof c.team_size === "number" && c.team_size > 0 ? c.team_size : null,
-    industry: c.industry?.trim() || null,
-    subindustry: c.subindustry?.replace(/^.*->\s*/, "").trim() || c.subindustry?.trim() || null,
-    cost_type: costType(c),
-    is_recruiting: Boolean(c.isHiring),
-    badges: badgesFor(c),
-    status: "approved",
-  };
+  return [...seen.entries()].map(([slug, label]) => ({ slug, label }));
 }
 
 /**
- * Build the full dataset from raw companies:
- *  - drops dead companies and any company with zero interest tags,
- *  - dedupes by (source, external_id) and by slug,
+ * Merge normalized listings from all sources into the final dataset:
+ *  - drops any listing with zero interest tags (guardrail §0.4),
+ *  - dedupes by (source, external_id) and enforces unique slugs across sources,
  *  - assigns each tag a coarse `domain` = its most common industry.
  */
-export function buildDataset(companies: YcCompany[]): Dataset {
+export function buildDataset(items: NormalizedListing[]): Dataset {
   const listings: ListingRecord[] = [];
   const seenExternal = new Set<string>();
   const usedSlugs = new Set<string>();
 
-  // tag slug -> { label, industryCounts }
+  // tag slug -> { label, industry counts }
   const tagStats = new Map<string, { label: string; industries: Map<string, number> }>();
 
-  for (const c of companies) {
-    if (!c || !c.name || c.status == null) continue;
-    if (DEAD_STATUSES.has(c.status)) continue;
+  for (const item of items) {
+    if (!item || !item.title) continue;
 
-    const labels = tagLabels(c);
-    if (labels.length === 0) continue; // guardrail: no tags => never shown
+    const pairs = labelsToSlugPairs(item.tag_labels);
+    if (pairs.length === 0) continue; // guardrail: no tags => never shown
 
-    const base = mapCompany(c);
-    if (seenExternal.has(base.external_id)) continue;
-    seenExternal.add(base.external_id);
+    const externalKey = `${item.source}:${item.external_id}`;
+    if (seenExternal.has(externalKey)) continue;
+    seenExternal.add(externalKey);
 
-    let slug = base.slug || slugify(base.title) || base.external_id;
-    if (usedSlugs.has(slug)) slug = `${slug}-${base.external_id}`;
+    let slug = (item.slug && item.slug.trim()) || slugify(item.title) || item.external_id;
+    if (usedSlugs.has(slug)) slug = `${slug}-${item.source}-${slugify(item.external_id)}`;
     usedSlugs.add(slug);
 
     const tag_slugs: string[] = [];
-    for (const label of labels) {
-      const s = slugify(label);
+    for (const { slug: s, label } of pairs) {
       tag_slugs.push(s);
       const stat = tagStats.get(s) ?? { label, industries: new Map() };
-      if (base.industry) {
-        stat.industries.set(base.industry, (stat.industries.get(base.industry) ?? 0) + 1);
+      if (item.industry) {
+        stat.industries.set(item.industry, (stat.industries.get(item.industry) ?? 0) + 1);
       }
       tagStats.set(s, stat);
     }
 
-    listings.push({ ...base, slug, tag_slugs });
+    const { tag_labels: _drop, ...rest } = item;
+    listings.push({ ...rest, slug, tag_slugs });
   }
 
   const tags: TagRecord[] = [...tagStats.entries()]

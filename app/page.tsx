@@ -5,13 +5,14 @@ export default function Home() {
     <main className="container">
       <h1>OppMatch</h1>
       <p className="lede">
-        A database of companies, programs, and opportunities — matched to what you&apos;re
-        into. This early build shows the <strong>companies</strong> database: niche companies
-        (many not actively hiring) that you can still discover by shared interest tags.
+        A database of <strong>companies, research labs, programs, and opportunities</strong> —
+        matched to what you&apos;re into. It spans niche startups, large well-known companies,
+        university research labs, and pre-college programs. Many aren&apos;t actively recruiting,
+        but you can still discover them by shared interest tags.
       </p>
       <p>
         <Link className="button" href="/listings">
-          Browse the companies database →
+          Browse the database →
         </Link>
       </p>
     </main>
