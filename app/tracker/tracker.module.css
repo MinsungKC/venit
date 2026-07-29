@@ -1,0 +1,152 @@
+/* Kanban board for the application tracker (BUILD_PROMPT §7). Reuses the global color tokens
+   and card look. Columns lay out horizontally on wide screens; on narrow screens the board
+   scrolls sideways in its own container so the page body never scrolls horizontally. */
+
+.board {
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: minmax(260px, 1fr);
+  gap: 16px;
+  overflow-x: auto;
+  padding-bottom: 8px;
+  /* Give scrolled columns breathing room from the viewport edge. */
+  scroll-padding: 0 4px;
+}
+
+.column {
+  background: var(--panel-2);
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  padding: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  min-width: 0;
+}
+
+.columnHead {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+.columnTitle {
+  margin: 0;
+  font-size: 13px;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--muted);
+}
+.columnCount {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--muted);
+  background: var(--tag-bg);
+  border-radius: 999px;
+  padding: 1px 8px;
+}
+
+.cards {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.columnEmpty {
+  margin: 4px 2px;
+  color: var(--muted);
+  font-size: 13px;
+}
+
+.card {
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  padding: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.cardTop {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 8px;
+}
+.cardTitle {
+  margin: 0;
+  font-size: 15px;
+  min-width: 0;
+}
+.cardTitle a {
+  color: var(--text);
+  text-decoration: none;
+}
+.cardTitle a:hover {
+  color: var(--accent);
+  text-decoration: underline;
+}
+
+.kindline {
+  margin: 0;
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+}
+.meta {
+  color: var(--muted);
+  font-size: 12px;
+}
+
+.notes {
+  width: 100%;
+  resize: vertical;
+  padding: 7px 9px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--panel-2);
+  color: var(--text);
+  font: inherit;
+  font-size: 13px;
+}
+.notes::placeholder {
+  color: var(--muted);
+}
+
+.moveRow {
+  display: flex;
+  gap: 6px;
+}
+.move {
+  flex: 1;
+  padding: 5px 0;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--panel-2);
+  color: var(--text);
+  font-size: 15px;
+  line-height: 1;
+  cursor: pointer;
+}
+.move:hover:not(:disabled) {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+.move:disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+}
+
+.remove {
+  flex: none;
+  border: none;
+  background: none;
+  color: var(--muted);
+  font-size: 14px;
+  line-height: 1;
+  cursor: pointer;
+  padding: 2px 4px;
+}
+.remove:hover {
+  color: var(--accent);
+}

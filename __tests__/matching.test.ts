@@ -1,0 +1,281 @@
+import { describe, it, expect } from "vitest";
+import {
+  costRank,
+  distanceKm,
+  fitLabel,
+  haversineKm,
+  match,
+  passesHardFilters,
+} from "../lib/matching";
+import type { MatchListing, MatchProfile } from "../lib/match-types";
+
+/**
+ * Fixtures. Personality vectors are small synthetic 4-dim unit vectors (cosine assumes L2
+ * normalization) so fit scores are exact and readable:
+ *   [1,0,0,0] · [1,0,0,0]        = 1.00 → "Great fit"
+ *   [1,0,0,0] · [0.8,0.6,0,0]    = 0.80 → "Great fit"
+ *   [1,0,0,0] · [0.5,0.8660254,0,0] = 0.50 → "Good fit"
+ *   [1,0,0,0] · [0,1,0,0]        = 0.00 → "Fair fit"
+ */
+const V_SAME = [1, 0, 0, 0];
+const V_080 = [0.8, 0.6, 0, 0];
+const V_050 = [0.5, 0.8660254, 0, 0];
+const V_000 = [0, 1, 0, 0];
+
+/** A student at (40, -74) interested in ai/biology/robotics. */
+function mkProfile(over: Partial<MatchProfile> = {}): MatchProfile {
+  return {
+    age: 16,
+    grade: 11,
+    lat: 40,
+    lng: -74,
+    interestTagSlugs: ["ai", "biology", "robotics"],
+    personalityVector: V_SAME,
+    ...over,
+  };
+}
+
+/** An approved company sharing the "ai" tag, with everything else permissive by default. */
+function mkListing(over: Partial<MatchListing> = {}): MatchListing {
+  return {
+    id: "base",
+    kind: "company",
+    status: "approved",
+    tagSlugs: ["ai"],
+    ageMin: null,
+    ageMax: null,
+    gradeMin: null,
+    gradeMax: null,
+    lat: null,
+    lng: null,
+    isRemote: false,
+    costType: "free",
+    costAmount: null,
+    radiusKm: null,
+    desiredPersonalityVector: null,
+    ...over,
+  };
+}
+
+describe("haversineKm", () => {
+  it("is ~0 for identical points", () => {
+    expect(haversineKm(40, -74, 40, -74)).toBeCloseTo(0, 6);
+  });
+  it("is ~111 km per degree of latitude", () => {
+    expect(haversineKm(40, -74, 41, -74)).toBeCloseTo(111.2, 0);
+  });
+});
+
+describe("passesHardFilters", () => {
+  it("allows a fully permissive, approved, tag-sharing listing", () => {
+    expect(passesHardFilters(mkProfile(), mkListing())).toBe(true);
+  });
+
+  it("excludes a listing that shares no interest tag (§0.4)", () => {
+    expect(passesHardFilters(mkProfile(), mkListing({ tagSlugs: ["chemistry"] }))).toBe(false);
+  });
+
+  it("excludes a pending listing", () => {
+    expect(passesHardFilters(mkProfile(), mkListing({ status: "pending" }))).toBe(false);
+  });
+
+  it("excludes a rejected listing", () => {
+    expect(passesHardFilters(mkProfile(), mkListing({ status: "rejected" }))).toBe(false);
+  });
+
+  it("excludes when the student is below the age minimum (§0.6)", () => {
+    expect(passesHardFilters(mkProfile({ age: 16 }), mkListing({ ageMin: 18 }))).toBe(false);
+  });
+
+  it("excludes when the student is above the age maximum (§0.6)", () => {
+    expect(passesHardFilters(mkProfile({ age: 16 }), mkListing({ ageMax: 15 }))).toBe(false);
+  });
+
+  it("excludes when the student is outside the grade range (§0.6)", () => {
+    expect(passesHardFilters(mkProfile({ grade: 11 }), mkListing({ gradeMin: 12 }))).toBe(false);
+  });
+
+  it("keeps a listing whose age bound is set but the student's age is unknown", () => {
+    expect(passesHardFilters(mkProfile({ age: null }), mkListing({ ageMin: 18 }))).toBe(true);
+  });
+
+  it("keeps a listing with missing (null) optional age/grade bounds", () => {
+    expect(
+      passesHardFilters(mkProfile(), mkListing({ ageMin: null, ageMax: null, gradeMin: null })),
+    ).toBe(true);
+  });
+
+  it("excludes an in-person research_lab outside its radius (§0.5)", () => {
+    const lab = mkListing({ kind: "research_lab", lat: 0, lng: 0, isRemote: false, radiusKm: 80 });
+    expect(passesHardFilters(mkProfile(), lab)).toBe(false);
+  });
+
+  it("keeps an in-person research_lab within its radius (§0.5)", () => {
+    const lab = mkListing({ kind: "research_lab", lat: 40.1, lng: -74.1, isRemote: false });
+    expect(passesHardFilters(mkProfile(), lab)).toBe(true);
+  });
+
+  it("keeps a remote research_lab even with no coordinates (§0.5)", () => {
+    const lab = mkListing({ kind: "research_lab", isRemote: true, lat: null, lng: null });
+    expect(passesHardFilters(mkProfile(), lab)).toBe(true);
+  });
+
+  it("excludes an in-person research_lab when coordinates are unknown (§0.5)", () => {
+    const lab = mkListing({ kind: "research_lab", isRemote: false, lat: null, lng: null });
+    expect(passesHardFilters(mkProfile(), lab)).toBe(false);
+  });
+
+  it("does not filter a company just for not recruiting (still tag-matchable, §0.4)", () => {
+    // No "recruiting" gate exists; an approved, tag-sharing company always passes.
+    expect(passesHardFilters(mkProfile(), mkListing({ costType: "unknown" }))).toBe(true);
+  });
+});
+
+describe("fitLabel", () => {
+  it("buckets an exact match as Great fit", () => {
+    expect(fitLabel(mkProfile(), mkListing({ desiredPersonalityVector: V_SAME }))).toBe("Great fit");
+  });
+  it("buckets a mid-similarity vector as Good fit", () => {
+    expect(fitLabel(mkProfile(), mkListing({ desiredPersonalityVector: V_050 }))).toBe("Good fit");
+  });
+  it("buckets an orthogonal vector as Fair fit", () => {
+    expect(fitLabel(mkProfile(), mkListing({ desiredPersonalityVector: V_000 }))).toBe("Fair fit");
+  });
+  it("is null when either personality vector is missing", () => {
+    expect(fitLabel(mkProfile(), mkListing({ desiredPersonalityVector: null }))).toBeNull();
+    expect(
+      fitLabel(mkProfile({ personalityVector: null }), mkListing({ desiredPersonalityVector: V_SAME })),
+    ).toBeNull();
+  });
+});
+
+describe("distanceKm", () => {
+  it("is null for a remote listing (rendered as Remote)", () => {
+    expect(distanceKm(mkProfile(), mkListing({ isRemote: true }))).toBeNull();
+  });
+  it("is null when coordinates are unknown", () => {
+    expect(distanceKm(mkProfile(), mkListing({ lat: null, lng: null }))).toBeNull();
+  });
+  it("is the great-circle distance when both have coordinates", () => {
+    expect(distanceKm(mkProfile(), mkListing({ lat: 41, lng: -74 }))).toBeCloseTo(111.2, 0);
+  });
+});
+
+describe("costRank", () => {
+  it("orders free < stipend < paid < unknown", () => {
+    expect(costRank(mkListing({ costType: "free" }))).toBeLessThan(
+      costRank(mkListing({ costType: "stipend", costAmount: 100 })),
+    );
+    expect(costRank(mkListing({ costType: "stipend", costAmount: 100 }))).toBeLessThan(
+      costRank(mkListing({ costType: "paid", costAmount: 100 })),
+    );
+    expect(costRank(mkListing({ costType: "paid", costAmount: 100 }))).toBeLessThan(
+      costRank(mkListing({ costType: "unknown" })),
+    );
+  });
+  it("orders by amount within a cost type, unknown amount last", () => {
+    expect(costRank(mkListing({ costType: "stipend", costAmount: 100 }))).toBeLessThan(
+      costRank(mkListing({ costType: "stipend", costAmount: 500 })),
+    );
+    expect(costRank(mkListing({ costType: "paid", costAmount: 500 }))).toBeLessThan(
+      costRank(mkListing({ costType: "paid", costAmount: null })),
+    );
+  });
+});
+
+describe("match — sort axes", () => {
+  it("sort:'fit' orders by fit descending, missing fit last", () => {
+    const listings = [
+      mkListing({ id: "f-none", desiredPersonalityVector: null }),
+      mkListing({ id: "f-fair", desiredPersonalityVector: V_000 }),
+      mkListing({ id: "f-great", desiredPersonalityVector: V_SAME }),
+      mkListing({ id: "f-good", desiredPersonalityVector: V_050 }),
+    ];
+    const ids = match(mkProfile(), listings, { sort: "fit" }).map((r) => r.id);
+    expect(ids).toEqual(["f-great", "f-good", "f-fair", "f-none"]);
+  });
+
+  it("sort:'distance' orders nearest first, remote nearest, unknown last", () => {
+    const listings = [
+      mkListing({ id: "d-far", lat: 42, lng: -74 }),
+      mkListing({ id: "d-unknown", lat: null, lng: null }),
+      mkListing({ id: "d-remote", isRemote: true }),
+      mkListing({ id: "d-near", lat: 40.1, lng: -74 }),
+    ];
+    const ids = match(mkProfile(), listings, { sort: "distance" }).map((r) => r.id);
+    expect(ids).toEqual(["d-remote", "d-near", "d-far", "d-unknown"]);
+  });
+
+  it("sort:'cost' orders cheapest first", () => {
+    const listings = [
+      mkListing({ id: "c-paid-unknown", costType: "paid", costAmount: null }),
+      mkListing({ id: "c-stipend-1000", costType: "stipend", costAmount: 1000 }),
+      mkListing({ id: "c-free", costType: "free" }),
+      mkListing({ id: "c-paid-100", costType: "paid", costAmount: 100 }),
+      mkListing({ id: "c-stipend-500", costType: "stipend", costAmount: 500 }),
+    ];
+    const ids = match(mkProfile(), listings, { sort: "cost" }).map((r) => r.id);
+    expect(ids).toEqual([
+      "c-free",
+      "c-stipend-500",
+      "c-stipend-1000",
+      "c-paid-100",
+      "c-paid-unknown",
+    ]);
+  });
+});
+
+describe("match — golden default (blend) ordering", () => {
+  // Fixed student + 5 listings, all passing the hard filters, exercising the blend:
+  // fit desc, then distance asc, then cost asc. A(1.0) > {B,C}(0.8) > D(0.5) > E(none);
+  // within the 0.8 tie, C (distance 0) precedes B (~222 km).
+  const profile = mkProfile();
+  const listings: MatchListing[] = [
+    mkListing({ id: "E", desiredPersonalityVector: null, lat: 40, lng: -74 }),
+    mkListing({ id: "B", desiredPersonalityVector: V_080, lat: 42, lng: -74, costType: "paid", costAmount: 500 }),
+    mkListing({ id: "A", desiredPersonalityVector: V_SAME, lat: 40, lng: -74 }),
+    mkListing({ id: "D", desiredPersonalityVector: V_050, lat: 40, lng: -74 }),
+    mkListing({ id: "C", desiredPersonalityVector: V_080, lat: 40, lng: -74 }),
+  ];
+
+  it("produces the exact expected id order", () => {
+    const ids = match(profile, listings).map((r) => r.id);
+    expect(ids).toEqual(["A", "C", "B", "D", "E"]);
+  });
+
+  it("projects each survivor to a student-safe MatchResult (matched tags + coarse label)", () => {
+    const results = match(profile, listings);
+    const a = results.find((r) => r.id === "A")!;
+    expect(a.matchedTagSlugs).toEqual(["ai"]);
+    expect(a.fitLabel).toBe("Great fit");
+    expect(a.distanceKm).toBeCloseTo(0, 6);
+    const e = results.find((r) => r.id === "E")!;
+    expect(e.fitLabel).toBeNull(); // no personality vector → no fit label, still returned
+  });
+});
+
+describe("match — leakage guard (§0.1)", () => {
+  it("emits no personality vector values and no archetype names, only coarse fit labels", () => {
+    // Distinctive marker values: if any leak into the output, the substring check catches it.
+    const SECRET_MARKER = 0.7654321;
+    const profile = mkProfile({ personalityVector: [SECRET_MARKER, 0.1234567, 0, 0] });
+    const listings = [
+      mkListing({ id: "x", desiredPersonalityVector: [SECRET_MARKER, 0.1234567, 0, 0] }),
+      mkListing({ id: "y", desiredPersonalityVector: V_050 }),
+    ];
+    const json = JSON.stringify(match(profile, listings));
+
+    // No raw vector values.
+    expect(json).not.toContain("7654321");
+    expect(json).not.toContain("1234567");
+    expect(json).not.toContain("8660254");
+    // No secret field names or archetype/personality vocabulary.
+    expect(json).not.toContain("personalityVector");
+    expect(json).not.toContain("desiredPersonalityVector");
+    expect(json.toLowerCase()).not.toContain("archetype");
+    expect(json.toLowerCase()).not.toContain("personality");
+    // Only the coarse, student-safe labels are allowed to appear.
+    expect(json).toContain("fitLabel");
+    expect(json).toContain("Good fit");
+  });
+});

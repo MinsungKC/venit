@@ -1,0 +1,213 @@
+/*
+ * Onboarding wizard layout (BUILD_PROMPT §6). Scoped CSS module so these class names can't collide
+ * with the global match-flow styles. Reuses the global color tokens (var(--...)) for light/dark
+ * parity and keeps chips visually consistent with the rest of the app.
+ */
+
+.wizard {
+  max-width: 760px;
+  margin: 8px 0 0;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+/* ---- Progress: step indicator + bar ---- */
+.progress {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.steps {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  gap: 20px;
+}
+
+.stepDot {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--muted);
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.stepNum {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  border-radius: 999px;
+  border: 1px solid var(--line);
+  background: var(--panel);
+  font-size: 12px;
+}
+
+.stepCurrent {
+  color: var(--text);
+}
+.stepCurrent .stepNum {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: #fff;
+}
+
+.stepDone .stepNum {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+.bar {
+  height: 6px;
+  border-radius: 999px;
+  background: var(--panel-2);
+  border: 1px solid var(--line);
+  overflow: hidden;
+}
+.barFill {
+  height: 100%;
+  background: var(--accent);
+  border-radius: 999px;
+  transition: width 0.25s ease;
+}
+
+/* ---- Panel (per-step body) ---- */
+.panel {
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.stepHead {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.stepTitle {
+  margin: 0;
+  font-size: 20px;
+}
+.caption {
+  margin: 0;
+  color: var(--muted);
+  font-size: 14px;
+  max-width: 60ch;
+}
+
+.search {
+  padding: 9px 12px;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  background: var(--panel-2);
+  color: var(--text);
+  font-size: 14px;
+}
+
+/* ---- Interest chips (kept consistent with the app's chip pattern) ---- */
+.domains {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  max-height: 46vh;
+  overflow-y: auto;
+}
+.domainName {
+  margin: 0 0 8px;
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--muted);
+}
+.chips {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.chip {
+  padding: 6px 12px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: var(--panel);
+  color: var(--text);
+  font-size: 13px;
+  cursor: pointer;
+}
+.chip:hover {
+  border-color: var(--accent);
+}
+.chipOn {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: #fff;
+  font-weight: 600;
+}
+
+/* ---- About-you fields ---- */
+.fields {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  font-size: 12px;
+  color: var(--muted);
+  font-weight: 600;
+}
+.num {
+  width: 96px;
+  padding: 8px 10px;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  background: var(--panel-2);
+  color: var(--text);
+  font-size: 14px;
+}
+
+/* ---- Nav (Back / Next / See my matches) ---- */
+.nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+.primary,
+.ghost {
+  padding: 10px 18px;
+  border-radius: 10px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+}
+.primary {
+  border: none;
+  background: var(--accent);
+  color: #fff;
+}
+.ghost {
+  border: 1px solid var(--line);
+  background: var(--panel);
+  color: var(--text);
+}
+.ghost:hover {
+  border-color: var(--accent);
+}
+.primary:disabled,
+.ghost:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}

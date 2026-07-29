@@ -19,6 +19,10 @@ next-env.d.ts
 /public/data/listings.generated.json
 /public/data/tags.generated.json
 
+# generation run artifacts (resume/progress sidecars for generate-university-labs)
+/supabase/seed/source/*.done
+/supabase/seed/source/*.progress
+
 # supabase local
 /supabase/.branches
 /supabase/.temp

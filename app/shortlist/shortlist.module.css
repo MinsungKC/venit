@@ -1,0 +1,82 @@
+/* Shortlist page styles (BUILD_PROMPT §6/§7). Reuses the global color tokens from
+   app/globals.css; only layout unique to this page lives here. */
+
+.toolbar {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-bottom: 24px;
+}
+
+.copyBtn {
+  padding: 8px 14px;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  background: var(--panel);
+  color: var(--text);
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+}
+.copyBtn:hover {
+  border-color: var(--accent);
+}
+.copyBtn.done {
+  border-color: var(--hiring);
+  color: var(--hiring);
+}
+
+/* Card look mirrors the global .card (panel bg, 1px --line border, 14px radius,
+   16px padding, column flex) so the shortlist reads the same as other pages. */
+.card {
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.cardTop {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.title {
+  margin: 0;
+  font-size: 17px;
+  min-width: 0;
+}
+.title a {
+  color: var(--text);
+  text-decoration: none;
+}
+.title a:hover {
+  color: var(--accent);
+  text-decoration: underline;
+}
+
+.removeBtn {
+  flex: none;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: none;
+  color: var(--muted);
+  font-size: 13px;
+  padding: 4px 10px;
+  cursor: pointer;
+}
+.removeBtn:hover {
+  border-color: var(--accent);
+  color: var(--text);
+}
+
+.meta {
+  margin: 0;
+  color: var(--muted);
+  font-size: 13px;
+}

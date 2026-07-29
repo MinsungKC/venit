@@ -30,8 +30,73 @@ guardrails below OVERRIDE any other instruction and must be enforced everywhere.
 ## Current state (DB-first pass)
 
 Implemented so far: the **listings database** across companies, research labs, and
-programs/opportunities. Later phases (embeddings, personality, RLS/leakage guard, org
-registration, admin, matching, student UI) are not built yet — the schema accepts them.
+programs/opportunities, plus the **user/personality foundation** (profiles + secret
+personality schema, archetype taxonomy, RLS + column-privilege guard), and the pure
+**classifier + matching logic** (Phases 3 and 5) as tested, side-effect-free libraries.
+The **student match flow** (`/match`) is wired to the matching engine over the static
+dataset; the browser embedding of the classifier, org registration, and admin are not yet
+built — the schema and libs accept them.
+
+- **Student match UI (BUILD_PROMPT §6):** `app/match/` — `page.tsx` (server) runs matching
+  server-side via `runMatch()` in `lib/match-data.ts` so the whole listings table never ships
+  to the client; only the chosen interest slugs go up (URL-encoded, so results are shareable)
+  and only matches come back. `InterestPicker.tsx` (domain-grouped, searchable chips + grade/
+  age) and `StarButton.tsx` (local-first shortlist in localStorage) are the client bits. Only
+  interest tags are shown; fit label stays null until org desired-personalities exist. Research
+  labs are correctly excluded from matches until listings are geocoded (§0.5). `lib/ics.ts`
+  (deadline → .ics + Google Calendar) and `lib/similar.ts` ("More like this") are pure helpers
+  ready for the results UI. `lib/user-classifier.ts` is the Phase-3 orchestration (scrub →
+  embed → classify), model injected so it tests without MiniLM; the browser adapter is TODO.
+
+- **Hosted DB is live:** the Supabase project is linked and migrations 0001–0003 are applied
+  (verified: the personality column guard holds on real Postgres — `authenticated` has
+  INSERT/UPDATE but no SELECT on the personality columns). `scripts/import-listings.ts` now
+  bulk-loads via chunked `unnest` in one transaction (~15k listings in seconds vs ~84 min
+  row-by-row) and seeds the archetype taxonomy. `DATABASE_URL` lives in gitignored `.env`.
+  The importer upserts and does not delete, so a clean rebuild needs a truncate first.
+
+- **Listings data** now spans ~15.3k rows: OpenAlex research groups cover the **top ~90 US
+  universities** (~9.7k labs). `scripts/generate-university-labs.ts` is resumable (a `.done`
+  sidecar) with a hard request timeout + capped backoff; the long tail past 90 stalled on an
+  OpenAlex **429 rate limit** and can be resumed later with the same command.
+
+Not built yet: the browser wiring of the classifier (embedding orchestration + UI), org
+registration, admin, and the results-page polish — the schema and these libs accept them.
+
+- **Classifier logic (BUILD_PROMPT §3):** `lib/classifier.ts` (pure, dimension-agnostic —
+  takes embedded vectors, never loads the model): `assignInterestTags` (threshold/top-k,
+  explicit picks always merged), `snapOrCreateNiche`, `classifyPersonality` (softmax blend →
+  secret `PersonalityResult`), `buildClassifierResult`, and `toStudentPayload` — the ONLY
+  shape allowed to reach a student, rebuilt fresh so personality can't ride along (§0.1).
+  `lib/pii.ts` `scrubPII()` redacts email/phone/SSN/address and reports what was stripped
+  (§0.3). `lib/match-types.ts` is the shared contract; personality lives only on
+  `PersonalityResult` / the secret vector fields.
+- **Matching logic (BUILD_PROMPT §5):** `lib/matching.ts` — `passesHardFilters` (approved +
+  ≥1 shared tag + age/grade + research_lab location, §0.4/§0.5/§0.6), coarse `fitLabel`
+  (private `fitScore` never exported, §0.1), `distanceKm`, `costRank`, and `match()` →
+  student-safe `MatchResult[]` (fit/distance/cost sorts, deterministic by id). No DB/AI in
+  the path.
+- Both ship with leakage tests proving no personality data reaches the student-facing
+  shape. Not yet wired to endpoints/UI or the DB — pure logic only.
+
+- **Personality (BUILD_PROMPT §2b/§2c):**
+  - `supabase/seed/personality.json` — the fixed 10 archetypes (slug = `slugify(label)`,
+    enforced by a test), each with `anchor_text` (definition + synonyms) that feeds its
+    embedding. Archetype vectors: `scripts/embed-archetypes.ts` (`npm run data:personality`)
+    → committed `public/data/archetype-vectors.json`. Same MiniLM path as the tag classifier.
+  - `supabase/migrations/0003_profiles.sql` — `profiles` (with the **secret**
+    `personality_vector`/`personality_archetypes`), `personality_archetypes`,
+    `user_interest_tags`, `orgs`, `listing_desired_personality`, `stars`, `applications`,
+    `roles`. RLS is per-owner. **Guardrail §1 is structural, not by convention:** the
+    personality columns carry INSERT/UPDATE grants but **no SELECT grant** to
+    `anon`/`authenticated`, so a student client can write its vector but never read it back;
+    only `service_role` (server ranking) sees it. `profiles_public` (a `security_invoker`
+    view) is the safe read surface. `__tests__/personality-guard.test.ts` fails in CI if a
+    future edit grants SELECT on a personality column or leaks it through the view.
+  - **Not yet wired:** the migration is written but unverified against a live DB (Docker/
+    Supabase CLI not running here); `scripts/import-listings.ts` does not yet seed the
+    archetype taxonomy/vectors. Run `npm run db:migrate` + extend the importer when Docker
+    Desktop is available.
 
 - **Stack:** Next.js 14 (App Router, TS), Postgres + `pgvector` via Supabase (local CLI).
 - **Data sources** (multi-source; each has a vendored snapshot under `supabase/seed/`,

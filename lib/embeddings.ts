@@ -31,9 +31,6 @@ export async function embedBatch(texts: string[]): Promise<number[][]> {
   return rows;
 }
 
-/** Cosine similarity of two L2-normalized vectors (dot product). */
-export function cosine(a: number[], b: number[]): number {
-  let dot = 0;
-  for (let i = 0; i < a.length; i++) dot += a[i] * b[i];
-  return dot;
-}
+// Cosine lives in the dependency-free lib/vec.ts so comparing vectors never pulls in the model
+// runtime; re-exported here for the seed scripts that already import it alongside embed().
+export { cosine } from "./vec";

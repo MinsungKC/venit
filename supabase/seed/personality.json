@@ -1,0 +1,72 @@
+[
+  {
+    "slug": "builder-maker",
+    "label": "Builder/Maker",
+    "description": "Hands-on and practical; learns by building real things and figuring out how they work.",
+    "adjectives": ["hands-on", "practical", "tinkerer", "resourceful", "handy", "pragmatic"],
+    "anchor_text": "Hands-on and practical; learns by building real things and figuring out how they work. Traits: hands-on, practical, tinkerer, resourceful, handy, pragmatic."
+  },
+  {
+    "slug": "analyst",
+    "label": "Analyst",
+    "description": "Analytical and logical; enjoys breaking problems down and getting the details exactly right.",
+    "adjectives": ["analytical", "logical", "detail-oriented", "precise", "curious", "rigorous"],
+    "anchor_text": "Analytical and logical; enjoys breaking problems down and getting the details exactly right. Traits: analytical, logical, detail-oriented, precise, curious, rigorous."
+  },
+  {
+    "slug": "creator",
+    "label": "Creator",
+    "description": "Creative and expressive; driven to make original work and imagine new possibilities.",
+    "adjectives": ["creative", "artistic", "imaginative", "expressive", "original", "inventive"],
+    "anchor_text": "Creative and expressive; driven to make original work and imagine new possibilities. Traits: creative, artistic, imaginative, expressive, original, inventive."
+  },
+  {
+    "slug": "explorer",
+    "label": "Explorer",
+    "description": "Adventurous and independent; seeks out new experiences and unfamiliar territory.",
+    "adjectives": ["adventurous", "independent", "open-minded", "curious", "self-directed", "flexible"],
+    "anchor_text": "Adventurous and independent; seeks out new experiences and unfamiliar territory. Traits: adventurous, independent, open-minded, curious, self-directed, flexible."
+  },
+  {
+    "slug": "leader",
+    "label": "Leader",
+    "description": "Ambitious and organized; takes charge, sets direction, and moves a group toward a goal.",
+    "adjectives": ["ambitious", "driven", "confident", "organized", "decisive", "responsible"],
+    "anchor_text": "Ambitious and organized; takes charge, sets direction, and moves a group toward a goal. Traits: ambitious, driven, confident, organized, decisive, responsible."
+  },
+  {
+    "slug": "collaborator",
+    "label": "Collaborator",
+    "description": "Friendly and empathetic; does the best work as part of a supportive team.",
+    "adjectives": ["friendly", "empathetic", "team-oriented", "supportive", "cooperative", "reliable"],
+    "anchor_text": "Friendly and empathetic; does the best work as part of a supportive team. Traits: friendly, empathetic, team-oriented, supportive, cooperative, reliable."
+  },
+  {
+    "slug": "competitor",
+    "label": "Competitor",
+    "description": "Competitive and disciplined; motivated by challenge, goals, and measurable results.",
+    "adjectives": ["competitive", "determined", "disciplined", "focused", "persistent", "goal-driven"],
+    "anchor_text": "Competitive and disciplined; motivated by challenge, goals, and measurable results. Traits: competitive, determined, disciplined, focused, persistent, goal-driven."
+  },
+  {
+    "slug": "helper",
+    "label": "Helper",
+    "description": "Compassionate and patient; drawn to work that supports and cares for other people.",
+    "adjectives": ["compassionate", "altruistic", "patient", "caring", "kind", "service-minded"],
+    "anchor_text": "Compassionate and patient; drawn to work that supports and cares for other people. Traits: compassionate, altruistic, patient, caring, kind, service-minded."
+  },
+  {
+    "slug": "communicator",
+    "label": "Communicator",
+    "description": "Outgoing and articulate; connects with people and explains ideas persuasively.",
+    "adjectives": ["outgoing", "persuasive", "articulate", "expressive", "sociable", "engaging"],
+    "anchor_text": "Outgoing and articulate; connects with people and explains ideas persuasively. Traits: outgoing, persuasive, articulate, expressive, sociable, engaging."
+  },
+  {
+    "slug": "innovator-visionary",
+    "label": "Innovator/Visionary",
+    "description": "Entrepreneurial and bold; imagines what could exist and takes risks to build it.",
+    "adjectives": ["entrepreneurial", "bold", "inventive", "visionary", "risk-taking", "big-picture"],
+    "anchor_text": "Entrepreneurial and bold; imagines what could exist and takes risks to build it. Traits: entrepreneurial, bold, inventive, visionary, risk-taking, big-picture."
+  }
+]
