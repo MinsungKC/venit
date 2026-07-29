@@ -1,16 +1,13 @@
 import Link from "next/link";
-import { getListings, type ListingView } from "@/lib/listings";
+import { getListings, getInterestTags } from "@/lib/listings";
+import { parseTagParam } from "@/lib/matching";
+import InterestPicker from "./InterestPicker";
+import ListingCard from "./ListingCard";
+import StarButton from "./StarButton";
+import ShortlistLink from "./ShortlistLink";
 import type { ListingKind } from "@/lib/mapping";
 
 export const dynamic = "force-dynamic";
-
-const KIND_LABEL: Record<ListingKind, string> = {
-  company: "Company",
-  research_lab: "Research Lab",
-  program: "Program",
-  opportunity: "Opportunity",
-  camp: "Camp",
-};
 
 const KIND_PLURAL: Record<ListingKind, string> = {
   company: "Companies",
@@ -22,40 +19,35 @@ const KIND_PLURAL: Record<ListingKind, string> = {
 
 const KIND_ORDER: ListingKind[] = ["company", "research_lab", "program", "opportunity", "camp"];
 
-/** A small logo for a listing, derived from its website host (no dataset needed). */
-function faviconFor(url: string | null): string | null {
-  if (!url) return null;
-  try {
-    return `https://icons.duckduckgo.com/ip3/${new URL(url).host}.ico`;
-  } catch {
-    return null;
-  }
-}
-
-function statusBadge(l: ListingView): { text: string; cls: string } | null {
-  // Generated research groups (OpenAlex): we don't know their HS policy — show no status.
-  if (l.badges.includes("openalex")) return null;
-  if (l.kind === "company") {
-    return l.is_recruiting
-      ? { text: "Hiring", cls: "hiring" }
-      : { text: "Not actively recruiting", cls: "quiet" };
-  }
-  return l.is_recruiting
-    ? { text: "Accepting students", cls: "hiring" }
-    : { text: "Not currently accepting", cls: "quiet" };
+/** A /listings href that keeps the active interest selection while switching the kind tab. */
+function tabHref(tags: string[], kind?: ListingKind): string {
+  const params = new URLSearchParams();
+  if (kind) params.set("kind", kind);
+  if (tags.length) params.set("tags", tags.join(","));
+  const qs = params.toString();
+  return qs ? `/listings?${qs}` : "/listings";
 }
 
 export default async function ListingsPage({
   searchParams,
 }: {
-  searchParams: { kind?: string };
+  searchParams: { kind?: string; tags?: string };
 }) {
   const kind = KIND_ORDER.includes(searchParams.kind as ListingKind)
     ? (searchParams.kind as ListingKind)
     : undefined;
+  const selectedSlugs = parseTagParam(searchParams.tags);
 
-  const { listings, total, counts, source } = await getListings({ kind, limit: 120 });
+  const [{ listings, total, counts, source }, allTags] = await Promise.all([
+    getListings({ kind, tags: selectedSlugs, limit: 120 }),
+    getInterestTags(),
+  ]);
   const grandTotal = Object.values(counts).reduce((a, b) => a + b, 0);
+  const matching = selectedSlugs.length > 0;
+  // Labels of the user's selected interests, for the per-card "why you matched" highlight.
+  const selectedLabels = new Set(
+    allTags.filter((t) => selectedSlugs.includes(t.slug)).map((t) => t.label),
+  );
 
   return (
     <main className="container">
@@ -66,21 +58,30 @@ export default async function ListingsPage({
           </Link>
           <h1>Opportunities</h1>
         </div>
-        <p className="count">
-          {listings.length.toLocaleString()} shown of {total.toLocaleString()}
-          <span className="src"> · {source === "database" ? "live database" : "static seed"}</span>
-        </p>
+        <div className="head-right">
+          <ShortlistLink />
+          <p className="count">
+            {listings.length.toLocaleString()} shown of {total.toLocaleString()}
+            {matching ? " matching your interests" : ""}
+            <span className="src">
+              {" "}
+              · {source === "database" ? "live database" : "static seed"}
+            </span>
+          </p>
+        </div>
       </header>
 
+      <InterestPicker tags={allTags} selected={selectedSlugs} />
+
       <nav className="tabs" aria-label="Filter by kind">
-        <Link className={`tab ${!kind ? "active" : ""}`} href="/listings">
+        <Link className={`tab ${!kind ? "active" : ""}`} href={tabHref(selectedSlugs)}>
           All <span className="tab-n">{grandTotal.toLocaleString()}</span>
         </Link>
         {KIND_ORDER.filter((k) => counts[k]).map((k) => (
           <Link
             key={k}
             className={`tab ${kind === k ? "active" : ""}`}
-            href={`/listings?kind=${k}`}
+            href={tabHref(selectedSlugs, k)}
           >
             {KIND_PLURAL[k]} <span className="tab-n">{counts[k].toLocaleString()}</span>
           </Link>
@@ -88,55 +89,22 @@ export default async function ListingsPage({
       </nav>
 
       <section className="grid">
-        {listings.map((l) => {
-          const badge = statusBadge(l);
-          const fav = faviconFor(l.url);
-          return (
-            <article className="card" key={l.slug}>
-              <div className="card-top">
-                <div className="title-wrap">
-                  {fav && (
-                    // eslint-disable-next-line @next/next/no-img-element
-                    <img className="favicon" src={fav} alt="" width={20} height={20} loading="lazy" />
-                  )}
-                  <h2 className="card-title">
-                    {l.url ? (
-                      <a href={l.url} target="_blank" rel="noopener noreferrer">
-                        {l.title}
-                      </a>
-                    ) : (
-                      l.title
-                    )}
-                  </h2>
-                </div>
-                {badge && <span className={`badge ${badge.cls}`}>{badge.text}</span>}
-              </div>
-
-              <p className="kindline">
-                <span className={`kind kind-${l.kind}`}>{KIND_LABEL[l.kind]}</span>
-              </p>
-
-              {l.short_description && <p className="desc">{l.short_description}</p>}
-
-              <p className="meta">
-                {l.is_remote ? "Remote" : l.location_name ?? "—"}
-                {l.industry ? ` · ${l.industry}` : ""}
-                {l.team_size ? ` · ${l.team_size.toLocaleString()} people` : ""}
-              </p>
-
-              {l.tags.length > 0 && (
-                <ul className="tags" aria-label="Interest tags">
-                  {l.tags.slice(0, 8).map((t) => (
-                    <li className="tag" key={t}>
-                      {t}
-                    </li>
-                  ))}
-                </ul>
-              )}
-            </article>
-          );
-        })}
+        {listings.map((l) => (
+          <ListingCard
+            key={l.slug}
+            l={l}
+            matched={matching ? selectedLabels : undefined}
+            star={<StarButton slug={l.slug} title={l.title} />}
+          />
+        ))}
       </section>
+
+      {matching && listings.length === 0 && (
+        <p className="empty">
+          No listings share your selected interests. Try adding more interests or removing a
+          narrow one.
+        </p>
+      )}
     </main>
   );
 }
