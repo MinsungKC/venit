@@ -62,6 +62,22 @@ registration, admin, matching, student UI) are not built yet — the schema acce
   - `scripts/build-listings-json.ts` — emits `public/data/*.generated.json` for the no-DB
     dev path (the `/listings` page reads the DB when `DATABASE_URL` is set, else the JSON).
 
+## Classification (canonical tags)
+
+Sources speak different tag languages (yc tags, GICS sectors, OpenAlex fields). One embedding
+classifier unifies them into a canonical taxonomy so matching is consistent:
+- `supabase/seed/taxonomy.json` — ~109 canonical tags (slug = `slugify(label)`, enforced by
+  a test), each with a description that feeds its embedding.
+- `lib/embeddings.ts` — MiniLM (`Xenova/all-MiniLM-L6-v2`, 384-dim) via transformers.js;
+  same model the browser will use for the on-device user classifier later (§3).
+- `scripts/classify.ts` (`npm run data:classify`) — embeds taxonomy + each listing, assigns
+  nearest tags → `public/data/classification.json` (+ `tag-vectors.json`). Build-time only,
+  no per-request AI (§0.7).
+- `lib/classification.ts` `applyClassification()` — `data:build` and `db:import` swap each
+  listing's source tags for its canonical tags (graceful fallback to source tags if the
+  classifier hasn't been run). `tag-vectors.json` / `classification.json` are committed so
+  the app works without re-running the model.
+
 ## Working here
 
 - **No personality data exists in the schema yet.** When you add it, never expose it to a

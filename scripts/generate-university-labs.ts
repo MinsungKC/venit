@@ -18,7 +18,7 @@ import { join } from "node:path";
 const OUT = join(process.cwd(), "supabase", "seed", "source", "university-labs.json");
 const UNIS = join(process.cwd(), "supabase", "seed", "source", "universities.json");
 const MAILTO = "youngimyoo@yahoo.com";
-const LABS_PER_UNI = 75;
+const LABS_PER_UNI = 120;
 
 export interface UniversityLab {
   id: string; // OpenAlex author id
@@ -48,8 +48,27 @@ interface OAAuthor {
   topics?: OATopic[];
 }
 
-async function getJson<T>(url: string): Promise<T> {
+const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
+
+// Pace every request to ~1/sec so we stay under OpenAlex's burst limit and never 429.
+const MIN_GAP_MS = 1100;
+let lastRequest = 0;
+async function pace() {
+  const wait = lastRequest + MIN_GAP_MS - Date.now();
+  if (wait > 0) await sleep(wait);
+  lastRequest = Date.now();
+}
+
+async function getJson<T>(url: string, attempt = 0): Promise<T> {
+  await pace();
   const res = await fetch(url, { headers: { "User-Agent": `OppMatch/0.1 (${MAILTO})` } });
+  if (res.status === 429 || res.status >= 500) {
+    if (attempt >= 5) throw new Error(`OpenAlex ${res.status} after retries ${url}`);
+    const retryAfter = Number(res.headers.get("retry-after"));
+    const wait = retryAfter > 0 ? retryAfter * 1000 : Math.min(2000 * 2 ** attempt, 20000);
+    await sleep(wait);
+    return getJson<T>(url, attempt + 1);
+  }
   if (!res.ok) throw new Error(`OpenAlex ${res.status} ${url}`);
   return (await res.json()) as T;
 }
@@ -114,6 +133,7 @@ async function labsForUniversity(uni: string): Promise<UniversityLab[]> {
 async function main() {
   const universities = JSON.parse(readFileSync(UNIS, "utf8")) as string[];
   const all: UniversityLab[] = [];
+  let done = 0;
   for (const uni of universities) {
     try {
       const labs = await labsForUniversity(uni);
@@ -122,9 +142,11 @@ async function main() {
     } catch (err) {
       console.warn(`  ${uni} failed: ${(err as Error).message}`);
     }
-    await new Promise((r) => setTimeout(r, 300));
+    done++;
+    // Checkpoint after each university so progress is pollable and partial runs persist.
+    writeFileSync(OUT, JSON.stringify(all));
+    writeFileSync(OUT + ".progress", `${done}/${universities.length} universities, ${all.length} groups\n`);
   }
-  writeFileSync(OUT, JSON.stringify(all));
   console.log(`generate-university-labs — ${all.length} research groups across ${universities.length} universities.`);
 }
 

@@ -12,13 +12,16 @@ import "dotenv/config";
 import { Client } from "pg";
 import { loadAllListings } from "../lib/sources";
 import { buildDataset, type ListingRecord } from "../lib/mapping";
+import { applyClassification, applyTaxonomyDomains } from "../lib/classification";
 
 const DATABASE_URL =
   process.env.DATABASE_URL ??
   "postgresql://postgres:postgres@127.0.0.1:54322/postgres";
 
 async function main() {
-  const { listings, tags } = buildDataset(loadAllListings());
+  const built = buildDataset(applyClassification(loadAllListings()));
+  const listings = built.listings;
+  const tags = applyTaxonomyDomains(built.tags);
 
   const client = new Client({ connectionString: DATABASE_URL });
   await client.connect();

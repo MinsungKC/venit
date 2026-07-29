@@ -9,12 +9,15 @@ import { mkdirSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
 import { loadAllListings } from "../lib/sources";
 import { buildDataset } from "../lib/mapping";
+import { applyClassification, applyTaxonomyDomains } from "../lib/classification";
 
 const outDir = join(process.cwd(), "public", "data");
 
 function main() {
-  const items = loadAllListings();
-  const { listings, tags } = buildDataset(items);
+  const items = applyClassification(loadAllListings());
+  const built = buildDataset(items);
+  const listings = built.listings;
+  const tags = applyTaxonomyDomains(built.tags);
 
   mkdirSync(outDir, { recursive: true });
   writeFileSync(join(outDir, "listings.generated.json"), JSON.stringify(listings));

@@ -53,6 +53,24 @@ npm run dev                         # /listings now reads the live database
 `npm run db:seed` = `supabase db reset` (applies `supabase/migrations/`) + the importer.
 The importer is idempotent; re-running upserts.
 
+## Classification (unifying the tags)
+
+Sources speak different tag languages — YC tags ("Hard Tech"), GICS sectors ("Industrial
+Conglomerates"), OpenAlex fields ("Neuroscience"). A single embedding classifier maps every
+listing into one **canonical taxonomy** (`supabase/seed/taxonomy.json`, ~109 tags across
+domains, each with a description):
+
+```
+npm run data:classify   # embeds taxonomy + each listing with MiniLM (transformers.js),
+                        # assigns nearest tags -> public/data/classification.json
+                        #                         public/data/tag-vectors.json
+```
+
+`data:build` / `db:import` then apply that classification so `interest_tags` is the canonical
+vocabulary and the "why you're seeing this" chips are consistent across every source. Runs at
+build time only (no per-request AI, per guardrail §0.7). `tag-vectors.json` is the reference
+space the future on-device user classifier (§3) will match against.
+
 ## Schema (this pass)
 
 - `interest_tags` — the matchable vocabulary (seeded from yc tags, GICS sectors, and
@@ -69,7 +87,10 @@ location per guardrail §5.
 
 | command | what it does |
 | --- | --- |
-| `npm run data:build` | rebuild the static dataset from the vendored snapshot |
+| `npm run data:build` | rebuild the static dataset (applies classification if present) |
+| `npm run data:classify` | embed taxonomy + listings, assign canonical tags (needs transformers.js) |
+| `npm run data:gen` | regenerate university research groups from OpenAlex |
+| `npm run data:enrich` | backfill S&P 500 websites/descriptions from Wikidata |
 | `npm run dev` / `build` | Next.js dev / production build |
 | `npm run test` | vitest unit tests (mapping + guardrails) |
 | `npm run typecheck` / `lint` | TypeScript / ESLint |
