@@ -5,14 +5,24 @@
  * The CSV has no descriptions or websites, but its GICS Sector + Sub-Industry make solid
  * interest tags, so these companies are matchable by sector immediately.
  */
-import { readFileSync } from "node:fs";
+import { existsSync, readFileSync } from "node:fs";
 import { join } from "node:path";
 import { parseCsvObjects } from "../csv";
-import type { NormalizedListing } from "../mapping";
+import { truncate, type NormalizedListing } from "../mapping";
 
 const SOURCE_PATH = join(process.cwd(), "supabase", "seed", "source", "sp500.csv");
+const ENRICH_PATH = join(process.cwd(), "supabase", "seed", "source", "sp500-enrichment.json");
 
-export function mapSp500Row(row: Record<string, string>): NormalizedListing | null {
+/** Website + description backfilled from Wikidata (see scripts/enrich-sp500.ts). */
+export interface Sp500Enrichment {
+  website?: string;
+  description?: string;
+}
+
+export function mapSp500Row(
+  row: Record<string, string>,
+  enrich?: Sp500Enrichment,
+): NormalizedListing | null {
   const title = row["Security"]?.trim();
   const symbol = row["Symbol"]?.trim();
   if (!title || !symbol) return null;
@@ -20,6 +30,7 @@ export function mapSp500Row(row: Record<string, string>): NormalizedListing | nu
   const sector = row["GICS Sector"]?.trim() || null;
   const sub = row["GICS Sub-Industry"]?.trim() || null;
   const tag_labels = [sector, sub].filter((x): x is string => Boolean(x));
+  const fallbackDesc = sub ? `${sector} · ${sub}` : sector;
 
   return {
     external_id: symbol,
@@ -27,8 +38,8 @@ export function mapSp500Row(row: Record<string, string>): NormalizedListing | nu
     kind: "company",
     title,
     slug: null,
-    url: null,
-    short_description: sub ? `${sector} · ${sub}` : sector,
+    url: enrich?.website?.trim() || null,
+    short_description: enrich?.description ? truncate(enrich.description, 300) : fallbackDesc,
     long_description: null,
     location_name: row["Headquarters Location"]?.trim() || null,
     is_remote: false,
@@ -49,7 +60,10 @@ export function mapSp500Row(row: Record<string, string>): NormalizedListing | nu
 
 export function loadSp500Listings(): NormalizedListing[] {
   const rows = parseCsvObjects(readFileSync(SOURCE_PATH, "utf8"));
+  const enrichment: Record<string, Sp500Enrichment> = existsSync(ENRICH_PATH)
+    ? JSON.parse(readFileSync(ENRICH_PATH, "utf8"))
+    : {};
   return rows
-    .map(mapSp500Row)
+    .map((r) => mapSp500Row(r, enrichment[r["Symbol"]?.trim()]))
     .filter((l): l is NormalizedListing => l !== null && l.tag_labels.length > 0);
 }

@@ -55,7 +55,10 @@ export async function getListings(q: ListingQuery = {}): Promise<ListingsResult>
            left join interest_tags t on t.id = lit.tag_id
           where l.status = 'approved' ${where}
           group by l.id
-          order by l.is_recruiting desc, l.team_size desc nulls last, l.title
+          order by (l.badges ? 'top_company' or l.badges ? 'large_company') desc,
+                   l.team_size desc nulls last,
+                   l.is_recruiting desc,
+                   l.title
           limit $1 offset $2`,
         params,
       ),
@@ -86,10 +89,13 @@ export async function getListings(q: ListingQuery = {}): Promise<ListingsResult>
   for (const l of all) counts[l.kind] = (counts[l.kind] ?? 0) + 1;
 
   const filtered = kind ? all.filter((l) => l.kind === kind) : all;
+  const prominent = (l: ListingRecord) =>
+    l.badges.includes("top_company") || l.badges.includes("large_company") ? 1 : 0;
   const sorted = [...filtered].sort(
     (a, b) =>
-      Number(b.is_recruiting) - Number(a.is_recruiting) ||
+      prominent(b) - prominent(a) ||
       (b.team_size ?? 0) - (a.team_size ?? 0) ||
+      Number(b.is_recruiting) - Number(a.is_recruiting) ||
       a.title.localeCompare(b.title),
   );
   const view: ListingView[] = sorted.slice(offset, offset + limit).map((l) => ({

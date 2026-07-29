@@ -22,6 +22,14 @@ describe("mapSp500Row", () => {
   it("returns null when the name/symbol is missing", () => {
     expect(mapSp500Row({ Symbol: "", Security: "" })).toBeNull();
   });
+  it("uses Wikidata enrichment for url and description when present", () => {
+    const l = mapSp500Row(
+      { Symbol: "AAPL", Security: "Apple", "GICS Sector": "Information Technology" },
+      { website: "https://apple.com/", description: "American technology company" },
+    );
+    expect(l!.url).toBe("https://apple.com/");
+    expect(l!.short_description).toBe("American technology company");
+  });
 });
 
 describe("mapCuratedEntry", () => {

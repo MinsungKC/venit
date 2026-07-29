@@ -38,9 +38,13 @@ registration, admin, matching, student UI) are not built yet — the schema acce
   normalized by `lib/sources/*`):
   - **[`yc-oss/api`](https://github.com/yc-oss/api)** — ~4.3k YC companies (pre-tagged).
   - **[`datasets/s-and-p-500-companies`](https://github.com/datasets/s-and-p-500-companies)**
-    — ~500 large firms; GICS sector/sub-industry become tags. Public domain (PDDL).
-  - `supabase/seed/curated-listings.json` — hand-authored research labs / HS programs
-    (ALERTCalifornia, UCSD REHS, Salk, SIMR, RSI, NASA OSTEM, Google CSSI, …).
+    — ~500 large firms; GICS sector/sub-industry become tags. Public domain (PDDL). Website
+    + description backfilled from Wikidata via `scripts/enrich-sp500.ts` (vendored to
+    `sp500-enrichment.json`).
+  - `supabase/seed/curated-listings.json` — ~50 hand-authored research labs / HS programs
+    across many universities (ALERTCalifornia, UCSD REHS, Salk, SIMR, RSI, NYU ARISE, Fred
+    Hutch SHIP, ASSIP, Oak Ridge, NASA OSTEM, Google CSSI, …).
+  Logos are favicons derived from each listing's website host (no logo dataset).
   Most entries are **not actively recruiting** but are still listed and matchable by tag
   (guardrail §4 / BUILD_PROMPT §5). An entry that yields **zero tags is dropped**; a
   `research_lab` must have a location (§5).

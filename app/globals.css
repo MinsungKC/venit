@@ -180,6 +180,21 @@ h1 {
   gap: 10px;
 }
 
+.title-wrap {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+}
+.favicon {
+  flex: none;
+  width: 20px;
+  height: 20px;
+  border-radius: 4px;
+  background: var(--tag-bg);
+  object-fit: contain;
+}
+
 .card-title {
   margin: 0;
   font-size: 17px;

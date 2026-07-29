@@ -22,6 +22,16 @@ const KIND_PLURAL: Record<ListingKind, string> = {
 
 const KIND_ORDER: ListingKind[] = ["company", "research_lab", "program", "opportunity", "camp"];
 
+/** A small logo for a listing, derived from its website host (no dataset needed). */
+function faviconFor(url: string | null): string | null {
+  if (!url) return null;
+  try {
+    return `https://icons.duckduckgo.com/ip3/${new URL(url).host}.ico`;
+  } catch {
+    return null;
+  }
+}
+
 function statusBadge(l: ListingView): { text: string; cls: string } {
   if (l.kind === "company") {
     return l.is_recruiting
@@ -78,18 +88,25 @@ export default async function ListingsPage({
       <section className="grid">
         {listings.map((l) => {
           const badge = statusBadge(l);
+          const fav = faviconFor(l.url);
           return (
             <article className="card" key={l.slug}>
               <div className="card-top">
-                <h2 className="card-title">
-                  {l.url ? (
-                    <a href={l.url} target="_blank" rel="noopener noreferrer">
-                      {l.title}
-                    </a>
-                  ) : (
-                    l.title
+                <div className="title-wrap">
+                  {fav && (
+                    // eslint-disable-next-line @next/next/no-img-element
+                    <img className="favicon" src={fav} alt="" width={20} height={20} loading="lazy" />
                   )}
-                </h2>
+                  <h2 className="card-title">
+                    {l.url ? (
+                      <a href={l.url} target="_blank" rel="noopener noreferrer">
+                        {l.title}
+                      </a>
+                    ) : (
+                      l.title
+                    )}
+                  </h2>
+                </div>
                 <span className={`badge ${badge.cls}`}>{badge.text}</span>
               </div>
 

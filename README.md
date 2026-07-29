@@ -20,8 +20,10 @@ shares ≥ 1 interest tag; entries with no tags (and dead companies) are exclude
 | Source | Kind | Notes |
 | --- | --- | --- |
 | **[`yc-oss/api`](https://github.com/yc-oss/api)** | companies | ~4,300 YC startups, pre-tagged. Credit **yc-oss** + **Y Combinator**. |
-| **[`datasets/s-and-p-500-companies`](https://github.com/datasets/s-and-p-500-companies)** | companies | ~500 large firms; GICS sector/sub-industry become tags. Open Data Commons **PDDL** (public domain). |
-| `supabase/seed/curated-listings.json` | research labs, programs, opportunities | Hand-authored (ALERTCalifornia, UCSD REHS, Salk, SIMR, RSI, NASA OSTEM, Google CSSI, BofA Student Leaders, …). Verify specifics before relying on them. |
+| **[`datasets/s-and-p-500-companies`](https://github.com/datasets/s-and-p-500-companies)** | companies | ~500 large firms; GICS sector/sub-industry become tags. Open Data Commons **PDDL** (public domain). Website + description backfilled from **Wikidata** (`npm run data:enrich`, vendored to `sp500-enrichment.json`). |
+| `supabase/seed/curated-listings.json` | research labs, programs, opportunities | ~50 hand-authored entries (ALERTCalifornia, UCSD REHS, Salk, SIMR, RSI, NYU ARISE, Fred Hutch SHIP, ASSIP, Oak Ridge, NASA OSTEM, Google CSSI, …) across many universities. Verify specifics before relying on them. |
+
+Company **logos** are shown as favicons derived from each listing's website host — no logo dataset needed.
 
 ## Quick start (no database required)
 
