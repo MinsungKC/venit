@@ -1,0 +1,656 @@
+[
+  {
+    "slug": "artificial-intelligence",
+    "label": "Artificial Intelligence",
+    "domain": "Computer Science",
+    "description": "Building systems that reason, perceive, or act intelligently, including AI research and applications."
+  },
+  {
+    "slug": "machine-learning",
+    "label": "Machine Learning",
+    "domain": "Computer Science",
+    "description": "Training models that learn patterns from data, including deep learning and neural networks."
+  },
+  {
+    "slug": "data-science",
+    "label": "Data Science",
+    "domain": "Computer Science",
+    "description": "Analyzing large datasets with statistics and code to find insights and make predictions."
+  },
+  {
+    "slug": "software-engineering",
+    "label": "Software Engineering",
+    "domain": "Computer Science",
+    "description": "Designing, writing, and maintaining software applications and systems."
+  },
+  {
+    "slug": "web-development",
+    "label": "Web Development",
+    "domain": "Computer Science",
+    "description": "Building websites and web applications, front-end and back-end."
+  },
+  {
+    "slug": "mobile-development",
+    "label": "Mobile Development",
+    "domain": "Computer Science",
+    "description": "Creating apps for phones and tablets on iOS and Android."
+  },
+  {
+    "slug": "cybersecurity",
+    "label": "Cybersecurity",
+    "domain": "Computer Science",
+    "description": "Protecting computers, networks, and data from attacks and securing systems."
+  },
+  {
+    "slug": "computer-networks",
+    "label": "Computer Networks",
+    "domain": "Computer Science",
+    "description": "How computers communicate over networks and the internet, including protocols and infrastructure."
+  },
+  {
+    "slug": "databases-data-engineering",
+    "label": "Databases & Data Engineering",
+    "domain": "Computer Science",
+    "description": "Storing, querying, and pipelining data at scale."
+  },
+  {
+    "slug": "cloud-computing",
+    "label": "Cloud Computing",
+    "domain": "Computer Science",
+    "description": "Delivering computing, storage, and services over remote data centers."
+  },
+  {
+    "slug": "computer-graphics-vision",
+    "label": "Computer Graphics & Vision",
+    "domain": "Computer Science",
+    "description": "Rendering images and enabling computers to interpret visual information."
+  },
+  {
+    "slug": "human-computer-interaction",
+    "label": "Human-Computer Interaction",
+    "domain": "Computer Science",
+    "description": "Designing how people interact with computers and digital interfaces."
+  },
+  {
+    "slug": "game-development",
+    "label": "Game Development",
+    "domain": "Computer Science",
+    "description": "Designing and programming video games and interactive experiences."
+  },
+  {
+    "slug": "blockchain-crypto",
+    "label": "Blockchain & Crypto",
+    "domain": "Computer Science",
+    "description": "Decentralized ledgers, cryptocurrencies, and distributed trust systems."
+  },
+  {
+    "slug": "robotics",
+    "label": "Robotics",
+    "domain": "Engineering",
+    "description": "Designing and building robots and autonomous machines that sense and act."
+  },
+  {
+    "slug": "mechanical-engineering",
+    "label": "Mechanical Engineering",
+    "domain": "Engineering",
+    "description": "Designing machines, engines, and mechanical systems."
+  },
+  {
+    "slug": "electrical-engineering",
+    "label": "Electrical Engineering",
+    "domain": "Engineering",
+    "description": "Circuits, electronics, power systems, and signal processing."
+  },
+  {
+    "slug": "civil-engineering",
+    "label": "Civil Engineering",
+    "domain": "Engineering",
+    "description": "Designing infrastructure like buildings, bridges, roads, and water systems."
+  },
+  {
+    "slug": "aerospace-engineering",
+    "label": "Aerospace Engineering",
+    "domain": "Engineering",
+    "description": "Designing aircraft, spacecraft, and propulsion systems."
+  },
+  {
+    "slug": "biomedical-engineering",
+    "label": "Biomedical Engineering",
+    "domain": "Engineering",
+    "description": "Applying engineering to medicine, including medical devices and biomechanics."
+  },
+  {
+    "slug": "chemical-engineering",
+    "label": "Chemical Engineering",
+    "domain": "Engineering",
+    "description": "Transforming raw materials into products through chemical processes at scale."
+  },
+  {
+    "slug": "materials-science",
+    "label": "Materials Science",
+    "domain": "Engineering",
+    "description": "Studying and engineering materials like metals, polymers, ceramics, and nanomaterials."
+  },
+  {
+    "slug": "manufacturing-hardware",
+    "label": "Manufacturing & Hardware",
+    "domain": "Engineering",
+    "description": "Producing physical goods, hardware, and industrial automation."
+  },
+  {
+    "slug": "energy-power",
+    "label": "Energy & Power",
+    "domain": "Engineering",
+    "description": "Generating, storing, and distributing energy, including renewables and batteries."
+  },
+  {
+    "slug": "nanotechnology",
+    "label": "Nanotechnology",
+    "domain": "Engineering",
+    "description": "Engineering matter at the atomic and molecular scale."
+  },
+  {
+    "slug": "biology",
+    "label": "Biology",
+    "domain": "Life Sciences",
+    "description": "The study of living organisms, from cells to ecosystems."
+  },
+  {
+    "slug": "molecular-cell-biology",
+    "label": "Molecular & Cell Biology",
+    "domain": "Life Sciences",
+    "description": "How molecules and cells carry out the processes of life."
+  },
+  {
+    "slug": "genetics-genomics",
+    "label": "Genetics & Genomics",
+    "domain": "Life Sciences",
+    "description": "Genes, heredity, DNA, and sequencing whole genomes."
+  },
+  {
+    "slug": "neuroscience",
+    "label": "Neuroscience",
+    "domain": "Life Sciences",
+    "description": "The brain, nervous system, and how they produce behavior and cognition."
+  },
+  {
+    "slug": "microbiology-immunology",
+    "label": "Microbiology & Immunology",
+    "domain": "Life Sciences",
+    "description": "Microbes, viruses, and the immune system."
+  },
+  {
+    "slug": "biochemistry",
+    "label": "Biochemistry",
+    "domain": "Life Sciences",
+    "description": "The chemistry of biological molecules and metabolic processes."
+  },
+  {
+    "slug": "bioinformatics",
+    "label": "Bioinformatics",
+    "domain": "Life Sciences",
+    "description": "Using computation and data to analyze biological information like DNA and proteins."
+  },
+  {
+    "slug": "biotechnology",
+    "label": "Biotechnology",
+    "domain": "Life Sciences",
+    "description": "Engineering biological systems to make products, therapies, or tools."
+  },
+  {
+    "slug": "ecology-evolution",
+    "label": "Ecology & Evolution",
+    "domain": "Life Sciences",
+    "description": "Interactions among organisms and their environment, and how life evolves."
+  },
+  {
+    "slug": "marine-ocean-science",
+    "label": "Marine & Ocean Science",
+    "domain": "Life Sciences",
+    "description": "Life in the oceans and the study of marine ecosystems."
+  },
+  {
+    "slug": "plant-science",
+    "label": "Plant Science",
+    "domain": "Life Sciences",
+    "description": "Plants, botany, and crop biology."
+  },
+  {
+    "slug": "medicine-clinical-health",
+    "label": "Medicine & Clinical Health",
+    "domain": "Health & Medicine",
+    "description": "Diagnosing and treating illness and the practice of clinical medicine."
+  },
+  {
+    "slug": "cancer-research",
+    "label": "Cancer Research",
+    "domain": "Health & Medicine",
+    "description": "Understanding and treating cancer, including oncology and tumor biology."
+  },
+  {
+    "slug": "public-health-epidemiology",
+    "label": "Public Health & Epidemiology",
+    "domain": "Health & Medicine",
+    "description": "Protecting and improving the health of populations and studying disease spread."
+  },
+  {
+    "slug": "nursing-patient-care",
+    "label": "Nursing & Patient Care",
+    "domain": "Health & Medicine",
+    "description": "Caring for patients and supporting health and recovery."
+  },
+  {
+    "slug": "pharmacology-drug-discovery",
+    "label": "Pharmacology & Drug Discovery",
+    "domain": "Health & Medicine",
+    "description": "How drugs work and the discovery and development of new medicines."
+  },
+  {
+    "slug": "mental-health",
+    "label": "Mental Health",
+    "domain": "Health & Medicine",
+    "description": "Psychological well-being, psychiatry, and mental-health care."
+  },
+  {
+    "slug": "nutrition-kinesiology",
+    "label": "Nutrition & Kinesiology",
+    "domain": "Health & Medicine",
+    "description": "Food, diet, exercise science, and human movement."
+  },
+  {
+    "slug": "chemistry",
+    "label": "Chemistry",
+    "domain": "Physical Sciences",
+    "description": "The composition, structure, and reactions of matter."
+  },
+  {
+    "slug": "physics",
+    "label": "Physics",
+    "domain": "Physical Sciences",
+    "description": "The fundamental laws of matter, energy, motion, and forces."
+  },
+  {
+    "slug": "particle-quantum-physics",
+    "label": "Particle & Quantum Physics",
+    "domain": "Physical Sciences",
+    "description": "The smallest constituents of matter and quantum phenomena."
+  },
+  {
+    "slug": "astronomy-astrophysics",
+    "label": "Astronomy & Astrophysics",
+    "domain": "Physical Sciences",
+    "description": "Stars, galaxies, and the physics of the universe."
+  },
+  {
+    "slug": "space-exploration",
+    "label": "Space Exploration",
+    "domain": "Physical Sciences",
+    "description": "Spaceflight, planetary exploration, and missions beyond Earth."
+  },
+  {
+    "slug": "optics-photonics",
+    "label": "Optics & Photonics",
+    "domain": "Physical Sciences",
+    "description": "The behavior of light and technologies like lasers and imaging."
+  },
+  {
+    "slug": "mathematics",
+    "label": "Mathematics",
+    "domain": "Mathematics",
+    "description": "Abstract structures, proofs, algebra, geometry, and analysis."
+  },
+  {
+    "slug": "statistics-probability",
+    "label": "Statistics & Probability",
+    "domain": "Mathematics",
+    "description": "Modeling uncertainty and drawing conclusions from data."
+  },
+  {
+    "slug": "applied-computational-math",
+    "label": "Applied & Computational Math",
+    "domain": "Mathematics",
+    "description": "Using mathematics to model and solve real-world scientific problems."
+  },
+  {
+    "slug": "earth-geoscience",
+    "label": "Earth & Geoscience",
+    "domain": "Earth & Environment",
+    "description": "The Earth's structure, geology, rocks, and natural processes."
+  },
+  {
+    "slug": "climate-science",
+    "label": "Climate Science",
+    "domain": "Earth & Environment",
+    "description": "Studying climate, weather, and how the Earth's systems change."
+  },
+  {
+    "slug": "environmental-science",
+    "label": "Environmental Science",
+    "domain": "Earth & Environment",
+    "description": "The environment, pollution, conservation, and human impact on nature."
+  },
+  {
+    "slug": "sustainability-clean-energy",
+    "label": "Sustainability & Clean Energy",
+    "domain": "Earth & Environment",
+    "description": "Renewable energy and building a sustainable, low-carbon future."
+  },
+  {
+    "slug": "oceanography-atmospheric-science",
+    "label": "Oceanography & Atmospheric Science",
+    "domain": "Earth & Environment",
+    "description": "The oceans, atmosphere, and their physical and chemical dynamics."
+  },
+  {
+    "slug": "agriculture-food-systems",
+    "label": "Agriculture & Food Systems",
+    "domain": "Earth & Environment",
+    "description": "Growing food, farming, and the science of food production."
+  },
+  {
+    "slug": "entrepreneurship-startups",
+    "label": "Entrepreneurship & Startups",
+    "domain": "Business & Finance",
+    "description": "Starting and building new ventures and products."
+  },
+  {
+    "slug": "finance-investing",
+    "label": "Finance & Investing",
+    "domain": "Business & Finance",
+    "description": "Money, markets, investing, and financial decision-making."
+  },
+  {
+    "slug": "economics",
+    "label": "Economics",
+    "domain": "Business & Finance",
+    "description": "How societies produce, distribute, and consume resources."
+  },
+  {
+    "slug": "marketing-growth",
+    "label": "Marketing & Growth",
+    "domain": "Business & Finance",
+    "description": "Understanding customers and promoting products and brands."
+  },
+  {
+    "slug": "management-consulting",
+    "label": "Management & Consulting",
+    "domain": "Business & Finance",
+    "description": "Leading organizations and advising on strategy and operations."
+  },
+  {
+    "slug": "accounting",
+    "label": "Accounting",
+    "domain": "Business & Finance",
+    "description": "Tracking, reporting, and auditing financial information."
+  },
+  {
+    "slug": "real-estate",
+    "label": "Real Estate",
+    "domain": "Business & Finance",
+    "description": "Property, development, and real-estate markets."
+  },
+  {
+    "slug": "operations-supply-chain",
+    "label": "Operations & Supply Chain",
+    "domain": "Business & Finance",
+    "description": "Logistics, operations, and moving goods efficiently."
+  },
+  {
+    "slug": "e-commerce-retail",
+    "label": "E-commerce & Retail",
+    "domain": "Business & Finance",
+    "description": "Selling products online and running retail businesses."
+  },
+  {
+    "slug": "visual-arts",
+    "label": "Visual Arts",
+    "domain": "Arts & Design",
+    "description": "Painting, drawing, sculpture, and studio art."
+  },
+  {
+    "slug": "graphic-ux-design",
+    "label": "Graphic & UX Design",
+    "domain": "Arts & Design",
+    "description": "Designing visuals, interfaces, and user experiences."
+  },
+  {
+    "slug": "music",
+    "label": "Music",
+    "domain": "Arts & Design",
+    "description": "Performing, composing, and producing music."
+  },
+  {
+    "slug": "film-video",
+    "label": "Film & Video",
+    "domain": "Arts & Design",
+    "description": "Making films, video, and motion media."
+  },
+  {
+    "slug": "theater-performing-arts",
+    "label": "Theater & Performing Arts",
+    "domain": "Arts & Design",
+    "description": "Acting, drama, dance, and live performance."
+  },
+  {
+    "slug": "creative-writing",
+    "label": "Creative Writing",
+    "domain": "Arts & Design",
+    "description": "Writing fiction, poetry, and other creative work."
+  },
+  {
+    "slug": "fashion-textiles",
+    "label": "Fashion & Textiles",
+    "domain": "Arts & Design",
+    "description": "Designing clothing, textiles, and fashion."
+  },
+  {
+    "slug": "architecture",
+    "label": "Architecture",
+    "domain": "Arts & Design",
+    "description": "Designing buildings and the built environment."
+  },
+  {
+    "slug": "photography",
+    "label": "Photography",
+    "domain": "Arts & Design",
+    "description": "Capturing and creating images with cameras."
+  },
+  {
+    "slug": "product-industrial-design",
+    "label": "Product & Industrial Design",
+    "domain": "Arts & Design",
+    "description": "Designing physical products for function and form."
+  },
+  {
+    "slug": "history",
+    "label": "History",
+    "domain": "Humanities",
+    "description": "The study of the past and how it shapes the present."
+  },
+  {
+    "slug": "philosophy-ethics",
+    "label": "Philosophy & Ethics",
+    "domain": "Humanities",
+    "description": "Fundamental questions about knowledge, reality, and right and wrong."
+  },
+  {
+    "slug": "languages-linguistics",
+    "label": "Languages & Linguistics",
+    "domain": "Humanities",
+    "description": "Learning languages and studying how language works."
+  },
+  {
+    "slug": "literature",
+    "label": "Literature",
+    "domain": "Humanities",
+    "description": "Studying and analyzing written works and their meaning."
+  },
+  {
+    "slug": "religion-classics",
+    "label": "Religion & Classics",
+    "domain": "Humanities",
+    "description": "Religions, ancient cultures, and classical studies."
+  },
+  {
+    "slug": "psychology",
+    "label": "Psychology",
+    "domain": "Social Sciences",
+    "description": "The science of mind, behavior, and how people think and feel."
+  },
+  {
+    "slug": "sociology-anthropology",
+    "label": "Sociology & Anthropology",
+    "domain": "Social Sciences",
+    "description": "How societies, cultures, and human groups work."
+  },
+  {
+    "slug": "political-science-government",
+    "label": "Political Science & Government",
+    "domain": "Social Sciences",
+    "description": "Politics, government, policy, and power."
+  },
+  {
+    "slug": "law-legal-studies",
+    "label": "Law & Legal Studies",
+    "domain": "Social Sciences",
+    "description": "Laws, justice, and the legal system."
+  },
+  {
+    "slug": "international-relations",
+    "label": "International Relations",
+    "domain": "Social Sciences",
+    "description": "Relations between countries, diplomacy, and global affairs."
+  },
+  {
+    "slug": "geography-urban-studies",
+    "label": "Geography & Urban Studies",
+    "domain": "Social Sciences",
+    "description": "Places, spatial patterns, cities, and how people use land."
+  },
+  {
+    "slug": "education-teaching",
+    "label": "Education & Teaching",
+    "domain": "Education",
+    "description": "Teaching, learning, and how education works."
+  },
+  {
+    "slug": "journalism-media",
+    "label": "Journalism & Media",
+    "domain": "Media & Communication",
+    "description": "Reporting news and producing media and communications."
+  },
+  {
+    "slug": "communications-pr",
+    "label": "Communications & PR",
+    "domain": "Media & Communication",
+    "description": "Public relations, messaging, and strategic communication."
+  },
+  {
+    "slug": "digital-media-content",
+    "label": "Digital Media & Content",
+    "domain": "Media & Communication",
+    "description": "Creating content for social platforms and digital audiences."
+  },
+  {
+    "slug": "public-service-policy",
+    "label": "Public Service & Policy",
+    "domain": "Public Service",
+    "description": "Working in government, policy, and the public sector."
+  },
+  {
+    "slug": "nonprofit-community",
+    "label": "Nonprofit & Community",
+    "domain": "Public Service",
+    "description": "Serving communities through nonprofits and social impact work."
+  },
+  {
+    "slug": "social-work-advocacy",
+    "label": "Social Work & Advocacy",
+    "domain": "Public Service",
+    "description": "Supporting people and advocating for social change."
+  },
+  {
+    "slug": "leadership",
+    "label": "Leadership",
+    "domain": "Public Service",
+    "description": "Leading teams, organizing people, and civic leadership."
+  },
+  {
+    "slug": "debate-model-un",
+    "label": "Debate & Model UN",
+    "domain": "Public Service",
+    "description": "Competitive debate, public speaking, and Model United Nations."
+  },
+  {
+    "slug": "sports-athletics",
+    "label": "Sports & Athletics",
+    "domain": "Sports",
+    "description": "Athletics, coaching, and the business and science of sport."
+  },
+  {
+    "slug": "culinary-arts",
+    "label": "Culinary Arts",
+    "domain": "Trades & Vocational",
+    "description": "Cooking, baking, and the culinary profession."
+  },
+  {
+    "slug": "skilled-trades",
+    "label": "Skilled Trades",
+    "domain": "Trades & Vocational",
+    "description": "Hands-on trades like construction, electrical, automotive, and welding."
+  },
+  {
+    "slug": "veterinary-animal-science",
+    "label": "Veterinary & Animal Science",
+    "domain": "Life Sciences",
+    "description": "Animal health, care, and veterinary medicine."
+  },
+  {
+    "slug": "quantitative-finance",
+    "label": "Quantitative Finance",
+    "domain": "Business & Finance",
+    "description": "Using math, statistics, and code for trading and financial modeling."
+  },
+  {
+    "slug": "product-management",
+    "label": "Product Management",
+    "domain": "Business & Finance",
+    "description": "Guiding what products get built and why, across design and engineering."
+  },
+  {
+    "slug": "biophysics",
+    "label": "Biophysics",
+    "domain": "Life Sciences",
+    "description": "Applying physics to understand biological systems and molecules."
+  },
+  {
+    "slug": "developmental-biology",
+    "label": "Developmental Biology",
+    "domain": "Life Sciences",
+    "description": "How organisms grow and develop from cells to bodies."
+  },
+  {
+    "slug": "cardiovascular-physiology",
+    "label": "Cardiovascular & Physiology",
+    "domain": "Health & Medicine",
+    "description": "The heart, circulation, and how the body's systems function."
+  },
+  {
+    "slug": "quantum-computing",
+    "label": "Quantum Computing",
+    "domain": "Computer Science",
+    "description": "Computing that uses quantum mechanics to process information."
+  },
+  {
+    "slug": "autonomous-vehicles",
+    "label": "Autonomous Vehicles",
+    "domain": "Engineering",
+    "description": "Self-driving cars, drones, and autonomous transportation."
+  },
+  {
+    "slug": "geology-natural-resources",
+    "label": "Geology & Natural Resources",
+    "domain": "Earth & Environment",
+    "description": "Rocks, minerals, energy resources, and the solid Earth."
+  }
+]
