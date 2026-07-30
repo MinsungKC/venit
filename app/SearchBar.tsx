@@ -7,11 +7,10 @@ import { assignInterestTags } from "@/lib/classifier";
 import type { TagVector } from "@/lib/match-types";
 
 /**
- * Free-text "what are you looking for?" search (BUILD_PROMPT §3/§6) — an on-device-AI shortcut
- * into /match that skips the full onboarding wizard. The query is embedded on the student's own
- * device (same MiniLM model/space as onboarding, §0.2/§0.7 — no per-request LLM call, nothing
- * uploaded but the resulting tag slugs) and matched two ways, exactly like the wizard's "any
- * other interests?" field:
+ * Free-text "what are you looking for?" search (BUILD_PROMPT §3/§6) — an AI-powered shortcut
+ * into /match that skips the full onboarding wizard. The query is embedded server-side (same
+ * self-hosted model/space as onboarding, §0.2/§0.7 — no paid third-party API, no raw text
+ * stored) and matched two ways, exactly like the wizard's "any other interests?" field:
  *  - against the 109 canonical tags (`assignInterestTags`, on-device) for the broad category, and
  *  - against the 723 niche tags (`POST /api/niche`) for specific phrasing the canonical taxonomy
  *    doesn't cover (e.g. "marine biology research" -> Marine & Ocean Science + a niche match).

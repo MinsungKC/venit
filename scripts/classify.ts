@@ -6,10 +6,11 @@
  *   -> public/data/tag-vectors.json     [{ slug, label, domain, vector[384] }]
  *
  * We embed each taxonomy tag (label + description) and each listing (title + description +
- * source signals) with the SAME MiniLM model, then assign each listing its nearest tags by
+ * source signals) with the SAME embedding model, then assign each listing its nearest tags by
  * cosine similarity (top-k above a threshold, always at least one). This unifies the
  * heterogeneous source tags (yc tags / GICS sectors / OpenAlex fields) into one consistent
- * vocabulary and precomputes the tag vectors the on-device user classifier will match against.
+ * vocabulary and precomputes the tag vectors the student's search/classifier queries match
+ * against (via /api/embed).
  */
 import { mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { join } from "node:path";

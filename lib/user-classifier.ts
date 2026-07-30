@@ -1,14 +1,16 @@
 /**
- * Client-side orchestration for the on-device user classifier (BUILD_PROMPT §3). Ties together
- * the PII scrub, the embedding step, and the pure `lib/classifier.ts` functions into one call.
+ * Client-side orchestration for the user classifier (BUILD_PROMPT §3). Ties together the PII
+ * scrub, the embedding step, and the pure `lib/classifier.ts` functions into one call.
  *
  * The embedding function is INJECTED (`deps.embed`), so this module never imports the model and
- * unit-tests with a fake embedder. In the browser the app passes a MiniLM-backed `embed`; the
- * reference vectors (`tagVectors`, `archetypeVectors`) are the committed public/data JSON.
+ * unit-tests with a fake embedder. In the browser the app passes an `embed` that calls the
+ * server-hosted embedder (POST /api/embed, lib/embeddings-browser.ts); the reference vectors
+ * (`tagVectors`, `archetypeVectors`) are the committed public/data JSON.
  *
- * GUARDRAIL §0.1/§0.2/§0.3: the raw resume is scrubbed and only its cleaned text is embedded
- * (never uploaded); the returned `student` payload carries only interest tags, while the secret
- * personality lives on `result.personality` for server storage and is never surfaced.
+ * GUARDRAIL §0.1/§0.2/§0.3: the raw resume is scrubbed ON-DEVICE and only its cleaned text is
+ * embedded (never the raw resume); the returned `student` payload carries only interest tags,
+ * while the secret personality lives on `result.personality` for server storage and is never
+ * surfaced.
  */
 import { scrubPII, type StrippedPII } from "./pii";
 import {

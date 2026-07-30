@@ -49,7 +49,7 @@ export type ReportInput = z.infer<typeof reportSchema>;
 /**
  * Save a student's profile (BUILD_PROMPT §2c/§3). The personality vector is accepted here ONLY to
  * be written to the guarded, non-readable column — it is never echoed back (§0.1). `.length(384)`
- * matches the MiniLM dimension.
+ * matches the embedding dimension (lib/embeddings.ts EMBEDDING_DIM).
  */
 export const profileSchema = z.object({
   grade: z.number().int().min(1).max(13).nullable().optional(),

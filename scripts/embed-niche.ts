@@ -3,8 +3,8 @@
  *
  *   npm run data:niche  ->  public/data/niche-vectors.json  [{ slug, label, vector[384] }]
  *
- * Same MiniLM space as the canonical tag/archetype vectors, so the on-device classifier can match
- * a student's free-text niche interest ("fire monitoring") against these specific source tags.
+ * Same embedding space as the canonical tag/archetype vectors, so the classifier can match a
+ * student's free-text niche interest ("fire monitoring") against these specific source tags.
  * Build-time only (no per-request AI, §0.6).
  */
 import { existsSync, readFileSync, writeFileSync } from "node:fs";

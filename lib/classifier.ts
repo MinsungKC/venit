@@ -1,7 +1,7 @@
 /**
- * Pure, deterministic on-device classifier logic (BUILD_PROMPT §3). Every function here takes
+ * Pure, deterministic classifier logic (BUILD_PROMPT §3). Every function here takes
  * already-embedded vectors as input and never touches the model, so it unit-tests without
- * loading MiniLM and is dimension-agnostic (tests use small synthetic vectors).
+ * loading the embedder and is dimension-agnostic (tests use small synthetic vectors).
  *
  * GUARDRAIL §0.1: personality is SECRET. `classifyPersonality` produces a `PersonalityResult`
  * that must be routed to the server; the only student-facing shape is `toStudentPayload`, which
