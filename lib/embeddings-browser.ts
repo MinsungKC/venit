@@ -41,7 +41,7 @@ export function warmUpEmbedder(onProgress?: (p: LoadProgress) => void): void {
     });
 }
 
-/** Embed one text into a 384-dim, L2-normalized vector via the server. */
+/** Embed one text into a 768-dim, L2-normalized vector via the server. */
 export async function embedText(
   text: string,
   onProgress?: (p: LoadProgress) => void,

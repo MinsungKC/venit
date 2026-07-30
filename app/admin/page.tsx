@@ -1,23 +1,35 @@
 import Link from "next/link";
-import { adminKeyOk, getAdminStats, getPendingListings, getSupplyGaps } from "@/lib/admin";
+import { adminKeyOk, getAdminStats, getPendingListings, getSupplyGaps, isAdmin } from "@/lib/admin";
+import { getUser } from "@/lib/supabase/server";
 import AdminClient from "./AdminClient";
 import KeyGate from "./KeyGate";
 import styles from "./admin.module.css";
 
 export const dynamic = "force-dynamic";
 
-/** Admin "System Overview" (Stitch design). Gated by ADMIN_KEY passed as ?key=… */
+/**
+ * Admin "System Overview" (Stitch design). Gated by ADMIN_KEY (?key=…, the bootstrap path) OR a
+ * signed-in user granted admin via the `roles` table (scripts/grant-admin.ts) — see lib/admin.ts.
+ */
 export default async function AdminPage({ searchParams }: { searchParams: { key?: string } }) {
   const key = searchParams.key ?? null;
+  const viaKey = adminKeyOk(key);
 
-  if (!adminKeyOk(key)) {
+  const user = viaKey ? null : await getUser();
+  const viaRole = user ? await isAdmin(user.id) : false;
+
+  if (!viaKey && !viaRole) {
     return (
       <main className="container">
         <Link href="/" className="back">
           ← Home
         </Link>
         <h1>Admin</h1>
-        <p className="lede">Enter the admin key to manage the platform.</p>
+        <p className="lede">
+          {user
+            ? "Your account doesn't have admin access."
+            : "Sign in with an admin account, or enter the admin key."}
+        </p>
         <KeyGate />
       </main>
     );
@@ -49,7 +61,7 @@ export default async function AdminPage({ searchParams }: { searchParams: { key?
         <StatCard icon="apartment" label="Providers" num={stats.orgs} trend="Registered" tone="neutral" />
       </section>
 
-      <AdminClient pending={pending} adminKey={key!} />
+      <AdminClient pending={pending} adminKey={key} />
 
       {(zeroSupply.length > 0 || stats.pending > 0) && (
         <section>

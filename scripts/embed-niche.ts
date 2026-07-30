@@ -1,7 +1,7 @@
 /**
  * Precompute embeddings for the niche-tag vocabulary (public/data/niche-tags.json from data:build).
  *
- *   npm run data:niche  ->  public/data/niche-vectors.json  [{ slug, label, vector[384] }]
+ *   npm run data:niche  ->  public/data/niche-vectors.json  [{ slug, label, vector[768] }]
  *
  * Same embedding space as the canonical tag/archetype vectors, so the classifier can match a
  * student's free-text niche interest ("fire monitoring") against these specific source tags.

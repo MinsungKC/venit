@@ -23,10 +23,14 @@ interface CuratedEntry {
   grade_min?: number | null;
   grade_max?: number | null;
   cost_type?: CostType;
+  /** ISO date (YYYY-MM-DD). Only set this from a verified source (the program's own site) —
+   *  never guess/estimate a deadline; an invalid or non-ISO value is dropped, not guessed at. */
+  deadline?: string | null;
   tags: string[];
 }
 
 const SOURCE_PATH = join(process.cwd(), "supabase", "seed", "curated-listings.json");
+const ISO_DATE = /^\d{4}-\d{2}-\d{2}$/;
 
 export function mapCuratedEntry(e: CuratedEntry): NormalizedListing {
   if (e.kind === "research_lab" && !e.location_name && !e.is_remote) {
@@ -53,6 +57,7 @@ export function mapCuratedEntry(e: CuratedEntry): NormalizedListing {
     status: "approved",
     grade_min: e.grade_min ?? null,
     grade_max: e.grade_max ?? null,
+    deadline: e.deadline && ISO_DATE.test(e.deadline) ? e.deadline : null,
     tag_labels: (e.tags ?? []).map((t) => t.trim()).filter(Boolean),
   };
 }

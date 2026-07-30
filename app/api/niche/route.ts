@@ -2,16 +2,17 @@ import { NextResponse } from "next/server";
 import { readFileSync } from "node:fs";
 import { join } from "node:path";
 import { cosine } from "@/lib/vec";
+import { EMBEDDING_DIM } from "@/lib/embeddings";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
 /**
  * Match a student's free-text niche interest to specific niche tags (BUILD_PROMPT §3 step 4).
- * The browser embeds the phrase on-device and posts the VECTOR (not the raw text); the server
- * compares it to the 723 niche-tag vectors and returns the closest tags. Listings carrying those
- * niche tags are then matched + prioritized on /match. The niche-vectors file (~6 MB) stays
- * server-side; only tag slugs come back.
+ * The browser gets the phrase embedded via /api/embed and posts the VECTOR (not the raw text);
+ * the server compares it to the 723 niche-tag vectors and returns the closest tags. Listings
+ * carrying those niche tags are then matched + prioritized on /match. The niche-vectors file
+ * stays server-side; only tag slugs come back.
  */
 interface NicheVec {
   slug: string;
@@ -41,8 +42,8 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: "Invalid JSON." }, { status: 400 });
   }
   const v = (body as { vector?: unknown })?.vector;
-  if (!Array.isArray(v) || v.length !== 384 || !v.every((x) => typeof x === "number")) {
-    return NextResponse.json({ error: "Expected a 384-dim vector." }, { status: 400 });
+  if (!Array.isArray(v) || v.length !== EMBEDDING_DIM || !v.every((x) => typeof x === "number")) {
+    return NextResponse.json({ error: `Expected a ${EMBEDDING_DIM}-dim vector.` }, { status: 400 });
   }
 
   const scored = load()

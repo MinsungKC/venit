@@ -26,7 +26,7 @@ export interface ArchetypeVector {
 
 /** SECRET personality output of the classifier — sent to the server for storage, never rendered. */
 export interface PersonalityResult {
-  /** 384-dim soft blend over the 10 archetype vectors. */
+  /** 768-dim soft blend over the 10 archetype vectors. */
   vector: number[];
   /** Top-N archetype slugs (also secret; never shown to the student). */
   archetypes: string[];

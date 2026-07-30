@@ -40,6 +40,10 @@ const COST_LABEL: Record<string, string> = {
 };
 const SORTS: SortAxis[] = ["fit", "distance", "cost"];
 const DISPLAY_LIMIT = 60;
+// Hard ceiling on how many cards a single response ever renders — "Explore more" used to dump
+// the ENTIRE result set (which could be thousands for a broad interest), a real freeze risk in
+// the browser. This caps it; results beyond it are reachable by narrowing filters instead.
+const MAX_RENDERED = 240;
 const MILES_PER_KM = 0.621371;
 
 interface Query {
@@ -53,6 +57,8 @@ interface Query {
   userLng: number | null;
   place: string | null;
   showAll: boolean;
+  /** Include "broader" matches (share <2 tags) alongside the default primary tier. */
+  showBroader: boolean;
   sort?: SortAxis;
   kind?: ListingKind;
   freeOnly: boolean;
@@ -78,6 +84,7 @@ function href(q: Query, over: Partial<Query>): string {
   if (m.place) p.set("place", m.place);
   if (m.radiusMi !== 100) p.set("radius", String(m.radiusMi));
   if (m.showAll) p.set("all", "1");
+  if (m.showBroader) p.set("broad", "1");
   if (m.sort) p.set("sort", m.sort);
   if (m.kind) p.set("kind", m.kind);
   if (m.freeOnly) p.set("free", "1");
@@ -115,6 +122,7 @@ export default async function MatchPage({
     ulng?: string;
     place?: string;
     all?: string;
+    broad?: string;
     sort?: string;
     kind?: string;
     free?: string;
@@ -141,6 +149,7 @@ export default async function MatchPage({
     userLng: parseNum(searchParams.ulng, -180, 180),
     place: searchParams.place?.trim() || null,
     showAll: searchParams.all === "1",
+    showBroader: searchParams.broad === "1",
     sort: (SORTS as string[]).includes(searchParams.sort ?? "") ? (searchParams.sort as SortAxis) : undefined,
     kind: KIND_ORDER.includes(searchParams.kind as ListingKind) ? (searchParams.kind as ListingKind) : undefined,
     freeOnly: searchParams.free === "1",
@@ -191,9 +200,16 @@ export default async function MatchPage({
     nicheSlugs: q.niche,
     preferredKinds: q.preferredKinds,
   });
-  const counts = kindCounts(all);
-  const results = q.kind ? all.filter((l) => l.kind === q.kind) : all;
-  const shown = q.showAll ? results : results.slice(0, DISPLAY_LIMIT);
+  // Default to the "primary" tier (strong, specific matches) — "broader" ones still exist and
+  // are fully reachable, just not counted in the headline (keeps a broad single-interest catalog
+  // like the ~9.7k OpenAlex labs from swamping the feed; see MatchedListing.tier in match-data.ts).
+  const primaryAll = all.filter((l) => l.tier === "primary");
+  const broaderAll = all.filter((l) => l.tier === "broader");
+  const pool = q.showBroader ? all : primaryAll;
+  const counts = kindCounts(pool);
+  const results = q.kind ? pool.filter((l) => l.kind === q.kind) : pool;
+  const broaderCount = q.kind ? broaderAll.filter((l) => l.kind === q.kind).length : broaderAll.length;
+  const shown = (q.showAll ? results.slice(0, MAX_RENDERED) : results.slice(0, DISPLAY_LIMIT));
   const topTags = q.tagSlugs.slice(0, 2).map((s) => labelBySlug.get(s) ?? s);
 
   return (
@@ -221,7 +237,7 @@ export default async function MatchPage({
           <span className={styles.groupLabel}>Type</span>
           <Link className={`${styles.item} ${!q.kind ? styles.active : ""}`} href={href(q, { kind: undefined })}>
             <span className="material-symbols-outlined">apps</span> All
-            <span style={{ marginLeft: "auto", opacity: 0.7 }}>{all.length.toLocaleString()}</span>
+            <span style={{ marginLeft: "auto", opacity: 0.7 }}>{pool.length.toLocaleString()}</span>
           </Link>
           {KIND_ORDER.filter((k) => counts[k]).map((k) => (
             <Link key={k} className={`${styles.item} ${q.kind === k ? styles.active : ""}`} href={href(q, { kind: k })}>
@@ -241,6 +257,19 @@ export default async function MatchPage({
           </Link>
         </div>
 
+        {broaderCount > 0 && (
+          <div className={styles.group}>
+            <span className={styles.groupLabel}>Match strength</span>
+            <Link
+              className={`${styles.item} ${q.showBroader ? styles.active : ""}`}
+              href={href(q, { showBroader: !q.showBroader })}
+            >
+              <span className="material-symbols-outlined">{q.showBroader ? "filter_alt" : "filter_alt_off"}</span>
+              {q.showBroader ? "Hide broader matches" : `Show ${broaderCount.toLocaleString()} broader matches`}
+            </Link>
+          </div>
+        )}
+
         <div className={styles.spacer}>
           <Link className={styles.item} href={href(q, {}).replace("/match", "/globe")}>
             <span className="material-symbols-outlined">public</span> Map view
@@ -255,7 +284,7 @@ export default async function MatchPage({
       </aside>
 
       <main className={styles.main}>
-        <SearchBar />
+        <SearchBar existingTags={q.tagSlugs} basePath={href(q, { tagSlugs: [] })} signedIn={!!user} />
 
         <div className={styles.feedHead}>
           <div>
@@ -283,7 +312,17 @@ export default async function MatchPage({
 
         {results.length === 0 ? (
           <p className={styles.empty}>
-            No matches with these filters. Try clearing one, or <Link href="/onboarding">edit your interests</Link>.
+            No matches with these filters.{" "}
+            {!q.showBroader && broaderCount > 0 ? (
+              <>
+                <Link href={href(q, { showBroader: true })}>Show {broaderCount.toLocaleString()} broader matches</Link>,
+                or try clearing a filter, or <Link href="/onboarding">edit your interests</Link>.
+              </>
+            ) : (
+              <>
+                Try clearing one, or <Link href="/onboarding">edit your interests</Link>.
+              </>
+            )}
           </p>
         ) : (
           <div className={styles.cards}>
@@ -299,6 +338,13 @@ export default async function MatchPage({
               Explore more opportunities <span className="material-symbols-outlined">arrow_forward</span>
             </Link>
           </div>
+        )}
+
+        {q.showAll && results.length > MAX_RENDERED && (
+          <p className={styles.empty}>
+            Showing the top {MAX_RENDERED.toLocaleString()} of {results.length.toLocaleString()} — narrow your
+            interests or filters to zero in on the best fits.
+          </p>
         )}
       </main>
     </div>

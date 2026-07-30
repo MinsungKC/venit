@@ -68,6 +68,7 @@ export function mapYcCompany(c: YcCompany): NormalizedListing {
     status: "approved",
     grade_min: null,
     grade_max: null,
+    deadline: null,
     tag_labels: (c.tags ?? []).map((t) => t.trim()).filter(Boolean),
   };
 }

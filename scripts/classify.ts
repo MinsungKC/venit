@@ -3,7 +3,7 @@
  *
  *   npm run data:classify
  *   -> public/data/classification.json  { "source:external_id": ["tag-slug", ...] }
- *   -> public/data/tag-vectors.json     [{ slug, label, domain, vector[384] }]
+ *   -> public/data/tag-vectors.json     [{ slug, label, domain, vector[768] }]
  *
  * We embed each taxonomy tag (label + description) and each listing (title + description +
  * source signals) with the SAME embedding model, then assign each listing its nearest tags by

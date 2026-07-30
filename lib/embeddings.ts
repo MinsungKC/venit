@@ -3,9 +3,12 @@
  * Runs server-side only: build-time (seed/classify scripts) AND at request time behind
  * /api/embed, which the browser calls instead of running the model itself. We moved off
  * on-device MiniLM because its quality was too weak on short/ambiguous queries (e.g. "wildfire"
- * scored highest against "Space Exploration", nowhere near Climate/Environmental Science);
- * BGE-small-en-v1.5 tests meaningfully better across the board at the same 384 dimensions and
- * footprint, so no schema/migration change was needed.
+ * scored highest against "Space Exploration", nowhere near Climate/Environmental Science).
+ * bge-small-en-v1.5 fixed that case but still failed on other short/specific queries (e.g.
+ * "narwhals" matched no biology/ocean tag anywhere in the top 10, even with sentence-context
+ * augmentation) — tested head-to-head, bge-base-en-v1.5 resolves it decisively (top match:
+ * Marine & Ocean Science at 0.60) with no prompt tricks needed, so we upgraded to base despite
+ * the larger footprint. Dimension went 384 -> 768 (see migration 0005).
  *
  * BGE is trained for ASYMMETRIC retrieval: passages (tag/niche descriptions, archetype anchor
  * text, listing text) are embedded plain via `embed`/`embedBatch`; short ad-hoc queries (a
@@ -18,8 +21,8 @@
  */
 import { pipeline, type FeatureExtractionPipeline } from "@xenova/transformers";
 
-export const EMBEDDING_MODEL = "Xenova/bge-small-en-v1.5";
-export const EMBEDDING_DIM = 384;
+export const EMBEDDING_MODEL = "Xenova/bge-base-en-v1.5";
+export const EMBEDDING_DIM = 768;
 
 /** BGE's recommended instruction prefix for retrieval queries (not used on the passage side). */
 const QUERY_PREFIX = "Represent this sentence for searching relevant passages: ";

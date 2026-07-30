@@ -46,6 +46,8 @@ export interface MatchListingLite {
   badges: string[];
   tag_slugs: string[];
   niche_slugs?: string[];
+  /** ISO date (YYYY-MM-DD) of the application deadline, when known — see lib/mapping.ts. */
+  deadline: string | null;
 }
 
 export interface MatchedListing extends MatchListingLite {
@@ -53,6 +55,14 @@ export interface MatchedListing extends MatchListingLite {
   matchedTags: string[];
   /** Coarse personality-fit label (signed-in users only); null otherwise. NEVER the score (§0.1). */
   fitLabel: FitLabel;
+  /**
+   * "primary" = a strong, specific match (≥2 shared interests, or any niche-tag overlap — a
+   * niche hit is inherently specific, so one is as good as two broad ones). "broader" = clears
+   * the §0.4 hard floor (≥1 shared tag) but only just — still fully returned/browsable, just not
+   * counted in the default "curated for you" headline (BUILD_PROMPT §6, keeps large single-
+   * interest catalogs like the ~9.7k OpenAlex labs from swamping the feed).
+   */
+  tier: "primary" | "broader";
 }
 
 const GENERATED_LISTINGS = join(process.cwd(), "public", "data", "listings.generated.json");
@@ -231,8 +241,22 @@ export function runMatch(params: MatchParams): MatchedListing[] {
     { sort: params.sort },
   );
 
+  // Require more than the bare §0.4 minimum for the default "primary" tier, so a broad pick
+  // doesn't flood the curated feed — scaled to how many interests the student actually gave us,
+  // since a flat "≥2" undershoots for a student who picked 8+ (random 2-tag overlap gets common
+  // fast; empirically ~2,000 "matches" for an 8-interest profile). Capped at 4 so it never asks
+  // for near-total overlap. A single pick can't be tightened at all — min(1) is the only honest
+  // floor when that's the only signal the student gave us. Niche-tag overlap always qualifies
+  // regardless of count (any matched slug outside the 109-tag canonical set) — a niche hit is
+  // inherently specific, so one is as informative as several broad ones.
+  const pickedCount = params.tagSlugs.length;
+  const minSharedForPrimary = pickedCount <= 1 ? 1 : Math.max(2, Math.min(4, Math.ceil(pickedCount / 2)));
+
   let out: MatchedListing[] = results.map((r) => {
     const l = bySlug.get(r.id)!;
+    const hasNicheMatch = r.matchedTagSlugs.some((s) => !labelBySlug.has(s));
+    const tier: "primary" | "broader" =
+      r.matchedTagSlugs.length >= minSharedForPrimary || hasNicheMatch ? "primary" : "broader";
     return {
       slug: l.slug,
       title: l.title,
@@ -248,8 +272,10 @@ export function runMatch(params: MatchParams): MatchedListing[] {
       badges: l.badges,
       tag_slugs: l.tag_slugs,
       niche_slugs: l.niche_slugs,
+      deadline: l.deadline,
       matchedTags: r.matchedTagSlugs.map((s) => labelBySlug.get(s) ?? nicheLabels?.get(s) ?? s),
       fitLabel: r.fitLabel,
+      tier,
     };
   });
 
@@ -340,6 +366,7 @@ export function getListingBySlug(slug: string): ListingDetail | null {
     is_recruiting: l.is_recruiting,
     badges: l.badges,
     tag_slugs: l.tag_slugs,
+    deadline: l.deadline,
     long_description: l.long_description,
     apply_url: (l as ListingRecord & { apply_url?: string | null }).apply_url ?? null,
     linkedin_url: (l as ListingRecord & { linkedin_url?: string | null }).linkedin_url ?? null,
@@ -374,7 +401,49 @@ export function getListingsBySlugs(slugs: string[]): MatchListingLite[] {
       is_recruiting: l.is_recruiting,
       badges: l.badges,
       tag_slugs: l.tag_slugs,
+      deadline: l.deadline,
     }));
+}
+
+const MAX_TITLE_MATCHES = 25;
+
+/**
+ * Plain-text (non-AI) search. Three tiers, most precise first:
+ *  1. Exact canonical tag label ("robotics" -> just Robotics) — a topic word almost always IS a
+ *     tag itself, and returning that one clean tag beats unioning dozens of unrelated listings.
+ *  2. Listing title match ("beaver works" -> BWSI) — a proper noun/program name, so take that
+ *     listing's own tags. Tag frequency across ALL hits is required (not a blanket union): a
+ *     generic word like "robotics" title-matches 25 differently-tagged companies (one "___
+ *     Robotics" outlier might carry "Fashion & Textiles"), so a tag only counts if a real share
+ *     of the matched listings actually carry it — otherwise every search converges on the same
+ *     noisy blob of unrelated tags and stops meaningfully changing the results.
+ *  3. Partial tag-label match ("marine biology" -> Marine & Ocean Science) for topic phrasing
+ *     that isn't an exact label.
+ * No embedding call, no server cost (§0.7) — this is the default mode; AI mode is opt-in.
+ */
+export function keywordSearchTagSlugs(query: string): string[] {
+  const q = query.trim().toLowerCase();
+  if (!q) return [];
+
+  const tags = read<TagRecord[]>(GENERATED_TAGS);
+  const exactTag = tags.find((t) => t.label.toLowerCase() === q);
+  if (exactTag) return [exactTag.slug];
+
+  const listings = read<ListingRecord[]>(GENERATED_LISTINGS);
+  const titleHits = listings.filter((l) => l.title.toLowerCase().includes(q)).slice(0, MAX_TITLE_MATCHES);
+  if (titleHits.length > 0) {
+    const freq = new Map<string, number>();
+    for (const l of titleHits) for (const s of new Set(l.tag_slugs)) freq.set(s, (freq.get(s) ?? 0) + 1);
+    const minCount = titleHits.length <= 2 ? 1 : Math.ceil(titleHits.length * 0.3);
+    const kept = [...freq.entries()].filter(([, n]) => n >= minCount).map(([s]) => s);
+    if (kept.length > 0) return kept;
+  }
+
+  const tagHits = tags.filter((t) => {
+    const label = t.label.toLowerCase();
+    return label.includes(q) || q.includes(label);
+  });
+  return tagHits.map((t) => t.slug);
 }
 
 /**
@@ -412,7 +481,9 @@ export function similarByTags(slug: string, k = 6): MatchedListing[] {
       is_recruiting: l.is_recruiting,
       badges: l.badges,
       tag_slugs: l.tag_slugs,
+      deadline: l.deadline,
       matchedTags: shared.map((s) => labelBySlug.get(s) ?? s),
       fitLabel: null,
+      tier: "primary" as const,
     }));
 }

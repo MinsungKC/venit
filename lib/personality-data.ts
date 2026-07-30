@@ -52,7 +52,7 @@ export async function getDesiredVectors(): Promise<Map<string, number[]>> {
   if (!pool) return (desiredCache = new Map());
 
   const archVecs = archetypeVectorMap();
-  const dim = archVecs.values().next().value?.length ?? 384;
+  const dim = archVecs.values().next().value?.length ?? 768;
 
   const rows = await pool.query<{ slug: string; arch: string }>(
     `select l.slug, a.slug as arch

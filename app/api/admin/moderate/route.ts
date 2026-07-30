@@ -1,18 +1,22 @@
 import { NextResponse } from "next/server";
 import { z } from "zod";
-import { adminKeyOk } from "@/lib/admin";
+import { adminKeyOk, isAdmin } from "@/lib/admin";
 import { getPool } from "@/lib/db";
+import { getUser } from "@/lib/supabase/server";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
 const schema = z.object({
-  key: z.string().min(1),
+  key: z.string().min(1).optional(),
   id: z.number().int().positive(),
   action: z.enum(["approve", "reject"]),
 });
 
-/** Approve / reject a pending listing (BUILD_PROMPT §4 admin). Gated by the shared ADMIN_KEY. */
+/**
+ * Approve / reject a pending listing (BUILD_PROMPT §4 admin). Gated by the shared ADMIN_KEY OR a
+ * signed-in user granted admin via the `roles` table (see lib/admin.ts).
+ */
 export async function POST(req: Request) {
   let body: unknown;
   try {
@@ -24,7 +28,8 @@ export async function POST(req: Request) {
   if (!parsed.success) return NextResponse.json({ error: "Bad request." }, { status: 400 });
   const { key, id, action } = parsed.data;
 
-  if (!adminKeyOk(key)) return NextResponse.json({ error: "Unauthorized." }, { status: 401 });
+  const authorized = adminKeyOk(key) || (await isAdmin((await getUser())?.id));
+  if (!authorized) return NextResponse.json({ error: "Unauthorized." }, { status: 401 });
 
   const pool = getPool();
   if (!pool) return NextResponse.json({ error: "No database configured." }, { status: 503 });

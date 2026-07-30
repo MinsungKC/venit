@@ -27,6 +27,7 @@ const nl = (over: Partial<NormalizedListing>): NormalizedListing => ({
   status: "approved",
   grade_min: null,
   grade_max: null,
+  deadline: null,
   tag_labels: ["Robotics"],
   ...over,
 });

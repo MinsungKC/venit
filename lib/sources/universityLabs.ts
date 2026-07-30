@@ -50,6 +50,7 @@ export function mapUniversityLab(l: UniversityLab): NormalizedListing {
     status: "approved",
     grade_min: null,
     grade_max: null,
+    deadline: null,
     tag_labels: (l.tags ?? []).map((t) => t.trim()).filter(Boolean),
   };
 }

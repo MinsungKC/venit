@@ -2,13 +2,24 @@ import "server-only";
 import { getPool } from "./db";
 
 /**
- * Admin data + auth for the moderation panel (BUILD_PROMPT §4). Auth is a shared ADMIN_KEY in the
- * env for now (documented in .env.example) — a lightweight gate until real Supabase-Auth admin
- * roles land. Nothing here touches personality data.
+ * Admin data + auth for the moderation panel (BUILD_PROMPT §4). Two ways in:
+ *  - a shared ADMIN_KEY in the env (`?key=...`), the original bootstrap gate — kept so admin
+ *    access never fully depends on the `roles` table being reachable/seeded;
+ *  - a signed-in Supabase user whose `roles.is_admin` is true (see `isAdmin`), granted via
+ *    `scripts/grant-admin.ts`. Either is sufficient. Nothing here touches personality data.
  */
 export function adminKeyOk(key?: string | null): boolean {
   const expected = process.env.ADMIN_KEY;
   return !!expected && !!key && key === expected;
+}
+
+/** Whether the signed-in user (by id) has been granted admin via the `roles` table. */
+export async function isAdmin(userId?: string | null): Promise<boolean> {
+  if (!userId) return false;
+  const pool = getPool();
+  if (!pool) return false;
+  const r = await pool.query<{ is_admin: boolean }>(`select is_admin from roles where user_id = $1`, [userId]);
+  return r.rows[0]?.is_admin ?? false;
 }
 
 export interface PendingRow {

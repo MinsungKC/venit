@@ -3,6 +3,28 @@ import { getPool } from "./db";
 import type { ProfileInput } from "./schemas";
 
 /**
+ * Additively insert interest tags for a signed-in student without touching anything else on
+ * their profile — used when a search discovers interests they haven't explicitly saved yet
+ * (BUILD_PROMPT §6 "extremely smart and adaptive"). Never deletes; on-conflict no-ops.
+ */
+export async function addUserInterestTags(userId: string, tagSlugs: string[]): Promise<void> {
+  if (tagSlugs.length === 0) return;
+  const pool = getPool();
+  if (!pool) throw new Error("No database configured.");
+
+  const tags = await pool.query<{ id: number }>(
+    `select id from interest_tags where slug = any($1::text[])`,
+    [tagSlugs],
+  );
+  for (const t of tags.rows) {
+    await pool.query(
+      `insert into user_interest_tags (user_id, tag_id) values ($1,$2) on conflict do nothing`,
+      [userId, t.id],
+    );
+  }
+}
+
+/**
  * Server-side profile persistence (BUILD_PROMPT §2c/§3). Writes grade/age/region + interest tags +
  * the SECRET personality vector/archetypes for a signed-in student. Uses the pg pool (privileged
  * connection). GUARDRAIL §0.1: the personality columns are WRITE-only for clients (the column

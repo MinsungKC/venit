@@ -2,11 +2,11 @@
  * Precompute the 10 personality-archetype embeddings (BUILD_PROMPT §2b).
  *
  *   npm run data:personality
- *   -> public/data/archetype-vectors.json  [{ slug, label, vector[384] }]
+ *   -> public/data/archetype-vectors.json  [{ slug, label, vector[768] }]
  *
  * Each archetype's `anchor_text` (definition + synonym list) is embedded ONCE with the same
  * embedding model the server uses for a student's adjectives (lib/embeddings.ts / /api/embed),
- * so the personality classifier (§3) compares them in the identical 384-dim space.
+ * so the personality classifier (§3) compares them in the identical 768-dim space.
  *
  * Build-time only — no per-request AI (guardrail §0.6). The resulting vectors are the
  * reference personalities used for ranking; they are never shown to a student (guardrail §0.1).

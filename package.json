@@ -23,7 +23,8 @@
     "db:seed": "supabase db reset --no-seed && tsx scripts/import-listings.ts",
     "data:geocode": "tsx scripts/geocode-locations.ts",
     "data:seed-personality": "tsx scripts/seed-desired-personality.ts",
-    "data:niche": "tsx scripts/embed-niche.ts"
+    "data:niche": "tsx scripts/embed-niche.ts",
+    "admin:grant": "tsx scripts/grant-admin.ts"
   },
   "dependencies": {
     "@supabase/ssr": "^0.12.4",

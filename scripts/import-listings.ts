@@ -104,22 +104,22 @@ async function upsertListings(
          external_id, source, kind, title, slug, url,
          short_description, long_description, location_name, is_remote,
          team_size, industry, subindustry, cost_type, is_recruiting,
-         grade_min, grade_max, badges, status
+         grade_min, grade_max, badges, status, application_deadline
        )
        select external_id, source::listing_source, kind::listing_kind, title, slug, url,
          short_description, long_description, location_name, is_remote,
          team_size, industry, subindustry, cost_type::cost_type, is_recruiting,
-         grade_min, grade_max, badges::jsonb, status::listing_status
+         grade_min, grade_max, badges::jsonb, status::listing_status, application_deadline::date
        from unnest(
          $1::text[], $2::text[], $3::text[], $4::text[], $5::text[], $6::text[],
          $7::text[], $8::text[], $9::text[], $10::boolean[],
          $11::int[], $12::text[], $13::text[], $14::text[], $15::boolean[],
-         $16::int[], $17::int[], $18::text[], $19::text[]
+         $16::int[], $17::int[], $18::text[], $19::text[], $20::text[]
        ) as t(
          external_id, source, kind, title, slug, url,
          short_description, long_description, location_name, is_remote,
          team_size, industry, subindustry, cost_type, is_recruiting,
-         grade_min, grade_max, badges, status
+         grade_min, grade_max, badges, status, application_deadline
        )
        on conflict (source, external_id) do update set
          kind = excluded.kind, title = excluded.title, url = excluded.url,
@@ -128,7 +128,8 @@ async function upsertListings(
          team_size = excluded.team_size, industry = excluded.industry,
          subindustry = excluded.subindustry, cost_type = excluded.cost_type,
          is_recruiting = excluded.is_recruiting, grade_min = excluded.grade_min,
-         grade_max = excluded.grade_max, badges = excluded.badges, status = excluded.status
+         grade_max = excluded.grade_max, badges = excluded.badges, status = excluded.status,
+         application_deadline = excluded.application_deadline
        returning id, source, external_id, (xmax = 0) as inserted`,
       columnArrays(chunk),
     );
@@ -182,7 +183,7 @@ async function linkTags(
   }
 }
 
-/** The 19 per-column arrays a listings chunk contributes to the `unnest` upsert, in column order. */
+/** The 20 per-column arrays a listings chunk contributes to the `unnest` upsert, in column order. */
 function columnArrays(chunk: ListingRecord[]) {
   return [
     chunk.map((l) => l.external_id),
@@ -204,6 +205,7 @@ function columnArrays(chunk: ListingRecord[]) {
     chunk.map((l) => l.grade_max),
     chunk.map((l) => JSON.stringify(l.badges)),
     chunk.map((l) => l.status),
+    chunk.map((l) => l.deadline),
   ];
 }
 

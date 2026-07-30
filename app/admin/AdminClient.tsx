@@ -12,8 +12,12 @@ const KIND_LABEL: Record<string, string> = {
   camp: "Camp",
 };
 
-/** Records table (moderation queue) with search + approve/reject, styled as the Stitch admin table. */
-export default function AdminClient({ pending, adminKey }: { pending: PendingRow[]; adminKey: string }) {
+/**
+ * Records table (moderation queue) with search + approve/reject, styled as the Stitch admin
+ * table. `adminKey` is null for a signed-in admin (role-based) — the moderate API falls back to
+ * checking their session cookie in that case, so no key needs to travel in the request body.
+ */
+export default function AdminClient({ pending, adminKey }: { pending: PendingRow[]; adminKey: string | null }) {
   const [rows, setRows] = useState(pending);
   const [busy, setBusy] = useState<number | null>(null);
   const [query, setQuery] = useState("");
@@ -30,7 +34,7 @@ export default function AdminClient({ pending, adminKey }: { pending: PendingRow
       const res = await fetch("/api/admin/moderate", {
         method: "POST",
         headers: { "content-type": "application/json" },
-        body: JSON.stringify({ key: adminKey, id, action }),
+        body: JSON.stringify({ key: adminKey ?? undefined, id, action }),
       });
       if (res.ok) setRows((rs) => rs.filter((r) => r.id !== id));
     } finally {

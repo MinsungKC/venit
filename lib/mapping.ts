@@ -35,6 +35,9 @@ export interface ListingRecord {
   status: ListingStatus;
   grade_min: number | null;
   grade_max: number | null;
+  /** ISO date (YYYY-MM-DD) of the application/program deadline, when known — powers the
+   *  "Add to Calendar" button (lib/ics.ts). Most sources don't carry this; null is the norm. */
+  deadline: string | null;
   /** Interest-tag slugs linked to this listing (always ≥ 1 for emitted rows). */
   tag_slugs: string[];
   /** Specific source tags (yc keywords, OpenAlex subfields…) kept for niche free-text matching. */

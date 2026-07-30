@@ -4,6 +4,7 @@ import { getListingBySlug, similarByTags } from "@/lib/match-data";
 import type { ListingKind } from "@/lib/mapping";
 import StarButton from "../../match/StarButton";
 import ReportButton from "./ReportButton";
+import CalendarButton from "./CalendarButton";
 
 export const dynamic = "force-dynamic";
 
@@ -56,6 +57,18 @@ export default function ListingPage({ params }: { params: { slug: string } }) {
               <span className={`kind kind-${l.kind}`}>{KIND_LABEL[l.kind]}</span>
               <span className="cost"> · {COST_LABEL[l.cost_type] ?? l.cost_type}</span>
               <span className="cost"> · {l.is_remote ? "Remote" : l.location_name ?? "Location N/A"}</span>
+              {l.deadline && (
+                <span className="cost">
+                  {" "}
+                  · Deadline:{" "}
+                  {new Date(`${l.deadline}T00:00:00Z`).toLocaleDateString("en-US", {
+                    month: "short",
+                    day: "numeric",
+                    year: "numeric",
+                    timeZone: "UTC",
+                  })}
+                </span>
+              )}
             </p>
           </div>
         </div>
@@ -91,6 +104,9 @@ export default function ListingPage({ params }: { params: { slug: string } }) {
           <a className="back" href={l.linkedin_url} target="_blank" rel="noopener noreferrer">
             LinkedIn ↗
           </a>
+        )}
+        {l.deadline && (
+          <CalendarButton title={l.title} deadline={l.deadline} url={l.url} location={l.location_name} />
         )}
       </div>
 
