@@ -31,3 +31,7 @@ next-env.d.ts
 .DS_Store
 *.tsbuildinfo
 /coverage
+
+# generated niche vocab (rebuilt via data:build + data:niche)
+/public/data/niche-tags.json
+/public/data/niche-vectors.json

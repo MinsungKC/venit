@@ -2,8 +2,21 @@ import "server-only";
 import { readFileSync } from "node:fs";
 import { join } from "node:path";
 import type { CostType, ListingKind, ListingRecord, TagRecord } from "./mapping";
-import type { MatchListing, MatchProfile, SortAxis } from "./match-types";
+import type { FitLabel, MatchListing, MatchProfile, SortAxis } from "./match-types";
 import { match } from "./matching";
+import { regionToLatLng } from "./us-states";
+
+/**
+ * How the student wants to treat location (BUILD_PROMPT §5):
+ *  - "near":    only in-person opportunities within `radiusKm` of their state (labs gated by §0.5).
+ *  - "country": anywhere in the US — in-person labs shown regardless of distance.
+ *  - "any":     don't filter by location at all (same as country for this US-only dataset).
+ * Remote listings always qualify. Default is "any" so students see everything unless they narrow.
+ */
+export type LocMode = "near" | "country" | "any";
+
+/** Default travel radius (km ≈ 100 miles) when "near me" is chosen without an explicit radius. */
+const DEFAULT_RADIUS_KM = 160;
 
 /**
  * Server-side data + matching for the student `/match` flow (BUILD_PROMPT §5/§6). Matching runs
@@ -32,15 +45,33 @@ export interface MatchListingLite {
   is_recruiting: boolean;
   badges: string[];
   tag_slugs: string[];
+  niche_slugs?: string[];
 }
 
 export interface MatchedListing extends MatchListingLite {
   /** Human labels of the interest tags shared with the user — the "why you're seeing this" (§7). */
   matchedTags: string[];
+  /** Coarse personality-fit label (signed-in users only); null otherwise. NEVER the score (§0.1). */
+  fitLabel: FitLabel;
 }
 
 const GENERATED_LISTINGS = join(process.cwd(), "public", "data", "listings.generated.json");
 const GENERATED_TAGS = join(process.cwd(), "public", "data", "tags.generated.json");
+const GEOCODE = join(process.cwd(), "public", "data", "geocode.json");
+const NICHE_TAGS = join(process.cwd(), "public", "data", "niche-tags.json");
+
+let nicheLabels: Map<string, string> | null = null;
+/** slug → label for niche tags, to display niche matches. */
+function nicheLabelMap(): Map<string, string> {
+  if (nicheLabels) return nicheLabels;
+  try {
+    const rows = JSON.parse(readFileSync(NICHE_TAGS, "utf8")) as { slug: string; label: string }[];
+    nicheLabels = new Map(rows.map((r) => [r.slug, r.label]));
+  } catch {
+    nicheLabels = new Map();
+  }
+  return nicheLabels;
+}
 
 function read<T>(path: string): T {
   try {
@@ -48,6 +79,30 @@ function read<T>(path: string): T {
   } catch {
     throw new Error(`Missing ${path}. Run \`npm run data:build\` first.`);
   }
+}
+
+/** City-level coordinates for lab locations (public/data/geocode.json from `npm run data:geocode`).
+ *  Loaded once; empty if the file hasn't been generated (falls back to state centroids). */
+let geocodeCache: Record<string, { lat: number; lng: number }> | null = null;
+function geocodeMap(): Record<string, { lat: number; lng: number }> {
+  if (geocodeCache) return geocodeCache;
+  try {
+    geocodeCache = JSON.parse(readFileSync(GEOCODE, "utf8"));
+  } catch {
+    geocodeCache = {};
+  }
+  return geocodeCache!;
+}
+
+/**
+ * The personality archetypes (slug + label) for the ORG registration form — orgs may choose the
+ * personalities they're seeking (§2c). This is org-facing config, not student-facing: guardrail
+ * §0.1 forbids showing a STUDENT their personality, not an org picking desired traits.
+ */
+export function getArchetypes(): { slug: string; label: string }[] {
+  const path = join(process.cwd(), "supabase", "seed", "personality.json");
+  const rows = read<{ slug: string; label: string }[]>(path);
+  return rows.map((a) => ({ slug: a.slug, label: a.label }));
 }
 
 /** The interest-tag catalog, grouped by domain, for the picker UI. */
@@ -65,23 +120,37 @@ export function getTagCatalog(): { domain: string; tags: MatchTag[] }[] {
     .sort((a, b) => a.domain.localeCompare(b.domain));
 }
 
-function toMatchListing(l: MatchListingLite): MatchListing {
+function toMatchListing(
+  l: MatchListingLite,
+  mode: LocMode,
+  radiusKm: number,
+  desiredBySlug?: Map<string, number[]>,
+): MatchListing {
+  // City-level coords where geocoded (labs), else the state centroid — so the radius is meaningful.
+  const city = l.location_name ? geocodeMap()[l.location_name.trim()] : undefined;
+  const geo = city ?? regionToLatLng(l.location_name);
+  const isLab = l.kind === "research_lab";
+  // In "country"/"any" the student explicitly wants labs regardless of distance, so mark in-person
+  // labs location-agnostic for the engine (skips §0.5's distance gate — an informed opt-in). The
+  // display card still uses the listing's real location, not "Remote".
+  const bypassLocation = isLab && (mode === "country" || mode === "any");
   return {
     id: l.slug,
     kind: l.kind,
     status: "approved", // the static dataset only contains shown (approved) listings
-    tagSlugs: l.tag_slugs,
+    // Include niche tags so a matched free-text niche interest counts as a shared tag (§0.4).
+    tagSlugs: l.niche_slugs?.length ? [...l.tag_slugs, ...l.niche_slugs] : l.tag_slugs,
     ageMin: null,
     ageMax: null,
     gradeMin: l.grade_min,
     gradeMax: l.grade_max,
-    lat: null,
-    lng: null,
-    isRemote: l.is_remote,
+    lat: geo?.lat ?? null,
+    lng: geo?.lng ?? null,
+    isRemote: l.is_remote || bypassLocation,
     costType: l.cost_type,
     costAmount: null,
-    radiusKm: null,
-    desiredPersonalityVector: null,
+    radiusKm,
+    desiredPersonalityVector: desiredBySlug?.get(l.slug) ?? null,
   };
 }
 
@@ -90,10 +159,27 @@ export interface MatchParams {
   grade: number | null;
   age: number | null;
   sort?: SortAxis;
+  /** How to treat location (default "any"). */
+  locMode?: LocMode;
+  /** Student's precise coordinates (from geocoding their city) — preferred for "near" mode. */
+  userLat?: number | null;
+  userLng?: number | null;
+  /** Student's state (fallback for "near" mode when no city coords are available). */
+  region?: string | null;
+  /** Travel radius in km for "near" mode. */
+  radiusKm?: number | null;
   /** UI filters (applied after the hard-filter/ranking pass). */
   kind?: ListingKind;
   freeOnly?: boolean;
   remoteOnly?: boolean;
+  /** SECRET personality vector of the signed-in student — enables fit ranking (§0.1). */
+  personalityVector?: number[] | null;
+  /** slug → listing desired-personality vector, for computing the fit label. */
+  desiredBySlug?: Map<string, number[]>;
+  /** Interest-tag slugs the student favored in the rating deck — nudges those listings up. */
+  boostSlugs?: string[];
+  /** Niche-tag slugs matched from the student's free-text interests — match + prioritize these. */
+  nicheSlugs?: string[];
 }
 
 /**
@@ -110,16 +196,33 @@ export function runMatch(params: MatchParams): MatchedListing[] {
   const labelBySlug = new Map(read<TagRecord[]>(GENERATED_TAGS).map((t) => [t.slug, t.label]));
   const bySlug = new Map(listings.map((l) => [l.slug, l]));
 
+  const mode: LocMode = params.locMode ?? "any";
+  const radiusKm = params.radiusKm ?? DEFAULT_RADIUS_KM;
+  // Prefer the student's geocoded city coordinates; fall back to their state centroid.
+  const userGeo =
+    mode === "near"
+      ? params.userLat != null && params.userLng != null
+        ? { lat: params.userLat, lng: params.userLng }
+        : regionToLatLng(params.region ?? null)
+      : null;
+  const hasFit = !!(params.personalityVector && params.desiredBySlug);
+  const nicheSlugs = params.nicheSlugs ?? [];
   const profile: MatchProfile = {
     age: params.age,
     grade: params.grade,
-    lat: null,
-    lng: null,
-    interestTagSlugs: params.tagSlugs,
-    personalityVector: null,
+    lat: userGeo?.lat ?? null,
+    lng: userGeo?.lng ?? null,
+    // The student's canonical interests + any niche tags matched from their free text.
+    interestTagSlugs: nicheSlugs.length ? [...params.tagSlugs, ...nicheSlugs] : params.tagSlugs,
+    personalityVector: params.personalityVector ?? null,
   };
+  const nicheLabels = nicheSlugs.length ? nicheLabelMap() : null;
 
-  const results = match(profile, listings.map(toMatchListing), { sort: params.sort });
+  const results = match(
+    profile,
+    listings.map((l) => toMatchListing(l, mode, radiusKm, params.desiredBySlug)),
+    { sort: params.sort },
+  );
 
   let out: MatchedListing[] = results.map((r) => {
     const l = bySlug.get(r.id)!;
@@ -137,7 +240,9 @@ export function runMatch(params: MatchParams): MatchedListing[] {
       is_recruiting: l.is_recruiting,
       badges: l.badges,
       tag_slugs: l.tag_slugs,
-      matchedTags: r.matchedTagSlugs.map((s) => labelBySlug.get(s) ?? s),
+      niche_slugs: l.niche_slugs,
+      matchedTags: r.matchedTagSlugs.map((s) => labelBySlug.get(s) ?? nicheLabels?.get(s) ?? s),
+      fitLabel: r.fitLabel,
     };
   });
 
@@ -146,9 +251,47 @@ export function runMatch(params: MatchParams): MatchedListing[] {
   if (params.freeOnly) out = out.filter((l) => l.cost_type === "free");
   if (params.remoteOnly) out = out.filter((l) => l.is_remote);
 
-  // Order by number of shared interest tags (strongest signal until personality ranking exists),
-  // unless the user asked for an explicit axis, in which case the engine's order is preserved.
-  return params.sort ? out : out.sort((a, b) => b.matchedTags.length - a.matchedTags.length);
+  // Rating-deck curation + niche free-text interests nudge matching listings up (override order).
+  const boostAll = [...(params.boostSlugs ?? []), ...nicheSlugs];
+  if (!params.sort && boostAll.length) {
+    const boost = new Set(boostAll);
+    const score = (l: MatchedListing) =>
+      l.matchedTags.length +
+      3 * [...l.tag_slugs, ...(l.niche_slugs ?? [])].filter((s) => boost.has(s)).length;
+    return [...out].sort((a, b) => score(b) - score(a));
+  }
+
+  // With a personality vector, keep the engine's fit-first order. Otherwise (or on an explicit
+  // axis) order by shared-tag count, the strongest available signal.
+  if (params.sort || hasFit) return out;
+  return out.sort((a, b) => b.matchedTags.length - a.matchedTags.length);
+}
+
+export interface GlobePoint {
+  slug: string;
+  title: string;
+  kind: ListingKind;
+  lat: number;
+  lng: number;
+  location: string;
+}
+
+/**
+ * Resolve on-map coordinates for matched listings (BUILD_PROMPT §7 map view): city-level from
+ * geocode.json where known, else the state centroid. Remote listings and un-geocodable ones are
+ * dropped. Capped so the globe stays performant.
+ */
+export function toGlobePoints(listings: MatchedListing[], cap = 600): GlobePoint[] {
+  const geo = geocodeMap();
+  const points: GlobePoint[] = [];
+  for (const l of listings) {
+    if (l.is_remote || !l.location_name) continue;
+    const c = geo[l.location_name.trim()] ?? regionToLatLng(l.location_name);
+    if (!c) continue;
+    points.push({ slug: l.slug, title: l.title, kind: l.kind, lat: c.lat, lng: c.lng, location: l.location_name });
+    if (points.length >= cap) break;
+  }
+  return points;
 }
 
 /** The distinct kinds present in the match results, for the filter bar (with counts). */
@@ -196,6 +339,34 @@ export function getListingBySlug(slug: string): ListingDetail | null {
   };
 }
 
+/** Load several listings by slug (order preserved) for a shared/read-only shortlist (§7). */
+export function getListingsBySlugs(slugs: string[]): MatchListingLite[] {
+  if (slugs.length === 0) return [];
+  const want = new Set(slugs);
+  const bySlug = new Map<string, ListingRecord>();
+  for (const l of read<ListingRecord[]>(GENERATED_LISTINGS)) {
+    if (want.has(l.slug)) bySlug.set(l.slug, l);
+  }
+  return slugs
+    .map((s) => bySlug.get(s))
+    .filter((l): l is ListingRecord => Boolean(l))
+    .map((l) => ({
+      slug: l.slug,
+      title: l.title,
+      kind: l.kind,
+      url: l.url,
+      short_description: l.short_description,
+      location_name: l.location_name,
+      is_remote: l.is_remote,
+      cost_type: l.cost_type,
+      grade_min: l.grade_min,
+      grade_max: l.grade_max,
+      is_recruiting: l.is_recruiting,
+      badges: l.badges,
+      tag_slugs: l.tag_slugs,
+    }));
+}
+
 /**
  * "More like this" (BUILD_PROMPT §7 ★) by shared interest tags — the static dataset has no
  * per-listing embeddings, so we rank by tag overlap (count of shared tags, then title). Same
@@ -232,5 +403,6 @@ export function similarByTags(slug: string, k = 6): MatchedListing[] {
       badges: l.badges,
       tag_slugs: l.tag_slugs,
       matchedTags: shared.map((s) => labelBySlug.get(s) ?? s),
+      fitLabel: null,
     }));
 }

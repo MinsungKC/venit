@@ -37,16 +37,78 @@ The **student match flow** (`/match`) is wired to the matching engine over the s
 dataset; the browser embedding of the classifier, org registration, and admin are not yet
 built — the schema and libs accept them.
 
-- **Student match UI (BUILD_PROMPT §6):** `app/match/` — `page.tsx` (server) runs matching
-  server-side via `runMatch()` in `lib/match-data.ts` so the whole listings table never ships
-  to the client; only the chosen interest slugs go up (URL-encoded, so results are shareable)
-  and only matches come back. `InterestPicker.tsx` (domain-grouped, searchable chips + grade/
-  age) and `StarButton.tsx` (local-first shortlist in localStorage) are the client bits. Only
-  interest tags are shown; fit label stays null until org desired-personalities exist. Research
-  labs are correctly excluded from matches until listings are geocoded (§0.5). `lib/ics.ts`
-  (deadline → .ics + Google Calendar) and `lib/similar.ts` ("More like this") are pure helpers
-  ready for the results UI. `lib/user-classifier.ts` is the Phase-3 orchestration (scrub →
-  embed → classify), model injected so it tests without MiniLM; the browser adapter is TODO.
+- **Student site (BUILD_PROMPT §6/§7):** a working multi-page app behind a global `app/Nav.tsx`:
+  - `app/onboarding/` — a short wizard (interests → grade/age) that lands on `/match`.
+  - `app/match/page.tsx` (server) runs matching server-side via `runMatch()` in
+    `lib/match-data.ts` so the whole listings table never ships to the client; only the chosen
+    interest slugs go up (URL-encoded → shareable) and only matches come back. `InterestPicker`
+    (domain-grouped searchable chips + grade/age), a filter bar (kind tabs w/ counts, free-only,
+    remote), sort (best-fit/cost), and a `DISPLAY_LIMIT` cap. Only interest tags shown; fit label
+    null until org desired-personalities exist. Research labs are excluded from matches until
+    geocoded (§0.5).
+  - `app/listing/[slug]/` — detail page + "More like this" (`similarByTags`, tag-overlap since
+    the static data has no per-listing vectors).
+  - `app/shortlist/` and `app/tracker/` — local-first (localStorage) shortlist + Kanban tracker,
+    both backed by `lib/stars.ts` (`StarSnapshot`/`StarRecord`, `onStarsChanged` pub/sub). Star
+    snapshots store only public listing fields — never personality.
+  - `lib/ics.ts` (deadline → .ics + Google Calendar) and `lib/user-classifier.ts` (Phase-3
+    scrub→embed→classify, model injected so it tests without MiniLM) exist; the browser embed
+    adapter and the resume/adjective UI are still TODO.
+
+- **On-device classifier wired (BUILD_PROMPT §3):** `lib/embeddings-browser.ts` lazy-loads MiniLM
+  in the browser (transformers.js/WASM, dynamic import so it's off the initial bundle; `next.config`
+  aliases out `onnxruntime-node`/`sharp` for the client). The onboarding "describe yourself" step
+  embeds free text + adjectives + an optional pasted resume ON-DEVICE via `classifyUser`, suggests
+  interest tags, and shows the PII scrub result (§0.3). Raw text never leaves the browser.
+
+- **Org registration + admin + reports (BUILD_PROMPT §4/§7):** Zod schemas in `lib/schemas.ts`
+  guard every input boundary. `POST /api/register` files a `pending` listing into the moderation
+  queue (rate-limited, `lib/rate-limit.ts`); `/register` is the public form. `/admin?key=<ADMIN_KEY>`
+  (env-gated via `lib/admin.ts`, real auth TODO) shows the queue + approve/reject (`POST
+  /api/admin/moderate`) + supply-gap analytics. `POST /api/report` + a listing-detail button flag
+  broken links. Migration `0004_reports_tags.sql` adds `reports` + `custom_tag_requests` (RLS on,
+  no policies — server-only). All four migrations are applied to the hosted DB.
+
+- **Location matching (BUILD_PROMPT §5/§0.5):** `lib/us-states.ts` maps regions → state centroids;
+  `runMatch` geocodes each listing's region and the student's chosen state, so research labs match
+  only when a student picks a state (same-state distance is 0). No precise location is collected.
+
+- **Auth + real personality ranking (BUILD_PROMPT §1/§2c/§3/§5) — the core premise, now wired:**
+  - **Auth:** Supabase magic-link (passwordless). `lib/supabase/{client,server,middleware}.ts`,
+    `middleware.ts` (session refresh), `/login`, `/auth/callback` (exchanges code + ensures a
+    `profiles` row), `/auth/signout`. Nav shows sign-in/out. Env: `NEXT_PUBLIC_SUPABASE_URL`,
+    `NEXT_PUBLIC_SUPABASE_ANON_KEY`, `SUPABASE_SERVICE_ROLE_KEY` (in gitignored `.env`).
+  - **Persistence:** `POST /api/profile` (authed) → `lib/profile.ts` writes grade/age/region +
+    interest tags + the **SECRET personality vector** to the guarded column. Onboarding's "See my
+    matches" saves it when signed in. The response never contains personality (§0.1). Verified on
+    live Postgres: vector stored (384-dim), `authenticated` still has no SELECT on it.
+  - **Fit ranking:** `lib/personality-data.ts` reads the student's vector service-side (never sent
+    to the client) + each listing's desired-personality vector (mean of its archetypes). `runMatch`
+    now takes `personalityVector` + `desiredBySlug`, the engine computes the coarse `fitLabel`, and
+    signed-in `/match` ranks fit-first and shows "Great/Good fit". `scripts/seed-desired-personality.ts`
+    (`npm run data:seed-personality`) seeds representative desired archetypes by kind (org choices
+    preserved). Verified: an Analyst student gets research labs as "Great fit", companies as "Good fit".
+  - **Geocoding:** `scripts/geocode-locations.ts` (`npm run data:geocode`) → `public/data/geocode.json`
+    (city coords for lab locations); `/api/geocode` geocodes a student's typed city (Nominatim,
+    cached). "Near me" radius measures from the student's real city.
+
+- **UI — "Academic Clarity" design system (from a Google Stitch spec):** flat, Stripe/Notion
+  minimal, light monochrome-gray base + a single indigo accent (`#4F46E5`), Inter + Material
+  Symbols (loaded in `app/layout.tsx`), small radii, no gradients/heavy shadows. Global tokens
+  live in `app/globals.css` (legacy `--panel`/`--grad`/etc. names are kept, remapped, so the CSS-
+  module pages didn't need edits). Stitch pages implemented: the **student feed** (`/match` — left
+  filter rail + "Curated for you" + opportunity cards, `match.module.css`), **admin System
+  Overview** (`/admin` — stat cards + records table + quality alerts), and the **provider
+  dashboard** (`/provider`). Post-onboarding **rating deck** (`/refine`, `RateDeck.tsx`): top-5
+  flashcard stack (tap to cycle, tap name for info, hover slider to rate); favored tags flow to
+  `/match?boost=…` which nudges those listings up (`runMatch` `boostSlugs`).
+
+- **ARCHITECTURE — keep the model runtime out of the app bundle:** `cosine` (and any pure vector
+  math) lives in `lib/vec.ts`, NOT `lib/embeddings.ts`. `matching.ts`/`similar.ts`/`classifier.ts`
+  import from `lib/vec`. `lib/embeddings.ts` (which imports `@xenova/transformers` →
+  `onnxruntime-node`) is used ONLY by seed scripts + the future browser adapter. Importing
+  `cosine` from `embeddings` instead drags onnxruntime into every server route and **breaks
+  `next build`** (native binding fails in the build worker). Don't reintroduce that edge.
 
 - **Hosted DB is live:** the Supabase project is linked and migrations 0001–0003 are applied
   (verified: the personality column guard holds on real Postgres — `authenticated` has

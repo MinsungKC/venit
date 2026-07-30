@@ -1,0 +1,423 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Opportunity Hub | Provider Dashboard</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "surface-container-high": "#e7e8e9",
+                    "surface-bright": "#f8f9fa",
+                    "on-secondary-fixed": "#141b2b",
+                    "tertiary-container": "#a44100",
+                    "surface-variant": "#e1e3e4",
+                    "on-tertiary-container": "#ffd2be",
+                    "surface-variant": "#e1e3e4",
+                    "on-error": "#ffffff",
+                    "inverse-on-surface": "#f0f1f2",
+                    "outline-variant": "#c7c4d8",
+                    "on-tertiary-fixed": "#351000",
+                    "secondary-container": "#d9dff5",
+                    "surface-container": "#edeeef",
+                    "surface-dim": "#d9dadb",
+                    "on-primary-fixed": "#0f0069",
+                    "on-background": "#191c1d",
+                    "on-secondary-container": "#5c6274",
+                    "inverse-primary": "#c3c0ff",
+                    "primary-fixed": "#e2dfff",
+                    "surface-tint": "#4d44e3",
+                    "tertiary-fixed": "#ffdbcc",
+                    "on-primary-fixed-variant": "#3323cc",
+                    "background": "#f8f9fa",
+                    "outline": "#777587",
+                    "tertiary-fixed-dim": "#ffb695",
+                    "on-tertiary-fixed-variant": "#7b2f00",
+                    "on-surface-variant": "#464555",
+                    "on-tertiary": "#ffffff",
+                    "surface-container-highest": "#e1e3e4",
+                    "on-secondary": "#ffffff",
+                    "surface-container-lowest": "#ffffff",
+                    "surface": "#f8f9fa",
+                    "error-container": "#ffdad6",
+                    "on-secondary-fixed-variant": "#404758",
+                    "on-error-container": "#93000a",
+                    "primary-container": "#4f46e5",
+                    "on-primary": "#ffffff",
+                    "primary-fixed-dim": "#c3c0ff",
+                    "secondary-fixed": "#dce2f7",
+                    "on-primary-container": "#dad7ff",
+                    "error": "#ba1a1a",
+                    "on-surface": "#191c1d",
+                    "tertiary": "#7e3000",
+                    "secondary-fixed-dim": "#c0c6db",
+                    "secondary": "#575e70",
+                    "primary": "#3525cd",
+                    "inverse-surface": "#2e3132"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.125rem",
+                    "lg": "0.25rem",
+                    "xl": "0.5rem",
+                    "full": "0.75rem"
+            },
+            "spacing": {
+                    "xl": "48px",
+                    "sm": "8px",
+                    "md": "16px",
+                    "container-max": "1200px",
+                    "base": "4px",
+                    "gutter": "24px",
+                    "xs": "4px",
+                    "lg": "24px"
+            },
+            "fontFamily": {
+                    "headline-md": ["Inter"],
+                    "body-lg": ["Inter"],
+                    "headline-lg-mobile": ["Inter"],
+                    "headline-lg": ["Inter"],
+                    "label-md": ["Inter"],
+                    "label-sm": ["Inter"],
+                    "body-md": ["Inter"]
+            },
+            "fontSize": {
+                    "headline-md": ["20px", {"lineHeight": "28px", "letterSpacing": "-0.01em", "fontWeight": "600"}],
+                    "body-lg": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                    "headline-lg-mobile": ["24px", {"lineHeight": "32px", "letterSpacing": "-0.01em", "fontWeight": "700"}],
+                    "headline-lg": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                    "label-md": ["14px", {"lineHeight": "20px", "fontWeight": "600"}],
+                    "label-sm": ["12px", {"lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "500"}],
+                    "body-md": ["14px", {"lineHeight": "20px", "fontWeight": "400"}]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        body { font-family: 'Inter', sans-serif; }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        /* Custom scrollbar for minimalist feel */
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: #e5e7eb; border-radius: 10px; }
+        ::-webkit-scrollbar-thumb:hover { background: #d1d5db; }
+        
+        .glass-effect {
+            backdrop-filter: blur(8px);
+            background: rgba(255, 255, 255, 0.8);
+        }
+
+        .modal-enter { animation: modalIn 0.3s ease-out forwards; }
+        @keyframes modalIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body class="bg-background text-on-surface">
+<!-- TopNavBar -->
+<header class="bg-surface-container-lowest dark:bg-surface-dim w-full top-0 sticky z-50 border-b border-surface-variant dark:border-outline-variant flat no shadows">
+<div class="flex justify-between items-center px-lg py-sm max-w-container-max mx-auto">
+<div class="flex items-center gap-lg">
+<span class="font-headline-md text-headline-md font-bold text-primary dark:text-primary-fixed">Opportunity Hub</span>
+<nav class="hidden md:flex gap-md font-body-md text-body-md">
+<a class="text-on-secondary-container dark:text-on-secondary-fixed-variant hover:bg-surface-container-low dark:hover:bg-surface-variant transition-colors px-2 py-1" href="#">Discover</a>
+<a class="text-primary dark:text-primary-fixed font-bold border-b-2 border-primary pb-1" href="#">Applications</a>
+<a class="text-on-secondary-container dark:text-on-secondary-fixed-variant hover:bg-surface-container-low dark:hover:bg-surface-variant transition-colors px-2 py-1" href="#">Saved</a>
+<a class="text-on-secondary-container dark:text-on-secondary-fixed-variant hover:bg-surface-container-low dark:hover:bg-surface-variant transition-colors px-2 py-1" href="#">My Matches</a>
+</nav>
+</div>
+<div class="flex items-center gap-md">
+<button class="hidden lg:block text-label-md font-label-md text-secondary hover:bg-surface-container-low px-md py-sm rounded-lg transition-colors">Student View</button>
+<button class="bg-primary-container text-on-primary font-label-md px-lg py-sm rounded-lg active:scale-95 transition-transform" onclick="toggleModal(true)">Post Opportunity</button>
+<div class="w-10 h-10 rounded-full overflow-hidden border border-outline-variant">
+<img class="w-full h-full object-cover" data-alt="A clean, minimalist professional headshot of a female educator with glasses, smiling warmly against a soft gray background in a well-lit studio. The lighting is diffused and professional, matching a high-end corporate dashboard aesthetic with a focus on competence and approachability." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAHw7_dlRyPNMfO1WxxVQSB1nx0qa9hCAlO-f1ZMlYGHwYGFPLqt78y_7s1ZuMDnExFqubTpWaw1h8yWVRKsIBBtljz627Lk1yoyObJ0UCa6mIX07wI9CkUwrp5gya2XeoeXDw047lyZZNhE3zLKXS6FpZtoI_LGgl_4KN8cZ_Q6eGg-Euy_wJUygwv_VpWr-3OCd6NE0E8JbU2dc3OFdIfe--s1doII2e9-kUTaer97tP2iZGrNwdE"/>
+</div>
+</div>
+</div>
+</header>
+<div class="max-w-container-max mx-auto flex">
+<!-- SideNavBar / Filters -->
+<aside class="h-[calc(100vh-64px)] w-64 hidden lg:flex flex-col flex-shrink-0 bg-surface dark:bg-surface-dim border-r border-surface-variant dark:border-outline-variant p-md gap-md sticky top-[64px]">
+<div class="pb-md border-b border-surface-variant">
+<h2 class="font-headline-md text-headline-md text-primary">Filters</h2>
+<p class="font-label-md text-label-md text-on-surface-variant">Refine your feed</p>
+</div>
+<nav class="flex flex-col gap-sm">
+<button class="flex items-center gap-sm px-md py-sm bg-secondary-container dark:bg-secondary text-on-secondary-container dark:text-on-secondary rounded-xl active:translate-x-1 transition-transform">
+<span class="material-symbols-outlined" data-icon="verified">verified</span>
+<span class="font-label-md text-label-md">Best Fit</span>
+</button>
+<button class="flex items-center gap-sm px-md py-sm text-on-surface-variant dark:text-on-secondary-fixed-variant hover:bg-surface-container-low transition-all">
+<span class="material-symbols-outlined" data-icon="location_on">location_on</span>
+<span class="font-label-md text-label-md">Proximity</span>
+</button>
+<button class="flex items-center gap-sm px-md py-sm text-on-surface-variant dark:text-on-secondary-fixed-variant hover:bg-surface-container-low transition-all">
+<span class="material-symbols-outlined" data-icon="payments">payments</span>
+<span class="font-label-md text-label-md">Cost</span>
+</button>
+<button class="flex items-center gap-sm px-md py-sm text-on-surface-variant dark:text-on-secondary-fixed-variant hover:bg-surface-container-low transition-all">
+<span class="material-symbols-outlined" data-icon="category">category</span>
+<span class="font-label-md text-label-md">Type</span>
+</button>
+<button class="flex items-center gap-sm px-md py-sm text-on-surface-variant dark:text-on-secondary-fixed-variant hover:bg-surface-container-low transition-all">
+<span class="material-symbols-outlined" data-icon="schedule">schedule</span>
+<span class="font-label-md text-label-md">Duration</span>
+</button>
+</nav>
+<div class="mt-auto flex flex-col gap-sm pt-md border-t border-surface-variant">
+<button class="flex items-center gap-sm px-md py-sm text-on-surface-variant hover:bg-surface-container-low transition-all">
+<span class="material-symbols-outlined" data-icon="help">help</span>
+<span class="font-label-md text-label-md">Help</span>
+</button>
+<button class="flex items-center gap-sm px-md py-sm text-on-surface-variant hover:bg-surface-container-low transition-all">
+<span class="material-symbols-outlined" data-icon="settings">settings</span>
+<span class="font-label-md text-label-md">Settings</span>
+</button>
+<button class="mt-md text-primary font-label-md text-label-md text-center py-2 border border-primary rounded hover:bg-primary hover:text-white transition-colors">Reset All</button>
+</div>
+</aside>
+<!-- Main Content -->
+<main class="flex-grow p-lg overflow-hidden">
+<!-- Dashboard Header & Stats -->
+<div class="mb-xl">
+<div class="flex flex-col md:flex-row md:items-end justify-between gap-md mb-lg">
+<div>
+<h1 class="font-headline-lg text-headline-lg text-on-surface mb-xs">Provider Dashboard</h1>
+<p class="font-body-md text-body-md text-on-surface-variant">Manage your organization's opportunities and track engagement.</p>
+</div>
+<div class="flex gap-sm">
+<div class="px-md py-sm bg-surface-container-low border border-surface-variant rounded-lg">
+<span class="block font-label-sm text-label-sm text-on-surface-variant">TOTAL LISTINGS</span>
+<span class="block font-headline-md text-headline-md">12</span>
+</div>
+<div class="px-md py-sm bg-surface-container-low border border-surface-variant rounded-lg">
+<span class="block font-label-sm text-label-sm text-on-surface-variant">TOTAL INTEREST</span>
+<span class="block font-headline-md text-headline-md">482</span>
+</div>
+</div>
+</div>
+<!-- Bento Grid Visualization -->
+<div class="grid grid-cols-1 md:grid-cols-3 gap-md mb-xl">
+<div class="md:col-span-2 bg-surface border border-surface-variant rounded-xl p-lg relative overflow-hidden h-64">
+<div class="relative z-10">
+<h3 class="font-label-md text-label-md text-primary mb-md">ENGAGEMENT TRENDS</h3>
+<div class="flex items-end gap-sm h-32">
+<div class="w-full bg-primary-container/20 rounded-t h-[40%]"></div>
+<div class="w-full bg-primary-container/20 rounded-t h-[60%]"></div>
+<div class="w-full bg-primary-container/20 rounded-t h-[45%]"></div>
+<div class="w-full bg-primary-container/20 rounded-t h-[80%]"></div>
+<div class="w-full bg-primary-container rounded-t h-[95%]"></div>
+<div class="w-full bg-primary-container/20 rounded-t h-[70%]"></div>
+<div class="w-full bg-primary-container/20 rounded-t h-[85%]"></div>
+</div>
+<div class="flex justify-between mt-sm text-label-sm text-on-surface-variant">
+<span>Mon</span><span>Tue</span><span>Wed</span><span>Thu</span><span>Fri</span><span>Sat</span><span>Sun</span>
+</div>
+</div>
+</div>
+<div class="bg-primary-container rounded-xl p-lg text-on-primary flex flex-col justify-between">
+<div>
+<span class="material-symbols-outlined text-4xl mb-sm" data-icon="auto_awesome">auto_awesome</span>
+<h3 class="font-headline-md text-headline-md">Quick Match</h3>
+<p class="font-body-md text-body-md opacity-90 mt-xs">34 students perfectly fit your "UX Intern" listing. Send invitations now?</p>
+</div>
+<button class="bg-white text-primary-container font-label-md py-sm rounded-lg hover:bg-on-primary-container transition-colors">View Matches</button>
+</div>
+</div>
+<!-- Listings Table -->
+<div class="bg-surface border border-surface-variant rounded-xl overflow-hidden">
+<div class="px-lg py-md border-b border-surface-variant flex justify-between items-center bg-surface-container-lowest">
+<h2 class="font-label-md text-label-md text-on-surface">Active Opportunities</h2>
+<div class="flex gap-sm">
+<div class="relative">
+<span class="material-symbols-outlined absolute left-sm top-1/2 -translate-y-1/2 text-on-surface-variant text-sm" data-icon="search">search</span>
+<input class="pl-xl pr-md py-1.5 border border-surface-variant rounded-lg text-body-md focus:ring-1 focus:ring-primary focus:border-primary outline-none" placeholder="Search listings..." type="text"/>
+</div>
+</div>
+</div>
+<div class="overflow-x-auto">
+<table class="w-full text-left border-collapse">
+<thead>
+<tr class="bg-surface-container-low text-on-surface-variant font-label-sm text-label-sm uppercase tracking-wider">
+<th class="px-lg py-md font-medium">Opportunity</th>
+<th class="px-lg py-md font-medium">Status</th>
+<th class="px-lg py-md font-medium">Views</th>
+<th class="px-lg py-md font-medium">Interested</th>
+<th class="px-lg py-md font-medium">Expires</th>
+<th class="px-lg py-md font-medium text-right">Actions</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-surface-variant">
+<!-- Row 1 -->
+<tr class="hover:bg-surface-bright transition-colors group">
+<td class="px-lg py-md">
+<div class="flex items-center gap-md">
+<div class="w-10 h-10 bg-tertiary-container/10 text-tertiary rounded flex items-center justify-center">
+<span class="material-symbols-outlined" data-icon="biotech">biotech</span>
+</div>
+<div>
+<div class="font-label-md text-on-surface">Summer Research Assistant</div>
+<div class="text-body-md text-on-surface-variant">STEM • On-campus</div>
+</div>
+</div>
+</td>
+<td class="px-lg py-md">
+<span class="px-sm py-1 bg-green-100 text-green-700 text-[10px] font-bold uppercase rounded-sm border border-green-200">Open</span>
+</td>
+<td class="px-lg py-md font-body-md">1,240</td>
+<td class="px-lg py-md font-body-md">84</td>
+<td class="px-lg py-md font-body-md">Jun 15, 2024</td>
+<td class="px-lg py-md text-right">
+<button class="text-on-surface-variant hover:text-primary transition-colors">
+<span class="material-symbols-outlined" data-icon="more_vert">more_vert</span>
+</button>
+</td>
+</tr>
+<!-- Row 2 -->
+<tr class="hover:bg-surface-bright transition-colors group">
+<td class="px-lg py-md">
+<div class="flex items-center gap-md">
+<div class="w-10 h-10 bg-primary-container/10 text-primary rounded flex items-center justify-center">
+<span class="material-symbols-outlined" data-icon="palette">palette</span>
+</div>
+<div>
+<div class="font-label-md text-on-surface">Junior UX Intern</div>
+<div class="text-body-md text-on-surface-variant">Design • Remote</div>
+</div>
+</div>
+</td>
+<td class="px-lg py-md">
+<span class="px-sm py-1 bg-green-100 text-green-700 text-[10px] font-bold uppercase rounded-sm border border-green-200">Open</span>
+</td>
+<td class="px-lg py-md font-body-md">3,102</td>
+<td class="px-lg py-md font-body-md">215</td>
+<td class="px-lg py-md font-body-md">Jul 01, 2024</td>
+<td class="px-lg py-md text-right">
+<button class="text-on-surface-variant hover:text-primary transition-colors">
+<span class="material-symbols-outlined" data-icon="more_vert">more_vert</span>
+</button>
+</td>
+</tr>
+<!-- Row 3 -->
+<tr class="hover:bg-surface-bright transition-colors group">
+<td class="px-lg py-md">
+<div class="flex items-center gap-md">
+<div class="w-10 h-10 bg-on-secondary-container/10 text-secondary rounded flex items-center justify-center">
+<span class="material-symbols-outlined" data-icon="campaign">campaign</span>
+</div>
+<div>
+<div class="font-label-md text-on-surface">Digital Marketing Fellowship</div>
+<div class="text-body-md text-on-surface-variant">Business • Hybrid</div>
+</div>
+</div>
+</td>
+<td class="px-lg py-md">
+<span class="px-sm py-1 bg-surface-container-high text-on-surface-variant text-[10px] font-bold uppercase rounded-sm border border-surface-variant">Reviewing</span>
+</td>
+<td class="px-lg py-md font-body-md">850</td>
+<td class="px-lg py-md font-body-md">56</td>
+<td class="px-lg py-md font-body-md">Expired</td>
+<td class="px-lg py-md text-right">
+<button class="text-on-surface-variant hover:text-primary transition-colors">
+<span class="material-symbols-outlined" data-icon="more_vert">more_vert</span>
+</button>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+</main>
+</div>
+<!-- Post Opportunity Modal Overlay -->
+<div class="fixed inset-0 bg-on-surface/40 backdrop-blur-sm z-[100] hidden flex items-center justify-center p-md" id="modal-overlay">
+<div class="bg-surface w-full max-w-2xl rounded-xl shadow-2xl overflow-hidden modal-enter">
+<div class="px-lg py-md border-b border-surface-variant flex justify-between items-center bg-surface-container-lowest">
+<h2 class="font-headline-md text-headline-md text-on-surface">Post New Opportunity</h2>
+<button class="text-on-surface-variant hover:text-on-surface" onclick="toggleModal(false)">
+<span class="material-symbols-outlined" data-icon="close">close</span>
+</button>
+</div>
+<form class="p-lg space-y-md">
+<div class="grid grid-cols-1 md:grid-cols-2 gap-md">
+<div class="md:col-span-2">
+<label class="block font-label-sm text-label-sm text-on-surface-variant mb-xs">OPPORTUNITY TITLE</label>
+<input class="w-full px-md py-sm border border-surface-variant rounded focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all" placeholder="e.g. Senior Laboratory Researcher" type="text"/>
+</div>
+<div>
+<label class="block font-label-sm text-label-sm text-on-surface-variant mb-xs">LOCATION</label>
+<select class="w-full px-md py-sm border border-surface-variant rounded focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none appearance-none">
+<option>Remote</option>
+<option>On-Campus</option>
+<option>Hybrid</option>
+</select>
+</div>
+<div>
+<label class="block font-label-sm text-label-sm text-on-surface-variant mb-xs">ESTIMATED COST/STIPEND</label>
+<input class="w-full px-md py-sm border border-surface-variant rounded focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none" placeholder="e.g. $5,000 / Free" type="text"/>
+</div>
+<div class="md:col-span-2">
+<label class="block font-label-sm text-label-sm text-on-surface-variant mb-xs">DESCRIPTION</label>
+<textarea class="w-full px-md py-sm border border-surface-variant rounded focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none resize-none" placeholder="Describe the role, requirements, and what students will gain..." rows="4"></textarea>
+</div>
+<div class="md:col-span-2">
+<label class="block font-label-sm text-label-sm text-on-surface-variant mb-xs">INTEREST TAGS</label>
+<div class="flex flex-wrap gap-xs">
+<span class="px-sm py-1 bg-primary-container/10 text-primary border border-primary/20 rounded-full text-label-sm flex items-center gap-xs cursor-pointer">
+                                Engineering <span class="material-symbols-outlined text-[14px]" data-icon="close">close</span>
+</span>
+<span class="px-sm py-1 bg-primary-container/10 text-primary border border-primary/20 rounded-full text-label-sm flex items-center gap-xs cursor-pointer">
+                                Research <span class="material-symbols-outlined text-[14px]" data-icon="close">close</span>
+</span>
+<button class="px-sm py-1 border border-dashed border-outline text-on-surface-variant rounded-full text-label-sm flex items-center gap-xs hover:border-primary hover:text-primary transition-colors" type="button">
+<span class="material-symbols-outlined text-[14px]" data-icon="add">add</span> Add Tag
+                            </button>
+</div>
+</div>
+</div>
+<div class="pt-lg flex justify-end gap-md">
+<button class="px-lg py-sm font-label-md text-secondary hover:bg-surface-container-low rounded-lg transition-colors" onclick="toggleModal(false)" type="button">Cancel</button>
+<button class="px-xl py-sm bg-primary text-on-primary font-label-md rounded-lg shadow-lg shadow-primary/20 hover:bg-primary-container transition-colors" type="submit">Publish Opportunity</button>
+</div>
+</form>
+</div>
+</div>
+<script>
+        function toggleModal(show) {
+            const modal = document.getElementById('modal-overlay');
+            if (show) {
+                modal.classList.remove('hidden');
+                document.body.style.overflow = 'hidden';
+            } else {
+                modal.classList.add('hidden');
+                document.body.style.overflow = '';
+            }
+        }
+
+        // Close modal on escape key
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') toggleModal(false);
+        });
+
+        // Simple row hover effect enhancement
+        document.querySelectorAll('tr').forEach(row => {
+            row.addEventListener('click', (e) => {
+                if(!e.target.closest('button')) {
+                    // Logic for row detail click could go here
+                    console.log('Row clicked');
+                }
+            });
+        });
+    </script>
+</body></html>

@@ -1,0 +1,351 @@
+/* Student opportunity feed — "Academic Clarity" (Stitch). Left filter rail + curated card grid. */
+.shell {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: flex;
+  min-height: calc(100vh - 64px);
+  align-items: stretch;
+}
+
+/* ---- Sidebar ---- */
+.sidebar {
+  width: 256px;
+  flex: none;
+  border-right: 1px solid var(--line);
+  background: var(--bg);
+  padding: 24px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  position: sticky;
+  top: 64px;
+  align-self: flex-start;
+  height: calc(100vh - 64px);
+}
+.sideHead {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.sideTitle {
+  margin: 0;
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--accent-ink);
+  letter-spacing: -0.01em;
+}
+.reset {
+  color: var(--accent);
+  font-size: 13px;
+  font-weight: 600;
+  text-decoration: none;
+}
+.reset:hover {
+  text-decoration: underline;
+}
+.sideSub {
+  margin: -8px 0 4px;
+  font-size: 12px;
+  letter-spacing: 0.04em;
+  color: var(--muted);
+  font-weight: 500;
+}
+.group {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.groupLabel {
+  font-size: 11px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--muted);
+  font-weight: 700;
+  margin: 6px 0 2px;
+}
+.item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 12px;
+  border-radius: var(--radius-sm);
+  color: var(--text-2);
+  text-decoration: none;
+  font-size: 14px;
+  font-weight: 500;
+  border: 1px solid transparent;
+}
+.item:hover {
+  background: var(--surface-2);
+  color: var(--text);
+}
+.item.active {
+  background: var(--accent-soft);
+  color: var(--accent);
+  font-weight: 600;
+}
+.item .material-symbols-outlined {
+  font-size: 20px;
+}
+.spacer {
+  margin-top: auto;
+  border-top: 1px solid var(--line);
+  padding-top: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+/* ---- Main ---- */
+.main {
+  flex: 1;
+  min-width: 0;
+  padding: 32px;
+}
+.feedHead {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  margin-bottom: 32px;
+}
+@media (min-width: 900px) {
+  .feedHead {
+    flex-direction: row;
+    align-items: flex-end;
+    justify-content: space-between;
+  }
+}
+.feedTitle {
+  margin: 0 0 6px;
+  font-size: 32px;
+  line-height: 40px;
+  letter-spacing: -0.02em;
+  font-weight: 700;
+}
+.feedSub {
+  margin: 0;
+  color: var(--muted);
+  font-size: 16px;
+}
+.feedSub b {
+  color: var(--accent);
+  font-weight: 600;
+}
+.sortWrap {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  white-space: nowrap;
+}
+.sortLabel {
+  font-size: 12px;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--muted);
+  font-weight: 500;
+}
+.sortLink {
+  color: var(--muted);
+  text-decoration: none;
+  font-size: 14px;
+  font-weight: 600;
+  padding: 4px 8px;
+  border-radius: var(--radius-sm);
+}
+.sortLink.on {
+  color: var(--accent);
+  background: var(--accent-soft);
+}
+
+.cards {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 24px;
+}
+@media (min-width: 1100px) {
+  .cards {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+/* ---- Opportunity card ---- */
+.card {
+  position: relative;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+}
+.card:hover {
+  box-shadow: var(--shadow);
+  transform: translateY(-2px);
+}
+.badge {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+  padding: 3px 8px;
+  border-radius: var(--radius-pill);
+  background: var(--accent-soft);
+  color: var(--accent);
+}
+.badge .material-symbols-outlined {
+  font-size: 12px;
+  font-variation-settings: "FILL" 1;
+}
+.badge.new {
+  background: var(--warn-soft);
+  color: var(--warn);
+}
+.head {
+  display: flex;
+  align-items: flex-start;
+  gap: 16px;
+  margin-bottom: 16px;
+  padding-right: 90px;
+}
+.logo {
+  width: 48px;
+  height: 48px;
+  flex: none;
+  border-radius: var(--radius-sm);
+  background: var(--surface-3);
+  border: 1px solid var(--line);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+.logo img {
+  width: 30px;
+  height: 30px;
+  object-fit: contain;
+}
+.logo .material-symbols-outlined {
+  font-size: 24px;
+  color: var(--muted);
+}
+.title {
+  margin: 0 0 2px;
+  font-size: 18px;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  line-height: 24px;
+}
+.title a {
+  color: var(--text);
+  text-decoration: none;
+}
+.title a:hover {
+  color: var(--accent);
+}
+.org {
+  margin: 0;
+  color: var(--muted);
+  font-size: 14px;
+}
+.tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 20px;
+}
+.tag {
+  background: var(--surface-2);
+  border: 1px solid var(--line);
+  color: var(--text-2);
+  font-size: 12px;
+  font-weight: 500;
+  padding: 3px 8px;
+  border-radius: var(--radius-xs);
+}
+.foot {
+  margin-top: auto;
+  padding-top: 16px;
+  border-top: 1px solid var(--line);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+.metaRow {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  color: var(--muted);
+  min-width: 0;
+}
+.metaItem {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 12px;
+  white-space: nowrap;
+}
+.metaItem .material-symbols-outlined {
+  font-size: 18px;
+}
+.actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex: none;
+}
+.apply {
+  padding: 8px 16px;
+  background: var(--accent);
+  color: #fff;
+  border: none;
+  border-radius: var(--radius-sm);
+  font-size: 14px;
+  font-weight: 600;
+  text-decoration: none;
+  cursor: pointer;
+}
+.apply:hover {
+  background: var(--accent-strong);
+}
+
+.explore {
+  margin-top: 48px;
+  display: flex;
+  justify-content: center;
+}
+.exploreBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 24px;
+  border: 1px solid var(--line);
+  color: var(--text-2);
+  background: var(--surface);
+  border-radius: var(--radius-pill);
+  font-size: 14px;
+  font-weight: 600;
+  text-decoration: none;
+}
+.exploreBtn:hover {
+  background: var(--surface-2);
+}
+.empty {
+  color: var(--muted);
+  font-size: 15px;
+  padding: 24px 0;
+}
+
+@media (max-width: 900px) {
+  .sidebar {
+    display: none;
+  }
+  .main {
+    padding: 24px 20px;
+  }
+}

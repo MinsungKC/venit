@@ -1,69 +1,67 @@
 /*
- * Onboarding wizard layout (BUILD_PROMPT §6). Scoped CSS module so these class names can't collide
- * with the global match-flow styles. Reuses the global color tokens (var(--...)) for light/dark
- * parity and keeps chips visually consistent with the rest of the app.
+ * Onboarding wizard (BUILD_PROMPT §6): a playful, bubble-based flow. Uses the global color tokens
+ * for light/dark parity. Broad → specific interests are "hovering bubbles" that pop on tap.
  */
-
 .wizard {
-  max-width: 760px;
-  margin: 8px 0 0;
+  max-width: 780px;
+  margin: 4px auto 0;
   display: flex;
   flex-direction: column;
-  gap: 24px;
+  gap: 28px;
 }
 
-/* ---- Progress: step indicator + bar ---- */
+/* ---- Progress ---- */
 .progress {
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 14px;
 }
-
-.steps {
+.stepList {
   list-style: none;
   margin: 0;
   padding: 0;
   display: flex;
-  gap: 20px;
+  gap: 10px;
+  flex-wrap: wrap;
 }
-
-.stepDot {
-  display: flex;
+.stepItem {
+  display: inline-flex;
   align-items: center;
   gap: 8px;
   color: var(--muted);
-  font-size: 14px;
+  font-size: 13px;
   font-weight: 600;
+  opacity: 0.6;
 }
-
-.stepNum {
+.stepOn,
+.stepDone {
+  opacity: 1;
+  color: var(--text);
+}
+.stepDot {
   display: inline-flex;
   align-items: center;
   justify-content: center;
   width: 24px;
   height: 24px;
-  border-radius: 999px;
+  border-radius: 50%;
   border: 1px solid var(--line);
   background: var(--panel);
   font-size: 12px;
+  font-weight: 700;
 }
-
-.stepCurrent {
-  color: var(--text);
-}
-.stepCurrent .stepNum {
-  background: var(--accent);
-  border-color: var(--accent);
+.stepOn .stepDot {
+  background: var(--grad);
+  border-color: transparent;
   color: #fff;
 }
-
-.stepDone .stepNum {
-  border-color: var(--accent);
-  color: var(--accent);
+.stepDone .stepDot {
+  background: color-mix(in srgb, var(--hiring) 20%, transparent);
+  border-color: transparent;
+  color: var(--hiring);
 }
-
 .bar {
-  height: 6px;
+  height: 8px;
   border-radius: 999px;
   background: var(--panel-2);
   border: 1px solid var(--line);
@@ -71,143 +69,245 @@
 }
 .barFill {
   height: 100%;
-  background: var(--accent);
   border-radius: 999px;
-  transition: width 0.25s ease;
+  background: var(--grad);
+  transition: width 0.35s var(--ease);
 }
 
-/* ---- Panel (per-step body) ---- */
-.panel {
-  background: var(--panel);
+/* ---- Stage ---- */
+.stage {
+  min-height: 320px;
+  animation: stagein 0.4s var(--ease) both;
+}
+@keyframes stagein {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.stageTitle {
+  margin: 0 0 6px;
+  font-size: clamp(24px, 4vw, 32px);
+  letter-spacing: -0.02em;
+  font-weight: 800;
+}
+.stageSub {
+  margin: 0 0 24px;
+  color: var(--muted);
+  font-size: 16px;
+}
+
+/* ---- Bubbles ---- */
+.bubbles {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 14px 12px;
+  justify-content: center;
+  padding: 8px 0;
+}
+.bubbleWrap {
+  display: inline-block;
+  animation: bob var(--dur, 5s) ease-in-out var(--delay, 0s) infinite;
+}
+@keyframes bob {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-9px); }
+}
+.bubble {
+  --c: var(--accent);
+  cursor: pointer;
+  border: 2px solid color-mix(in srgb, var(--c) 55%, var(--line));
+  background: color-mix(in srgb, var(--c) 12%, var(--panel));
+  color: var(--text);
+  padding: 15px 24px;
+  border-radius: 999px;
+  font-size: 16px;
+  font-weight: 700;
+  line-height: 1;
+  box-shadow: 0 6px 18px -8px color-mix(in srgb, var(--c) 60%, transparent);
+  transition: background-color var(--t), color var(--t), border-color var(--t), box-shadow var(--t);
+}
+.bubble.small {
+  padding: 11px 18px;
+  font-size: 14px;
+  font-weight: 650;
+}
+.bubble:hover {
+  border-color: var(--c);
+  box-shadow: 0 10px 24px -8px color-mix(in srgb, var(--c) 75%, transparent);
+}
+.bubble:active {
+  transform: scale(0.92);
+}
+.bubble.sel {
+  background: var(--c);
+  border-color: var(--c);
+  color: #0a0a12;
+  box-shadow: 0 12px 28px -8px color-mix(in srgb, var(--c) 85%, transparent);
+  animation: pop 0.42s var(--ease);
+}
+@keyframes pop {
+  0% { transform: scale(1); }
+  35% { transform: scale(1.22); }
+  60% { transform: scale(0.94); }
+  80% { transform: scale(1.05); }
+  100% { transform: scale(1); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .bubbleWrap {
+    animation: none;
+  }
+}
+
+/* ---- About-you / resume forms ---- */
+.formLabel {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  font-size: 15px;
+  font-weight: 700;
+  margin-bottom: 22px;
+}
+.optional {
+  color: var(--muted);
+  font-weight: 500;
+}
+.req {
+  color: var(--accent);
+  font-weight: 600;
+}
+.input,
+.textarea {
+  padding: 13px 15px;
   border: 1px solid var(--line);
   border-radius: 14px;
-  padding: 20px;
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-}
-
-.stepHead {
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-}
-.stepTitle {
-  margin: 0;
-  font-size: 20px;
-}
-.caption {
-  margin: 0;
-  color: var(--muted);
-  font-size: 14px;
-  max-width: 60ch;
-}
-
-.search {
-  padding: 9px 12px;
-  border: 1px solid var(--line);
-  border-radius: 10px;
-  background: var(--panel-2);
-  color: var(--text);
-  font-size: 14px;
-}
-
-/* ---- Interest chips (kept consistent with the app's chip pattern) ---- */
-.domains {
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-  max-height: 46vh;
-  overflow-y: auto;
-}
-.domainName {
-  margin: 0 0 8px;
-  font-size: 12px;
-  text-transform: uppercase;
-  letter-spacing: 0.04em;
-  color: var(--muted);
-}
-.chips {
-  list-style: none;
-  margin: 0;
-  padding: 0;
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-}
-.chip {
-  padding: 6px 12px;
-  border: 1px solid var(--line);
-  border-radius: 999px;
   background: var(--panel);
   color: var(--text);
+  font-size: 15px;
+  font-family: inherit;
+  font-weight: 400;
+  resize: vertical;
+}
+.input:focus,
+.textarea:focus {
+  border-color: var(--accent);
+}
+.hint {
   font-size: 13px;
-  cursor: pointer;
+  color: var(--muted);
+  font-weight: 500;
 }
-.chip:hover {
-  border-color: var(--accent);
+.file {
+  font-size: 14px;
+  color: var(--muted);
+  margin-top: 4px;
 }
-.chipOn {
-  background: var(--accent);
-  border-color: var(--accent);
-  color: #fff;
-  font-weight: 600;
-}
-
-/* ---- About-you fields ---- */
-.fields {
+.stripped {
   display: flex;
   flex-wrap: wrap;
-  gap: 16px;
-}
-.field {
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-  font-size: 12px;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
   color: var(--muted);
-  font-weight: 600;
+  margin-top: 12px;
 }
-.num {
-  width: 96px;
-  padding: 8px 10px;
-  border: 1px solid var(--line);
-  border-radius: 10px;
-  background: var(--panel-2);
-  color: var(--text);
+.strip {
+  background: color-mix(in srgb, var(--danger) 16%, transparent);
+  color: var(--danger);
+  padding: 3px 10px;
+  border-radius: 999px;
+  font-weight: 600;
+  text-transform: capitalize;
+}
+.err {
+  color: var(--danger);
   font-size: 14px;
+  margin: 0;
 }
 
-/* ---- Nav (Back / Next / See my matches) ---- */
+/* ---- Nav ---- */
 .nav {
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 12px;
+  border-top: 1px solid var(--line);
+  padding-top: 22px;
 }
 .primary,
 .ghost {
-  padding: 10px 18px;
-  border-radius: 10px;
-  font-size: 14px;
-  font-weight: 600;
+  padding: 13px 26px;
+  border-radius: 999px;
+  font-size: 15px;
+  font-weight: 700;
   cursor: pointer;
+  transition: transform var(--t), filter var(--t), border-color var(--t), color var(--t);
 }
 .primary {
   border: none;
-  background: var(--accent);
+  background: var(--grad);
   color: #fff;
+  box-shadow: var(--shadow-accent);
+}
+.primary:hover:not(:disabled) {
+  transform: translateY(-2px);
+  filter: brightness(1.06);
 }
 .ghost {
   border: 1px solid var(--line);
   background: var(--panel);
   color: var(--text);
 }
-.ghost:hover {
+.ghost:hover:not(:disabled) {
   border-color: var(--accent);
+  color: var(--accent);
 }
 .primary:disabled,
 .ghost:disabled {
-  opacity: 0.5;
+  opacity: 0.45;
   cursor: not-allowed;
+}
+
+/* ---- Loading (final submit) ---- */
+.loading {
+  min-height: 420px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  gap: 16px;
+}
+.spinner {
+  width: 46px;
+  height: 46px;
+  border-radius: 50%;
+  border: 4px solid var(--line);
+  border-top-color: var(--accent);
+  animation: spin 0.8s linear infinite;
+}
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+.loadMsg {
+  font-size: 18px;
+  font-weight: 700;
+  margin: 0;
+}
+.loadBar {
+  width: min(320px, 80%);
+  height: 8px;
+  border-radius: 999px;
+  background: var(--panel-2);
+  border: 1px solid var(--line);
+  overflow: hidden;
+}
+.loadFill {
+  height: 100%;
+  background: var(--grad);
+  border-radius: 999px;
+  transition: width 0.3s ease;
+}
+.loadNote {
+  color: var(--muted);
+  font-size: 13px;
+  margin: 0;
 }

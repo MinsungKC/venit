@@ -61,10 +61,11 @@
   background: var(--panel);
   border: 1px solid var(--line);
   border-radius: 12px;
-  padding: 12px;
+  padding: 13px;
   display: flex;
   flex-direction: column;
   gap: 8px;
+  box-shadow: var(--shadow-sm);
 }
 
 .cardTop {

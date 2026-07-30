@@ -26,14 +26,18 @@ const SOURCE_PATH = join(process.cwd(), "supabase", "seed", "source", "universit
 
 export function mapUniversityLab(l: UniversityLab): NormalizedListing {
   const topic = l.primary_topic ? ` — ${l.primary_topic}` : "";
+  const name = l.name.trim();
+  // The OpenAlex entry is a PI's public research area; frame it as a lab, not a bare person name.
+  const alreadyLab = /\b(lab|laboratory|group|center|centre|institute|program|department)\b/i.test(name);
+  const title = alreadyLab ? name : `${name} Lab`;
   return {
     external_id: l.id,
     source: "openalex",
     kind: "research_lab",
-    title: l.name.trim(),
+    title,
     slug: null,
     url: l.url?.trim() || null,
-    short_description: `Research group at ${l.university}${topic}.`,
+    short_description: `${l.field ? l.field + " research" : "Research group"} led by ${name} at ${l.university}${topic}.`,
     long_description: null,
     location_name: l.location?.trim() || l.university,
     is_remote: false,

@@ -63,6 +63,7 @@ export default function ShortlistPage() {
         <>
           <div className={styles.toolbar}>
             <CopyButton stars={stars} />
+            <ShareLinkButton stars={stars} />
           </div>
           <div className="grid">
             {stars.map((s) => (
@@ -95,6 +96,29 @@ function CopyButton({ stars }: { stars: StarRecord[] }) {
   return (
     <button className={`${styles.copyBtn} ${copied ? styles.done : ""}`} onClick={copy}>
       {copied ? "Copied!" : "Copy shareable list"}
+    </button>
+  );
+}
+
+/** Copy a read-only /shared?ids=… link to send to a parent/teacher (BUILD_PROMPT §7). */
+function ShareLinkButton({ stars }: { stars: StarRecord[] }) {
+  const [copied, setCopied] = useState(false);
+
+  const copy = async () => {
+    const ids = stars.map((s) => s.slug).join(",");
+    const url = `${window.location.origin}/shared?ids=${encodeURIComponent(ids)}`;
+    try {
+      await navigator.clipboard.writeText(url);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 1500);
+    } catch {
+      // Clipboard blocked — no-op.
+    }
+  };
+
+  return (
+    <button className={`${styles.copyBtn} ${copied ? styles.done : ""}`} onClick={copy}>
+      {copied ? "Link copied!" : "Copy share link"}
     </button>
   );
 }

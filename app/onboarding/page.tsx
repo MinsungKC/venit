@@ -14,15 +14,9 @@ export default function OnboardingPage() {
 
   return (
     <main className="container">
-      <header className="page-head">
-        <div>
-          <Link href="/" className="back">
-            ← OppMatch
-          </Link>
-          <h1>Let&apos;s find your matches</h1>
-        </div>
-      </header>
-
+      <Link href="/" className="back">
+        ← Home
+      </Link>
       <OnboardingWizard catalog={catalog} />
     </main>
   );

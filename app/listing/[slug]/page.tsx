@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 import { getListingBySlug, similarByTags } from "@/lib/match-data";
 import type { ListingKind } from "@/lib/mapping";
 import StarButton from "../../match/StarButton";
+import ReportButton from "./ReportButton";
 
 export const dynamic = "force-dynamic";
 
@@ -105,6 +106,10 @@ export default function ListingPage({ params }: { params: { slug: string } }) {
           </ul>
         </section>
       )}
+
+      <div className="report-row">
+        <ReportButton slug={l.slug} />
+      </div>
 
       {similar.length > 0 && (
         <section className="detail-section">

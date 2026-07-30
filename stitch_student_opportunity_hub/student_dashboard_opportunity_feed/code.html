@@ -1,0 +1,427 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Opportunity Hub | AI Curated Feed</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "surface-container-high": "#e7e8e9",
+                        "surface-bright": "#f8f9fa",
+                        "on-secondary-fixed": "#141b2b",
+                        "tertiary-container": "#a44100",
+                        "surface-variant": "#e1e3e4",
+                        "on-tertiary-container": "#ffd2be",
+                        "surface-container-low": "#f3f4f5",
+                        "on-error": "#ffffff",
+                        "inverse-on-surface": "#f0f1f2",
+                        "outline-variant": "#c7c4d8",
+                        "on-tertiary-fixed": "#351000",
+                        "secondary-container": "#d9dff5",
+                        "surface-container": "#edeeef",
+                        "surface-dim": "#d9dadb",
+                        "on-primary-fixed": "#0f0069",
+                        "on-background": "#191c1d",
+                        "on-secondary-container": "#5c6274",
+                        "inverse-primary": "#c3c0ff",
+                        "primary-fixed": "#e2dfff",
+                        "surface-tint": "#4d44e3",
+                        "tertiary-fixed": "#ffdbcc",
+                        "on-primary-fixed-variant": "#3323cc",
+                        "background": "#f8f9fa",
+                        "outline": "#777587",
+                        "tertiary-fixed-dim": "#ffb695",
+                        "on-tertiary-fixed-variant": "#7b2f00",
+                        "on-surface-variant": "#464555",
+                        "on-tertiary": "#ffffff",
+                        "surface-container-highest": "#e1e3e4",
+                        "on-secondary": "#ffffff",
+                        "surface-container-lowest": "#ffffff",
+                        "surface": "#f8f9fa",
+                        "error-container": "#ffdad6",
+                        "on-secondary-fixed-variant": "#404758",
+                        "on-error-container": "#93000a",
+                        "primary-container": "#4f46e5",
+                        "on-primary": "#ffffff",
+                        "primary-fixed-dim": "#c3c0ff",
+                        "secondary-fixed": "#dce2f7",
+                        "on-primary-container": "#dad7ff",
+                        "error": "#ba1a1a",
+                        "on-surface": "#191c1d",
+                        "tertiary": "#7e3000",
+                        "secondary-fixed-dim": "#c0c6db",
+                        "secondary": "#575e70",
+                        "primary": "#3525cd",
+                        "inverse-surface": "#2e3132"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "0.75rem"
+                    },
+                    "spacing": {
+                        "xl": "48px",
+                        "sm": "8px",
+                        "md": "16px",
+                        "container-max": "1200px",
+                        "base": "4px",
+                        "gutter": "24px",
+                        "xs": "4px",
+                        "lg": "24px"
+                    },
+                    "fontFamily": {
+                        "headline-md": ["Inter"],
+                        "body-lg": ["Inter"],
+                        "headline-lg": ["Inter"],
+                        "label-md": ["Inter"],
+                        "label-sm": ["Inter"],
+                        "body-md": ["Inter"]
+                    },
+                    "fontSize": {
+                        "headline-md": ["20px", {"lineHeight": "28px", "letterSpacing": "-0.01em", "fontWeight": "600"}],
+                        "body-lg": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                        "headline-lg": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                        "label-md": ["14px", {"lineHeight": "20px", "fontWeight": "600"}],
+                        "label-sm": ["12px", {"lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "500"}],
+                        "body-md": ["14px", {"lineHeight": "20px", "fontWeight": "400"}]
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        body { font-family: 'Inter', sans-serif; background-color: #f8f9fa; }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+            display: inline-block;
+            vertical-align: middle;
+        }
+        .opportunity-card:hover {
+            box-shadow: 0px 10px 15px -3px rgba(0, 0, 0, 0.05);
+            transform: translateY(-2px);
+        }
+        .scrollbar-hide::-webkit-scrollbar { display: none; }
+    </style>
+</head>
+<body class="bg-background text-on-surface">
+<!-- TopNavBar -->
+<header class="w-full top-0 sticky z-50 bg-surface-container-lowest border-b border-surface-variant">
+<div class="flex justify-between items-center px-lg py-sm max-w-container-max mx-auto h-16">
+<div class="flex items-center gap-xl">
+<span class="font-headline-md text-headline-md font-bold text-primary">Opportunity Hub</span>
+<nav class="hidden md:flex items-center gap-lg">
+<a class="text-primary font-bold border-b-2 border-primary pb-1 font-body-md text-body-md" href="#">Discover</a>
+<a class="text-on-secondary-container hover:bg-surface-container-low transition-colors px-2 py-1 rounded font-body-md text-body-md" href="#">My Matches</a>
+<a class="text-on-secondary-container hover:bg-surface-container-low transition-colors px-2 py-1 rounded font-body-md text-body-md" href="#">Saved</a>
+<a class="text-on-secondary-container hover:bg-surface-container-low transition-colors px-2 py-1 rounded font-body-md text-body-md" href="#">Applications</a>
+</nav>
+</div>
+<div class="flex items-center gap-md">
+<div class="hidden sm:flex items-center bg-surface-container-low px-md py-1.5 rounded-lg border border-outline-variant">
+<span class="material-symbols-outlined text-outline text-[20px] mr-2">search</span>
+<input class="bg-transparent border-none focus:ring-0 text-body-md w-48 lg:w-64" placeholder="Search opportunities..." type="text"/>
+</div>
+<button class="hidden lg:flex px-md py-2 bg-primary-container text-on-primary rounded-xl font-label-md text-label-md active:scale-95 transition-transform">
+                    Post Opportunity
+                </button>
+<div class="w-8 h-8 rounded-full bg-surface-container-high overflow-hidden border border-outline-variant cursor-pointer">
+<img class="w-full h-full object-cover" data-alt="A professional student profile headshot in a minimalist, bright studio setting. The lighting is soft and even, highlighting a confident, friendly expression. The background is a clean, neutral grey to maintain a modern, high-end SaaS aesthetic." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCUHLZwsk1e3u1Fzgm-HqlWyWJJf9zafPjbMIOlKu_N5gkwFzaAYqfeYLrYw7USOP3FXSe3V5YAi2Co3rnfAyH53jJwhfGCZBjiG7GB6N_wBNLDEy_SewqXLHf_Y4TOoWBmjmuBNXnnnjyOotkVEcgNgG-5VsTUWRERLxvy53o3JmuZXNkSgwTUjaC5OXIwM7_EUwzwIkw3AnMcbPcwxkAm9OmBYRfnX1nFsOgdD3eHwR_jg8MUI2vr"/>
+</div>
+</div>
+</div>
+</header>
+<div class="max-w-container-max mx-auto flex min-h-[calc(100vh-64px)]">
+<!-- SideNavBar / Filters -->
+<aside class="h-full w-64 hidden lg:flex flex-col border-r border-surface-variant bg-surface sticky top-16 p-md gap-md">
+<div>
+<div class="flex items-center justify-between mb-xs">
+<h2 class="font-headline-md text-headline-md text-primary">Filters</h2>
+<button class="text-primary font-label-md text-label-md hover:underline">Reset All</button>
+</div>
+<p class="font-label-md text-label-md text-on-surface-variant opacity-70 mb-md">Refine your feed</p>
+</div>
+<nav class="flex flex-col gap-sm">
+<button class="flex items-center gap-md p-md bg-secondary-container text-on-secondary-container rounded-xl active:translate-x-1 transition-transform">
+<span class="material-symbols-outlined">verified</span>
+<span class="font-label-md text-label-md">Best Fit</span>
+</button>
+<button class="flex items-center gap-md p-md text-on-surface-variant hover:bg-surface-container-low rounded-xl transition-all active:translate-x-1">
+<span class="material-symbols-outlined">location_on</span>
+<span class="font-label-md text-label-md">Proximity</span>
+</button>
+<button class="flex items-center gap-md p-md text-on-surface-variant hover:bg-surface-container-low rounded-xl transition-all active:translate-x-1">
+<span class="material-symbols-outlined">payments</span>
+<span class="font-label-md text-label-md">Cost</span>
+</button>
+<button class="flex items-center gap-md p-md text-on-surface-variant hover:bg-surface-container-low rounded-xl transition-all active:translate-x-1">
+<span class="material-symbols-outlined">category</span>
+<span class="font-label-md text-label-md">Type</span>
+</button>
+<button class="flex items-center gap-md p-md text-on-surface-variant hover:bg-surface-container-low rounded-xl transition-all active:translate-x-1">
+<span class="material-symbols-outlined">schedule</span>
+<span class="font-label-md text-label-md">Duration</span>
+</button>
+</nav>
+<div class="mt-auto border-t border-surface-variant pt-md flex flex-col gap-sm">
+<button class="flex items-center gap-md p-md text-on-surface-variant hover:bg-surface-container-low rounded-xl transition-all">
+<span class="material-symbols-outlined">help</span>
+<span class="font-label-md text-label-md">Help</span>
+</button>
+<button class="flex items-center gap-md p-md text-on-surface-variant hover:bg-surface-container-low rounded-xl transition-all">
+<span class="material-symbols-outlined">settings</span>
+<span class="font-label-md text-label-md">Settings</span>
+</button>
+</div>
+</aside>
+<!-- Main Content -->
+<main class="flex-1 p-lg overflow-y-auto">
+<!-- Header Section -->
+<div class="mb-xl flex flex-col md:flex-row md:items-end justify-between gap-md">
+<div>
+<h1 class="font-headline-lg text-headline-lg text-on-surface mb-xs">Curated for you</h1>
+<p class="font-body-lg text-body-lg text-on-surface-variant">Based on your interest in <span class="text-primary font-semibold">AI Ethics</span> and <span class="text-primary font-semibold">Product Management</span>.</p>
+</div>
+<div class="flex items-center gap-sm">
+<span class="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider">Sort by:</span>
+<select class="bg-transparent border-none font-label-md text-label-md text-primary cursor-pointer focus:ring-0">
+<option>Most Recent</option>
+<option>Highest Match</option>
+<option>Closing Soon</option>
+</select>
+</div>
+</div>
+<!-- Opportunity Grid -->
+<div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-2 gap-lg">
+<!-- Card 1: Research Assistant -->
+<div class="opportunity-card bg-surface-container-lowest border border-outline-variant p-lg rounded-xl transition-all flex flex-col relative group">
+<div class="absolute top-4 right-4 flex items-center gap-xs">
+<span class="bg-primary/10 text-primary font-label-sm text-[10px] px-2 py-0.5 rounded-full flex items-center gap-1">
+<span class="material-symbols-outlined text-[12px]" style="font-variation-settings: 'FILL' 1;">auto_awesome</span>
+                            AI-MATCHED
+                        </span>
+</div>
+<div class="flex items-start gap-md mb-md">
+<div class="w-12 h-12 bg-surface-container rounded-lg flex items-center justify-center border border-outline-variant overflow-hidden shrink-0">
+<img class="w-8 h-8 object-contain" data-alt="Official logo of Stanford University presented in a sharp, high-contrast digital format. The design is clean and professional, suited for a high-end academic application interface. The color scheme is deep cardinal red and white, reflecting institutional authority and excellence." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDFB9cKkzB3Qmi0qf8pW7zWkEmXJTqH3pc3rTqK4RjXZUQke_BGN1bylIs_8hRk4yy0_P-iznHNxrYnYVhr64GKFtFcLa7IKeRUhFZ64C6b3zD8xyoIQKKEuXqnF5_aI86MNkSv3FAXBJRrWPfeRPJuEBbz69-4-QCncxwKrMs_ChynPPcpcWqjtGreQgONLyI1rUZyyyUUQ5br18SVO2nHaFo29YnZUCSOpM6w4DZYSZBt1WzbjYq2"/>
+</div>
+<div>
+<h3 class="font-headline-md text-headline-md text-on-surface">Neural Ethics Research Assistant</h3>
+<p class="font-body-md text-body-md text-on-surface-variant">Stanford HAI Lab</p>
+</div>
+</div>
+<div class="flex flex-wrap gap-sm mb-lg">
+<span class="bg-surface-container-low text-on-surface-variant px-2 py-1 rounded-sm font-label-sm text-label-sm border border-outline-variant">Research</span>
+<span class="bg-surface-container-low text-on-surface-variant px-2 py-1 rounded-sm font-label-sm text-label-sm border border-outline-variant">Paid</span>
+<span class="bg-surface-container-low text-on-surface-variant px-2 py-1 rounded-sm font-label-sm text-label-sm border border-outline-variant">12 Weeks</span>
+</div>
+<div class="mt-auto pt-md border-t border-surface-variant/50 flex items-center justify-between">
+<div class="flex items-center gap-md text-on-surface-variant">
+<div class="flex items-center gap-xs">
+<span class="material-symbols-outlined text-[18px]">location_on</span>
+<span class="font-label-sm text-label-sm">Palo Alto, CA</span>
+</div>
+<div class="flex items-center gap-xs">
+<span class="material-symbols-outlined text-[18px]">payments</span>
+<span class="font-label-sm text-label-sm">$28/hr</span>
+</div>
+</div>
+<div class="flex items-center gap-sm">
+<button class="p-2 hover:bg-surface-container-low rounded-full transition-colors active:scale-90" title="Star">
+<span class="material-symbols-outlined text-outline">star</span>
+</button>
+<button class="px-md py-2 bg-primary text-on-primary rounded-lg font-label-md text-label-md active:scale-95 transition-transform">
+                                Apply Now
+                            </button>
+</div>
+</div>
+</div>
+<!-- Card 2: PM Intern -->
+<div class="opportunity-card bg-surface-container-lowest border border-outline-variant p-lg rounded-xl transition-all flex flex-col relative group">
+<div class="absolute top-4 right-4">
+<span class="bg-tertiary-container/10 text-tertiary font-label-sm text-[10px] px-2 py-0.5 rounded-full">NEW</span>
+</div>
+<div class="flex items-start gap-md mb-md">
+<div class="w-12 h-12 bg-surface-container rounded-lg flex items-center justify-center border border-outline-variant overflow-hidden shrink-0">
+<img class="w-8 h-8 object-contain" data-alt="Corporate logo of Notion Labs, showing the iconic N symbol in black and white. The aesthetic is extremely minimalist and utility-focused, fitting seamlessly into a high-end productivity tool interface. The image is crisp, with high-definition rendering of the geometric letterform." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAGFonEHsMLX1nX7SvydDgBxilQTgyzhvyn0Ke9rvcXU4ytWo410q7FAFfiWH388eyUi2pAC_C6JCXgPKzHtqVu2bUxOUWHPeexyjsiYadbssgjDROOOVproc1qZMfNIHsprq1QCE-XlueihFj9RnjeQOfI-HSSurGoyTVNwBnYmXNgQwsjjxKEOb5UTv7kXm28AbGc5fZZquG6Zkr2pEWfO3rE0JfNOm-ULPXLdMILnGqSlZOi2O03"/>
+</div>
+<div>
+<h3 class="font-headline-md text-headline-md text-on-surface">Product Management Intern</h3>
+<p class="font-body-md text-body-md text-on-surface-variant">Notion Labs Inc.</p>
+</div>
+</div>
+<div class="flex flex-wrap gap-sm mb-lg">
+<span class="bg-surface-container-low text-on-surface-variant px-2 py-1 rounded-sm font-label-sm text-label-sm border border-outline-variant">Product</span>
+<span class="bg-surface-container-low text-on-surface-variant px-2 py-1 rounded-sm font-label-sm text-label-sm border border-outline-variant">Remote</span>
+<span class="bg-surface-container-low text-on-surface-variant px-2 py-1 rounded-sm font-label-sm text-label-sm border border-outline-variant">Stipend</span>
+</div>
+<div class="mt-auto pt-md border-t border-surface-variant/50 flex items-center justify-between">
+<div class="flex items-center gap-md text-on-surface-variant">
+<div class="flex items-center gap-xs">
+<span class="material-symbols-outlined text-[18px]">public</span>
+<span class="font-label-sm text-label-sm">Remote</span>
+</div>
+<div class="flex items-center gap-xs">
+<span class="material-symbols-outlined text-[18px]">payments</span>
+<span class="font-label-sm text-label-sm">$5,000/mo</span>
+</div>
+</div>
+<div class="flex items-center gap-sm">
+<button class="p-2 hover:bg-surface-container-low rounded-full transition-colors active:scale-90" title="Add to Calendar">
+<span class="material-symbols-outlined text-outline">calendar_add_on</span>
+</button>
+<button class="px-md py-2 bg-primary text-on-primary rounded-lg font-label-md text-label-md active:scale-95 transition-transform">
+                                Apply Now
+                            </button>
+</div>
+</div>
+</div>
+<!-- Card 3: Fellowship -->
+<div class="opportunity-card bg-surface-container-lowest border border-outline-variant p-lg rounded-xl transition-all flex flex-col relative group">
+<div class="absolute top-4 right-4 flex items-center gap-xs">
+<span class="bg-primary/10 text-primary font-label-sm text-[10px] px-2 py-0.5 rounded-full flex items-center gap-1">
+<span class="material-symbols-outlined text-[12px]" style="font-variation-settings: 'FILL' 1;">auto_awesome</span>
+                            AI-MATCHED
+                        </span>
+</div>
+<div class="flex items-start gap-md mb-md">
+<div class="w-12 h-12 bg-surface-container rounded-lg flex items-center justify-center border border-outline-variant overflow-hidden shrink-0">
+<img class="w-8 h-8 object-contain" data-alt="Official insignia of the Bill &amp; Melinda Gates Foundation, showcasing a clean, sophisticated typographic mark in deep blue. The visual style is rooted in philanthropy and global impact, using a balanced layout and generous whitespace to convey trust and established authority within a modern UI." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDsuPcVpF-v_-jzzD9dIJyTQHWlYDAXr2OEh5cOrKJmtzpPYxLOlNGIJKsERcNGurs6XJaixf8-g1_dy9ydtSdJ0wjX5QdbQLeXup2a48BgFgjTmZ9Z3HNR6bUDJPwbxB4X3lEGUqXczybqjXVWXdLa4LeFZVR8phO4A72C-UJQSGHHbn3frDGMcDGHiFSM2XxjxgaCDYWGwBM_yJXt1BUjF8uIsfa2CWFw5lLnPVvr2IXAXmLEH44p"/>
+</div>
+<div>
+<h3 class="font-headline-md text-headline-md text-on-surface">Global Health Equity Fellowship</h3>
+<p class="font-body-md text-body-md text-on-surface-variant">Gates Foundation</p>
+</div>
+</div>
+<div class="flex flex-wrap gap-sm mb-lg">
+<span class="bg-surface-container-low text-on-surface-variant px-2 py-1 rounded-sm font-label-sm text-label-sm border border-outline-variant">Fellowship</span>
+<span class="bg-surface-container-low text-on-surface-variant px-2 py-1 rounded-sm font-label-sm text-label-sm border border-outline-variant">Fully Funded</span>
+<span class="bg-surface-container-low text-on-surface-variant px-2 py-1 rounded-sm font-label-sm text-label-sm border border-outline-variant">6 Months</span>
+</div>
+<div class="mt-auto pt-md border-t border-surface-variant/50 flex items-center justify-between">
+<div class="flex items-center gap-md text-on-surface-variant">
+<div class="flex items-center gap-xs">
+<span class="material-symbols-outlined text-[18px]">location_on</span>
+<span class="font-label-sm text-label-sm">Seattle, WA</span>
+</div>
+<div class="flex items-center gap-xs">
+<span class="material-symbols-outlined text-[18px]">payments</span>
+<span class="font-label-sm text-label-sm">$0 Cost</span>
+</div>
+</div>
+<div class="flex items-center gap-sm">
+<button class="p-2 hover:bg-surface-container-low rounded-full transition-colors active:scale-90" title="Star">
+<span class="material-symbols-outlined text-outline">star</span>
+</button>
+<button class="px-md py-2 bg-primary text-on-primary rounded-lg font-label-md text-label-md active:scale-95 transition-transform">
+                                Apply Now
+                            </button>
+</div>
+</div>
+</div>
+<!-- Card 4: Design Intern -->
+<div class="opportunity-card bg-surface-container-lowest border border-outline-variant p-lg rounded-xl transition-all flex flex-col relative group">
+<div class="flex items-start gap-md mb-md">
+<div class="w-12 h-12 bg-surface-container rounded-lg flex items-center justify-center border border-outline-variant overflow-hidden shrink-0">
+<img class="w-8 h-8 object-contain" data-alt="The distinctive Stripe company logo, featuring its recognizable wordmark in a vibrant indigo blue. The design reflects cutting-edge financial technology and sophisticated software engineering. It is set against a clean, white background to emphasize clarity and modern aesthetics in a digital product landscape." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDLJh89JuFaW0V34foy5QdOFI3DDFHPoguFSo_HpWbCYD13vfK9f6A9w2Kf3OYQ4_8GWRbrE3Yevg92V_qvOHwd56AeK7GoFRYQz21yfKkgNum69JIZp2VQVobecWaRWlfrFdqrldWZt7Iem90MSahZzQGL0MxqhXcx3wY0nl72vpgnPGlSHY8hXMiwgRVLELjQ_F3xd3ETnDilZNdjJmVlpkZa4rZe27_lDhHbQb06vuO50_ubEyKA"/>
+</div>
+<div>
+<h3 class="font-headline-md text-headline-md text-on-surface">Product Design Internship</h3>
+<p class="font-body-md text-body-md text-on-surface-variant">Stripe</p>
+</div>
+</div>
+<div class="flex flex-wrap gap-sm mb-lg">
+<span class="bg-surface-container-low text-on-surface-variant px-2 py-1 rounded-sm font-label-sm text-label-sm border border-outline-variant">Design</span>
+<span class="bg-surface-container-low text-on-surface-variant px-2 py-1 rounded-sm font-label-sm text-label-sm border border-outline-variant">Summer 2024</span>
+<span class="bg-surface-container-low text-on-surface-variant px-2 py-1 rounded-sm font-label-sm text-label-sm border border-outline-variant">Competitive</span>
+</div>
+<div class="mt-auto pt-md border-t border-surface-variant/50 flex items-center justify-between">
+<div class="flex items-center gap-md text-on-surface-variant">
+<div class="flex items-center gap-xs">
+<span class="material-symbols-outlined text-[18px]">location_on</span>
+<span class="font-label-sm text-label-sm">San Francisco, CA</span>
+</div>
+<div class="flex items-center gap-xs">
+<span class="material-symbols-outlined text-[18px]">payments</span>
+<span class="font-label-sm text-label-sm">$45/hr</span>
+</div>
+</div>
+<div class="flex items-center gap-sm">
+<button class="p-2 hover:bg-surface-container-low rounded-full transition-colors active:scale-90" title="Star">
+<span class="material-symbols-outlined text-outline">star</span>
+</button>
+<button class="px-md py-2 bg-primary text-on-primary rounded-lg font-label-md text-label-md active:scale-95 transition-transform">
+                                Apply Now
+                            </button>
+</div>
+</div>
+</div>
+</div>
+<!-- Empty State / Load More hint -->
+<div class="mt-xl flex justify-center">
+<button class="flex items-center gap-sm px-lg py-3 border border-outline-variant text-on-surface-variant rounded-full font-label-md text-label-md hover:bg-surface-container-low transition-all active:scale-95">
+                    Explore more opportunities
+                    <span class="material-symbols-outlined">arrow_forward</span>
+</button>
+</div>
+</main>
+</div>
+<!-- Mobile Navigation (BottomNavBar) -->
+<nav class="md:hidden fixed bottom-0 left-0 right-0 bg-surface-container-lowest border-t border-surface-variant flex justify-around items-center py-2 z-50">
+<button class="flex flex-col items-center gap-xs text-primary font-bold">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">explore</span>
+<span class="text-[10px]">Discover</span>
+</button>
+<button class="flex flex-col items-center gap-xs text-on-secondary-container">
+<span class="material-symbols-outlined">favorite</span>
+<span class="text-[10px]">Matches</span>
+</button>
+<button class="flex flex-col items-center gap-xs text-on-secondary-container">
+<span class="material-symbols-outlined">bookmark</span>
+<span class="text-[10px]">Saved</span>
+</button>
+<button class="flex flex-col items-center gap-xs text-on-secondary-container">
+<span class="material-symbols-outlined">person</span>
+<span class="text-[10px]">Profile</span>
+</button>
+</nav>
+<script>
+        // Micro-interactions
+        document.querySelectorAll('.opportunity-card').forEach(card => {
+            card.addEventListener('click', function(e) {
+                // Prevent trigger if clicking buttons
+                if (e.target.closest('button')) return;
+                
+                // Add a subtle flash effect on click
+                this.style.backgroundColor = 'var(--surface-container-low)';
+                setTimeout(() => {
+                    this.style.backgroundColor = 'var(--surface-container-lowest)';
+                }, 150);
+            });
+        });
+
+        // Toggle Star
+        document.querySelectorAll('button[title="Star"]').forEach(btn => {
+            btn.addEventListener('click', function() {
+                const icon = this.querySelector('.material-symbols-outlined');
+                if (icon.innerText === 'star') {
+                    icon.innerText = 'star_rate';
+                    icon.style.fontVariationSettings = "'FILL' 1";
+                    icon.classList.add('text-primary');
+                } else {
+                    icon.innerText = 'star';
+                    icon.style.fontVariationSettings = "'FILL' 0";
+                    icon.classList.remove('text-primary');
+                }
+            });
+        });
+    </script>
+</body></html>

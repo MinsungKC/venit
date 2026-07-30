@@ -37,6 +37,8 @@ export interface ListingRecord {
   grade_max: number | null;
   /** Interest-tag slugs linked to this listing (always ≥ 1 for emitted rows). */
   tag_slugs: string[];
+  /** Specific source tags (yc keywords, OpenAlex subfields…) kept for niche free-text matching. */
+  niche_slugs?: string[];
 }
 
 /** What a source adapter emits: a full listing minus derived slug/tag_slugs. */
