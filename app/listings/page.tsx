@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { getListings, type ListingView } from "@/lib/listings";
 import type { ListingKind } from "@/lib/mapping";
+import SearchBar from "@/app/SearchBar";
 
 export const dynamic = "force-dynamic";
 
@@ -71,6 +72,8 @@ export default async function ListingsPage({
           <span className="src"> · {source === "database" ? "live database" : "static seed"}</span>
         </p>
       </header>
+
+      <SearchBar />
 
       <nav className="tabs" aria-label="Filter by kind">
         <Link className={`tab ${!kind ? "active" : ""}`} href="/listings">
