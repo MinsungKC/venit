@@ -5,6 +5,7 @@ import { getUser } from "@/lib/supabase/server";
 import type { ListingKind } from "@/lib/mapping";
 import type { SortAxis } from "@/lib/match-types";
 import StarButton from "./StarButton";
+import SearchBar from "@/app/SearchBar";
 import styles from "./match.module.css";
 
 export const dynamic = "force-dynamic";
@@ -254,6 +255,8 @@ export default async function MatchPage({
       </aside>
 
       <main className={styles.main}>
+        <SearchBar />
+
         <div className={styles.feedHead}>
           <div>
             <h1 className={styles.feedTitle}>Curated for you</h1>
