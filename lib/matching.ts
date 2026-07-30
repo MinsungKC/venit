@@ -8,6 +8,10 @@
  * archetype names never appear in the returned `MatchResult`. §0.4: every returned listing
  * shares ≥1 interest tag (personality never gates, only sorts). §0.5: a research_lab also
  * needs a location match unless remote. §0.6: age/grade are hard filters, never ranking.
+ *
+ * Default ranking leads with rarity-weighted interest-tag overlap (`tagOverlapScore`), not
+ * personality fit — tags are the only §0.4 hard requirement, so how well they actually overlap
+ * is the primary relevance signal; personality only refines the order within that.
  */
 import { cosine } from "./vec";
 import type {
@@ -42,6 +46,46 @@ export function haversineKm(aLat: number, aLng: number, bLat: number, bLng: numb
 function sharedTags(profile: MatchProfile, listing: MatchListing): string[] {
   const wanted = new Set(profile.interestTagSlugs);
   return listing.tagSlugs.filter((slug) => wanted.has(slug));
+}
+
+/**
+ * How many of `listings` carry each tag slug — the denominator for how "rare" (and so how
+ * informative) a shared tag is. Computed once per `match()` call over the full candidate pool
+ * passed in, not the profile-specific eligible subset, so rarity reflects the actual catalog.
+ */
+function tagDocumentFrequency(listings: MatchListing[]): Map<string, number> {
+  const freq = new Map<string, number>();
+  for (const l of listings) {
+    for (const slug of new Set(l.tagSlugs)) {
+      freq.set(slug, (freq.get(slug) ?? 0) + 1);
+    }
+  }
+  return freq;
+}
+
+/**
+ * Weighted interest-tag overlap: sum of inverse-document-frequency over the tags a profile and
+ * listing share, so matching on a rare/niche tag (e.g. "Astrobiology") counts for more than
+ * matching on a broad one (e.g. "Research") that most listings carry. `log(1 + N/df)` keeps the
+ * weight positive even for a tag on every listing, and strictly increasing as a tag gets rarer.
+ *
+ * This is the PRIMARY ranking signal in the default blend: interest tags are the only §0.4 hard
+ * requirement (personality is explicitly secondary — a coarse label only), so how well a
+ * listing's tags actually overlap the student's stated interests should outrank personality fit,
+ * not the other way around.
+ */
+export function tagOverlapScore(
+  profile: MatchProfile,
+  listing: MatchListing,
+  docFreq: Map<string, number>,
+  totalListings: number,
+): number {
+  let score = 0;
+  for (const slug of new Set(sharedTags(profile, listing))) {
+    const df = docFreq.get(slug) ?? 1;
+    score += Math.log(1 + totalListings / df);
+  }
+  return score;
 }
 
 /**
@@ -152,10 +196,10 @@ function sortFit(profile: MatchProfile, listing: MatchListing): number {
  * Filter to eligible listings, rank them, and project each to a student-safe `MatchResult`.
  *
  * Sort axes:
- *  - default ("blend"): fit desc, then distance asc, then cost asc.
- *  - "fit":      fit desc.
- *  - "distance": distance asc (remote nearest).
- *  - "cost":     cost asc.
+ *  - default ("blend"): tag overlap desc, then fit desc, then distance asc, then cost asc.
+ *  - "fit":      fit desc, then tag overlap desc.
+ *  - "distance": distance asc (remote nearest), then tag overlap desc.
+ *  - "cost":     cost asc, then tag overlap desc.
  * Listing id is the final tiebreaker everywhere, so the order is fully deterministic.
  *
  * Not-recruiting listings are NOT filtered out — they remain matchable by tag (§0.4).
@@ -167,7 +211,14 @@ export function match(
 ): MatchResult[] {
   const eligible = listings.filter((listing) => passesHardFilters(profile, listing));
 
+  // Computed once per call (not per comparison) over the full candidate pool.
+  const docFreq = tagDocumentFrequency(listings);
+  const totalListings = listings.length;
+
   const byId = (a: MatchListing, b: MatchListing) => (a.id < b.id ? -1 : a.id > b.id ? 1 : 0);
+  const byTagOverlapDesc = (a: MatchListing, b: MatchListing) =>
+    tagOverlapScore(profile, b, docFreq, totalListings) -
+    tagOverlapScore(profile, a, docFreq, totalListings);
   const byFitDesc = (a: MatchListing, b: MatchListing) =>
     sortFit(profile, b) - sortFit(profile, a);
   const byDistanceAsc = (a: MatchListing, b: MatchListing) =>
@@ -177,12 +228,12 @@ export function match(
   // Compose comparators for the requested axis; fall through to id for a stable order.
   const comparators: ((a: MatchListing, b: MatchListing) => number)[] =
     opts?.sort === "fit"
-      ? [byFitDesc, byId]
+      ? [byFitDesc, byTagOverlapDesc, byId]
       : opts?.sort === "distance"
-        ? [byDistanceAsc, byId]
+        ? [byDistanceAsc, byTagOverlapDesc, byId]
         : opts?.sort === "cost"
-          ? [byCostAsc, byId]
-          : [byFitDesc, byDistanceAsc, byCostAsc, byId]; // blend (default)
+          ? [byCostAsc, byTagOverlapDesc, byId]
+          : [byTagOverlapDesc, byFitDesc, byDistanceAsc, byCostAsc, byId]; // blend (default)
 
   const sorted = [...eligible].sort((a, b) => {
     for (const cmp of comparators) {

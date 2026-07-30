@@ -6,6 +6,7 @@ import {
   haversineKm,
   match,
   passesHardFilters,
+  tagOverlapScore,
 } from "../lib/matching";
 import type { MatchListing, MatchProfile } from "../lib/match-types";
 
@@ -180,6 +181,99 @@ describe("costRank", () => {
     expect(costRank(mkListing({ costType: "paid", costAmount: 500 }))).toBeLessThan(
       costRank(mkListing({ costType: "paid", costAmount: null })),
     );
+  });
+});
+
+describe("tagOverlapScore", () => {
+  const profile = mkProfile({ interestTagSlugs: ["ai", "biology", "robotics"] });
+
+  it("is 0 when nothing overlaps", () => {
+    const docFreq = new Map([["history", 3]]);
+    expect(tagOverlapScore(profile, mkListing({ tagSlugs: ["history"] }), docFreq, 3)).toBe(0);
+  });
+
+  it("grows with the number of shared tags", () => {
+    const docFreq = new Map([
+      ["ai", 5],
+      ["biology", 5],
+      ["history", 5],
+    ]);
+    const one = tagOverlapScore(profile, mkListing({ tagSlugs: ["ai", "history"] }), docFreq, 10);
+    const two = tagOverlapScore(
+      profile,
+      mkListing({ tagSlugs: ["ai", "biology", "history"] }),
+      docFreq,
+      10,
+    );
+    expect(two).toBeGreaterThan(one);
+  });
+
+  it("weights a rarer shared tag higher than a common one (equal overlap count)", () => {
+    const docFreq = new Map([
+      ["ai", 500], // on nearly every listing
+      ["robotics", 5], // niche
+    ]);
+    const common = tagOverlapScore(profile, mkListing({ tagSlugs: ["ai"] }), docFreq, 1000);
+    const rare = tagOverlapScore(profile, mkListing({ tagSlugs: ["robotics"] }), docFreq, 1000);
+    expect(rare).toBeGreaterThan(common);
+  });
+
+  it("only counts each shared tag once, ignoring duplicates in a listing's tagSlugs", () => {
+    const docFreq = new Map([["ai", 5]]);
+    const deduped = tagOverlapScore(profile, mkListing({ tagSlugs: ["ai"] }), docFreq, 10);
+    const withDupe = tagOverlapScore(
+      profile,
+      mkListing({ tagSlugs: ["ai", "ai"] }),
+      docFreq,
+      10,
+    );
+    expect(withDupe).toBe(deduped);
+  });
+});
+
+describe("match — tag overlap drives the default blend ahead of personality fit", () => {
+  it("a weaker-fit listing with more/rarer shared tags outranks a perfect-fit listing with only one broad shared tag", () => {
+    const profile = mkProfile({ interestTagSlugs: ["ai", "biology", "robotics"] });
+    const listings: MatchListing[] = [
+      // Perfect personality fit, but shares only the single most common tag in the pool.
+      mkListing({ id: "fit-shallow", tagSlugs: ["ai"], desiredPersonalityVector: V_SAME }),
+      // No personality vector at all, but shares two rarer tags.
+      mkListing({
+        id: "tags-deep",
+        tagSlugs: ["biology", "robotics"],
+        desiredPersonalityVector: null,
+      }),
+      // Padding so "ai" is clearly the most common tag in the candidate pool.
+      mkListing({ id: "pad-1", tagSlugs: ["ai"] }),
+      mkListing({ id: "pad-2", tagSlugs: ["ai"] }),
+    ];
+    const ids = match(profile, listings).map((r) => r.id);
+    expect(ids[0]).toBe("tags-deep");
+    expect(ids).toContain("fit-shallow");
+  });
+
+  it("falls through to fit as a tiebreaker when tag overlap is equal", () => {
+    const profile = mkProfile();
+    const listings: MatchListing[] = [
+      mkListing({ id: "low-fit", tagSlugs: ["ai"], desiredPersonalityVector: V_000 }),
+      mkListing({ id: "high-fit", tagSlugs: ["ai"], desiredPersonalityVector: V_SAME }),
+    ];
+    const ids = match(profile, listings).map((r) => r.id);
+    expect(ids).toEqual(["high-fit", "low-fit"]);
+  });
+
+  it("sort:'fit' still uses fit as primary, tag overlap only as its tiebreaker", () => {
+    const profile = mkProfile({ interestTagSlugs: ["ai", "biology", "robotics"] });
+    const listings: MatchListing[] = [
+      mkListing({ id: "great-fit-1tag", tagSlugs: ["ai"], desiredPersonalityVector: V_SAME }),
+      mkListing({
+        id: "fair-fit-3tags",
+        tagSlugs: ["ai", "biology", "robotics"],
+        desiredPersonalityVector: V_000,
+      }),
+    ];
+    const ids = match(profile, listings, { sort: "fit" }).map((r) => r.id);
+    expect(ids).toEqual(["great-fit-1tag", "fair-fit-3tags"]);
   });
 });
 
