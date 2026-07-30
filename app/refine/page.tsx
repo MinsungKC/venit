@@ -1,9 +1,12 @@
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import { runMatch } from "@/lib/match-data";
+import type { ListingKind } from "@/lib/mapping";
 import RateDeck from "./RateDeck";
 
 export const dynamic = "force-dynamic";
+
+const KIND_VALUES: ListingKind[] = ["company", "research_lab", "program", "opportunity", "camp"];
 
 function num(v: string | undefined, lo: number, hi: number): number | null {
   const n = Number(v);
@@ -24,6 +27,10 @@ export default function RefinePage({
     grade: num(searchParams.grade, 1, 13),
     age: num(searchParams.age, 5, 100),
     nicheSlugs: (searchParams.niche ?? "").split(",").map((s) => s.trim()).filter(Boolean),
+    preferredKinds: (searchParams.kinds ?? "")
+      .split(",")
+      .map((s) => s.trim())
+      .filter((s): s is ListingKind => KIND_VALUES.includes(s as ListingKind)),
   });
 
   // Carry the original query through to /match.

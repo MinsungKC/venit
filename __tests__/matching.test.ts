@@ -1,5 +1,6 @@
 import { describe, it, expect } from "vitest";
 import {
+  boostPreferredKinds,
   costRank,
   distanceKm,
   fitLabel,
@@ -228,6 +229,41 @@ describe("tagOverlapScore", () => {
       10,
     );
     expect(withDupe).toBe(deduped);
+  });
+});
+
+describe("boostPreferredKinds", () => {
+  const items = [
+    { kind: "camp" as const, id: "c1" },
+    { kind: "company" as const, id: "co1" },
+    { kind: "research_lab" as const, id: "r1" },
+    { kind: "camp" as const, id: "c2" },
+    { kind: "opportunity" as const, id: "o1" },
+  ];
+
+  it("is a no-op when no kinds are preferred (order fully preserved)", () => {
+    expect(boostPreferredKinds(items, [])).toEqual(items);
+  });
+
+  it("moves every preferred-kind item ahead of non-preferred ones", () => {
+    const out = boostPreferredKinds(items, ["research_lab", "opportunity"]);
+    expect(out.map((i) => i.kind)).toEqual(["research_lab", "opportunity", "camp", "company", "camp"]);
+  });
+
+  it("is a STABLE sort: relative order within the preferred group and within the rest is kept", () => {
+    const out = boostPreferredKinds(items, ["camp"]);
+    // Both camps ("c1","c2") keep their original relative order and lead; the rest keep theirs.
+    expect(out.map((i) => i.id)).toEqual(["c1", "c2", "co1", "r1", "o1"]);
+  });
+
+  it("does not mutate the input array", () => {
+    const copy = [...items];
+    boostPreferredKinds(items, ["camp"]);
+    expect(items).toEqual(copy);
+  });
+
+  it("a kind with no matching items is harmless", () => {
+    expect(boostPreferredKinds(items, ["program"])).toEqual(items);
   });
 });
 

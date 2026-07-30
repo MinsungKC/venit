@@ -58,6 +58,8 @@ interface Query {
   remoteOnly: boolean;
   boost: string[];
   niche: string[];
+  /** Kinds the student said they're looking for at onboarding — boosts, never filters (§0.4). */
+  preferredKinds: ListingKind[];
 }
 
 function href(q: Query, over: Partial<Query>): string {
@@ -81,6 +83,7 @@ function href(q: Query, over: Partial<Query>): string {
   if (m.remoteOnly) p.set("remote", "1");
   if (m.boost?.length) p.set("boost", m.boost.join(","));
   if (m.niche?.length) p.set("niche", m.niche.join(","));
+  if (m.preferredKinds?.length) p.set("kinds", m.preferredKinds.join(","));
   return `/match?${p.toString()}`;
 }
 
@@ -117,6 +120,7 @@ export default async function MatchPage({
     remote?: string;
     boost?: string;
     niche?: string;
+    kinds?: string;
   };
 }) {
   const catalog = getTagCatalog();
@@ -142,6 +146,10 @@ export default async function MatchPage({
     remoteOnly: searchParams.remote === "1",
     boost: (searchParams.boost ?? "").split(",").map((s) => s.trim()).filter(Boolean),
     niche: (searchParams.niche ?? "").split(",").map((s) => s.trim()).filter(Boolean),
+    preferredKinds: (searchParams.kinds ?? "")
+      .split(",")
+      .map((s) => s.trim())
+      .filter((s): s is ListingKind => KIND_ORDER.includes(s as ListingKind)),
   };
 
   const hasQuery = q.tagSlugs.length > 0;
@@ -180,6 +188,7 @@ export default async function MatchPage({
     desiredBySlug,
     boostSlugs: q.boost,
     nicheSlugs: q.niche,
+    preferredKinds: q.preferredKinds,
   });
   const counts = kindCounts(all);
   const results = q.kind ? all.filter((l) => l.kind === q.kind) : all;

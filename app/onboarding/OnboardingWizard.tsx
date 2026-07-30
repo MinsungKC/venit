@@ -5,20 +5,30 @@ import { useRouter } from "next/navigation";
 import type { CSSProperties } from "react";
 import type { MatchTag } from "@/lib/match-data";
 import type { ArchetypeVector, TagVector } from "@/lib/match-types";
+import type { ListingKind } from "@/lib/mapping";
 import { classifyUser } from "@/lib/user-classifier";
 import { embedText, warmUpEmbedder, type LoadProgress } from "@/lib/embeddings-browser";
 import { scrubPII, type StrippedPII } from "@/lib/pii";
 import styles from "./onboarding.module.css";
 
 /**
- * Onboarding wizard (BUILD_PROMPT §6). Four playful steps with a progress bar:
- *  1. Broad interests  — pop the domain bubbles.
- *  2. Specific interests — bubbles for the tags inside the chosen domains.
- *  3. About you — optional extra interests + a few required adjectives (feed the SECRET personality).
- *  4. Resume — optional, parsed & PII-scrubbed on-device (§0.2/§0.3).
+ * Onboarding wizard (BUILD_PROMPT §6). Five playful steps with a progress bar:
+ *  1. Looking for — which listing kinds to prioritize (optional; never a hard filter, §0.4).
+ *  2. Broad interests  — pop the domain bubbles.
+ *  3. Specific interests — bubbles for the tags inside the chosen domains.
+ *  4. About you — optional extra interests + a few required adjectives (feed the SECRET personality).
+ *  5. Resume — optional, parsed & PII-scrubbed on-device (§0.2/§0.3).
  * On finish we classify on-device, save the profile if signed in, and land on /match.
  */
-const STEPS = ["Interests", "Specifics", "About you", "Resume"] as const;
+const STEPS = ["Looking for", "Interests", "Specifics", "About you", "Resume"] as const;
+
+const KIND_OPTIONS: { value: ListingKind; label: string; desc: string; icon: string }[] = [
+  { value: "company", label: "Companies", desc: "Startups & companies to work or intern at", icon: "business" },
+  { value: "research_lab", label: "Research Labs", desc: "University & institute research opportunities", icon: "science" },
+  { value: "program", label: "Programs", desc: "Multi-week academic or pre-college programs", icon: "school" },
+  { value: "opportunity", label: "Opportunities", desc: "Competitions, scholarships, one-off opportunities", icon: "work" },
+  { value: "camp", label: "Camps", desc: "Summer camps & residential programs", icon: "cabin" },
+];
 
 const PALETTE = [
   "#8b7bff", "#22d3ee", "#ff5c9d", "#fcd34d", "#34d399", "#ff7a6b",
@@ -43,6 +53,7 @@ export default function OnboardingWizard({
 }) {
   const router = useRouter();
   const [step, setStep] = useState(0);
+  const [kinds, setKinds] = useState<Set<ListingKind>>(new Set());
   const [broad, setBroad] = useState<Set<string>>(new Set());
   const [selected, setSelected] = useState<Set<string>>(new Set());
   const [additional, setAdditional] = useState("");
@@ -71,6 +82,13 @@ export default function OnboardingWizard({
     const n = new Set(set);
     n.has(v) ? n.delete(v) : n.add(v);
     setSet(n);
+  };
+  const toggleKind = (v: ListingKind) => {
+    setKinds((prev) => {
+      const n = new Set(prev);
+      n.has(v) ? n.delete(v) : n.add(v);
+      return n;
+    });
   };
 
   async function ensureVectors() {
@@ -149,19 +167,29 @@ export default function OnboardingWizard({
       const params = new URLSearchParams();
       if (student.interestTagSlugs.length) params.set("tags", student.interestTagSlugs.join(","));
       if (nicheSlugs.length) params.set("niche", nicheSlugs.join(","));
+      if (kinds.size) params.set("kinds", [...kinds].join(","));
       // Land on the rating deck to fine-tune before showing everything.
       router.push(`/refine?${params.toString()}`);
     } catch {
       // Model failed to load — still continue with the explicit picks.
       const params = new URLSearchParams();
       if (selected.size) params.set("tags", [...selected].join(","));
+      if (kinds.size) params.set("kinds", [...kinds].join(","));
       router.push(`/refine?${params.toString()}`);
     }
   }
 
   const progress = ((step + 1) / STEPS.length) * 100;
   const canNext =
-    step === 0 ? broad.size > 0 : step === 1 ? selected.size > 0 : step === 2 ? adjList.length >= 3 : true;
+    step === 0
+      ? true // optional — no preference means show everything, unranked by kind
+      : step === 1
+        ? broad.size > 0
+        : step === 2
+          ? selected.size > 0
+          : step === 3
+            ? adjList.length >= 3
+            : true;
 
   if (busy) {
     return (
@@ -195,8 +223,34 @@ export default function OnboardingWizard({
         </div>
       </div>
 
-      {/* Step 0 — broad interests */}
+      {/* Step 0 — what kind of listing are they looking for */}
       {step === 0 && (
+        <div className={styles.stage}>
+          <h2 className={styles.stageTitle}>What are you looking for?</h2>
+          <p className={styles.stageSub}>
+            Pick as many as you like — we&apos;ll prioritize these, but you&apos;ll still see
+            everything else too. <span className={styles.optional}>(optional — skip to see it all)</span>
+          </p>
+          <div className={styles.kindGrid}>
+            {KIND_OPTIONS.map((k) => (
+              <button
+                key={k.value}
+                type="button"
+                className={`${styles.kindCard} ${kinds.has(k.value) ? styles.kindCardSel : ""}`}
+                aria-pressed={kinds.has(k.value)}
+                onClick={() => toggleKind(k.value)}
+              >
+                <span className={`material-symbols-outlined ${styles.kindIcon}`}>{k.icon}</span>
+                <span className={styles.kindLabel}>{k.label}</span>
+                <span className={styles.kindDesc}>{k.desc}</span>
+              </button>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {/* Step 1 — broad interests */}
+      {step === 1 && (
         <div className={styles.stage}>
           <h2 className={styles.stageTitle}>What are you into?</h2>
           <p className={styles.stageSub}>Tap the areas that spark your interest. Pick as many as you like.</p>
@@ -218,8 +272,8 @@ export default function OnboardingWizard({
         </div>
       )}
 
-      {/* Step 1 — specific interests */}
-      {step === 1 && (
+      {/* Step 2 — specific interests */}
+      {step === 2 && (
         <div className={styles.stage}>
           <h2 className={styles.stageTitle}>Get specific</h2>
           <p className={styles.stageSub}>Which of these fit best? Tap the ones you&apos;d actually want.</p>
@@ -241,8 +295,8 @@ export default function OnboardingWizard({
         </div>
       )}
 
-      {/* Step 2 — about you */}
-      {step === 2 && (
+      {/* Step 3 — about you */}
+      {step === 3 && (
         <div className={styles.stage}>
           <h2 className={styles.stageTitle}>A bit about you</h2>
           <p className={styles.stageSub}>Anything else you&apos;re into, plus a few words that describe you.</p>
@@ -274,8 +328,8 @@ export default function OnboardingWizard({
         </div>
       )}
 
-      {/* Step 3 — resume */}
-      {step === 3 && (
+      {/* Step 4 — resume */}
+      {step === 4 && (
         <div className={styles.stage}>
           <h2 className={styles.stageTitle}>Add a resume?</h2>
           <p className={styles.stageSub}>

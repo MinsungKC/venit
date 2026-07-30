@@ -3,7 +3,7 @@ import { readFileSync } from "node:fs";
 import { join } from "node:path";
 import type { CostType, ListingKind, ListingRecord, TagRecord } from "./mapping";
 import type { FitLabel, MatchListing, MatchProfile, SortAxis } from "./match-types";
-import { match } from "./matching";
+import { boostPreferredKinds, match } from "./matching";
 import { regionToLatLng } from "./us-states";
 
 /**
@@ -180,6 +180,13 @@ export interface MatchParams {
   boostSlugs?: string[];
   /** Niche-tag slugs matched from the student's free-text interests — match + prioritize these. */
   nicheSlugs?: string[];
+  /**
+   * Listing kinds the student said they're looking for (onboarding "what are you looking for"
+   * step) — e.g. internships/companies vs. camps vs. research labs. A soft, stable boost applied
+   * last: preferred kinds move earlier while each kind's relative order (by fit/tags) is kept.
+   * Never a hard filter — everything stays discoverable by tag (§0.4), this only reorders.
+   */
+  preferredKinds?: ListingKind[];
 }
 
 /**
@@ -258,13 +265,16 @@ export function runMatch(params: MatchParams): MatchedListing[] {
     const score = (l: MatchedListing) =>
       l.matchedTags.length +
       3 * [...l.tag_slugs, ...(l.niche_slugs ?? [])].filter((s) => boost.has(s)).length;
-    return [...out].sort((a, b) => score(b) - score(a));
+    out = [...out].sort((a, b) => score(b) - score(a));
+  } else if (!params.sort && !hasFit) {
+    // No explicit sort, no boosts, no personality fit: order by shared-tag count, the strongest
+    // available signal. (With a personality vector or an explicit sort, keep the engine's order.)
+    out = out.sort((a, b) => b.matchedTags.length - a.matchedTags.length);
   }
 
-  // With a personality vector, keep the engine's fit-first order. Otherwise (or on an explicit
-  // axis) order by shared-tag count, the strongest available signal.
-  if (params.sort || hasFit) return out;
-  return out.sort((a, b) => b.matchedTags.length - a.matchedTags.length);
+  // Preferred listing kinds (BUILD_PROMPT §6 "what are you looking for") — a stable boost applied
+  // last, on top of whichever order above, so it takes effect no matter which path was taken.
+  return boostPreferredKinds(out, params.preferredKinds ?? []);
 }
 
 export interface GlobePoint {

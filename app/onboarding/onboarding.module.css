@@ -157,6 +157,54 @@
   }
 }
 
+/* ---- "Looking for" kind picker ---- */
+.kindGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(190px, 1fr));
+  gap: 14px;
+  padding: 8px 0;
+}
+.kindCard {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 6px;
+  cursor: pointer;
+  text-align: left;
+  border: 2px solid var(--line);
+  background: var(--panel);
+  color: var(--text);
+  padding: 18px;
+  border-radius: 18px;
+  transition: border-color var(--t), background-color var(--t), box-shadow var(--t), transform var(--t);
+}
+.kindCard:hover {
+  border-color: var(--accent);
+  box-shadow: 0 10px 24px -12px color-mix(in srgb, var(--accent) 60%, transparent);
+}
+.kindCard:active {
+  transform: scale(0.97);
+}
+.kindCardSel {
+  border-color: var(--accent);
+  background: color-mix(in srgb, var(--accent) 12%, var(--panel));
+  box-shadow: 0 12px 28px -10px color-mix(in srgb, var(--accent) 55%, transparent);
+}
+.kindIcon {
+  font-size: 26px;
+  color: var(--accent);
+}
+.kindLabel {
+  font-size: 16px;
+  font-weight: 800;
+}
+.kindDesc {
+  font-size: 13px;
+  color: var(--muted);
+  font-weight: 500;
+  line-height: 1.4;
+}
+
 /* ---- About-you / resume forms ---- */
 .formLabel {
   display: flex;

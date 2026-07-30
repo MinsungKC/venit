@@ -14,6 +14,7 @@
  * is the primary relevance signal; personality only refines the order within that.
  */
 import { cosine } from "./vec";
+import type { ListingKind } from "./mapping";
 import type {
   FitLabel,
   MatchListing,
@@ -251,4 +252,24 @@ export function match(
     costType: listing.costType,
     costAmount: listing.costAmount,
   }));
+}
+
+/**
+ * Boost the listing kinds a student said they're looking for (onboarding "what are you looking
+ * for" step, BUILD_PROMPT §6) — e.g. internships/companies vs. camps vs. research labs. A
+ * STABLE partition: preferred-kind items move earlier, each side keeping its existing relative
+ * order (already ranked by tag overlap/fit/etc.), so this is a pure reordering pass that composes
+ * with any prior sort. Never a hard filter — non-preferred kinds are still returned, just later
+ * (§0.4: every listing here already shares an interest tag; kind is a soft preference only).
+ * An empty `preferredKinds` is a no-op (every item ties, so relative order is fully preserved).
+ */
+export function boostPreferredKinds<T extends { kind: ListingKind }>(
+  items: T[],
+  preferredKinds: ListingKind[],
+): T[] {
+  if (preferredKinds.length === 0) return items;
+  const preferred = new Set(preferredKinds);
+  return [...items].sort(
+    (a, b) => Number(preferred.has(b.kind)) - Number(preferred.has(a.kind)),
+  );
 }
