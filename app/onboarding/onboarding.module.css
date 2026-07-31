@@ -46,6 +46,23 @@
   border-radius: 28px;
   padding: 30px clamp(18px, 4vw, 36px) 34px;
   overflow: hidden; /* keep the swiping step content clipped to the rounded card */
+  will-change: transform, opacity;
+}
+/* Whole-card transition. cardOut flies the card completely off the top (held off-screen by the
+ * `both` fill so the globe shows alone); cardIn glides the next step's card back up from below. */
+.cardIn {
+  animation: cardIn 0.62s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+.cardOut {
+  animation: cardOut 0.56s cubic-bezier(0.5, 0, 0.75, 0) both;
+}
+@keyframes cardIn {
+  from { opacity: 0; transform: translateY(72px) scale(0.94); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+@keyframes cardOut {
+  from { opacity: 1; transform: translateY(0) scale(1); }
+  to { opacity: 0; transform: translateY(-115vh) scale(0.85); }
 }
 
 .wizard {

@@ -24,9 +24,7 @@ export default function OnboardingPage() {
         <Link href="/" className={styles.homeLink}>
           ← Home
         </Link>
-        <div className={styles.card}>
-          <OnboardingWizard catalog={catalog} />
-        </div>
+        <OnboardingWizard catalog={catalog} />
       </main>
     </>
   );

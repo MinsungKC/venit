@@ -22,6 +22,11 @@ import styles from "./onboarding.module.css";
  */
 const STEPS = ["Looking for", "Interests", "Specifics", "About you", "Resume"] as const;
 
+// Step-transition choreography (ms): the whole card flies off-screen (EXIT), the globe is shown
+// alone while fresh waypoints drop (HOLD), then the next card glides back in.
+const EXIT_MS = 560;
+const HOLD_MS = 1700;
+
 const KIND_OPTIONS: { value: ListingKind; label: string; desc: string; icon: string }[] = [
   { value: "company", label: "Companies", desc: "Startups & companies to work or intern at", icon: "business" },
   { value: "research_lab", label: "Research Labs", desc: "University & institute research opportunities", icon: "science" },
@@ -201,27 +206,32 @@ export default function OnboardingWizard({
             ? adjList.length >= 3 && grade != null && age != null
             : true;
 
-  // The current step's class — during an "out" phase it swipes up (revealing the globe) before the
-  // next step rises in. Advancing also fires STEP_EVENT so OnboardingGlobe drops fresh pins.
-  const stageClass = `${styles.stage} ${phase === "out" ? styles.stageOut : ""}`;
+  // Whole-card transition: on "out" the glass card flies off-screen (revealing the globe); after a
+  // hold it glides back in with the next step. Each phase drops a burst of waypoints on the globe.
+  const cardClass = `${styles.card} ${phase === "out" ? styles.cardOut : styles.cardIn}`;
+  const stageClass = styles.stage;
+  const fireWaypoints = () => {
+    if (typeof window !== "undefined") window.dispatchEvent(new Event("oppmatch:onboarding-step"));
+  };
   function advance(dir: "next" | "back") {
     if (phase === "out") return; // already mid-transition
     const target = dir === "next" ? Math.min(STEPS.length - 1, step + 1) : Math.max(0, step - 1);
     if (target === step) return;
-    setPhase("out");
-    if (dir === "next" && typeof window !== "undefined") {
-      window.dispatchEvent(new Event("oppmatch:onboarding-step"));
-    }
+    setPhase("out"); // 1) card flies off-screen
+    fireWaypoints();
     window.setTimeout(() => {
+      // 2) card is off-screen: swap to the next step and drop more waypoints while the globe shows.
       setStep(target);
-      setPhase("in");
-      window.scrollTo({ top: 0, behavior: "smooth" });
-    }, 330);
+      fireWaypoints();
+      window.scrollTo({ top: 0 });
+      window.setTimeout(() => setPhase("in"), HOLD_MS); // 3) card glides back in
+    }, EXIT_MS);
   }
 
   if (busy) {
     return (
-      <div className={styles.loading}>
+      <div className={`${styles.card} ${styles.cardIn}`}>
+        <div className={styles.loading}>
         <div className={styles.spinner} />
         <p className={styles.loadMsg}>{load?.msg}</p>
         {load && load.pct > 0 && (
@@ -233,12 +243,14 @@ export default function OnboardingWizard({
           Personal info is scrubbed on your device first; only the cleaned text is matched on our
           server, and it&apos;s never stored.
         </p>
+        </div>
       </div>
     );
   }
 
   return (
-    <div className={styles.wizard}>
+    <div className={cardClass}>
+      <div className={styles.wizard}>
       {/* Progress */}
       <div className={styles.progress}>
         <ol className={styles.stepList}>
@@ -444,6 +456,7 @@ export default function OnboardingWizard({
             See my matches →
           </button>
         )}
+      </div>
       </div>
     </div>
   );
