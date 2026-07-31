@@ -30,6 +30,22 @@ export interface StarRecord extends StarSnapshot {
 const KEY = "oppmatch:stars:v1";
 const EVENT = "oppmatch:stars-changed";
 
+/**
+ * Optional server-sync sink (BUILD_PROMPT §7 ★, account sync). Local-first stays the source of
+ * truth for the UI; when a student is signed in, lib/stars-sync registers a sink here so each
+ * mutation is mirrored to their account. Null = no account → pure local behavior (no network).
+ */
+export type SyncOp =
+  | { op: "star"; record: StarRecord }
+  | { op: "unstar"; slug: string }
+  | { op: "status"; slug: string; status: TrackStatus }
+  | { op: "notes"; slug: string; notes: string };
+
+let syncFn: ((op: SyncOp) => void) | null = null;
+export function registerSync(fn: ((op: SyncOp) => void) | null): void {
+  syncFn = fn;
+}
+
 function canUse(): boolean {
   return typeof window !== "undefined" && !!window.localStorage;
 }
@@ -64,10 +80,13 @@ export function toggleStar(snapshot: StarSnapshot): boolean {
   if (map[snapshot.slug]) {
     delete map[snapshot.slug];
     writeAll(map);
+    syncFn?.({ op: "unstar", slug: snapshot.slug });
     return false;
   }
-  map[snapshot.slug] = { ...snapshot, status: "interested", starredAt: Date.now() };
+  const record: StarRecord = { ...snapshot, status: "interested", starredAt: Date.now() };
+  map[snapshot.slug] = record;
   writeAll(map);
+  syncFn?.({ op: "star", record });
   return true;
 }
 
@@ -76,6 +95,7 @@ export function removeStar(slug: string): void {
   if (map[slug]) {
     delete map[slug];
     writeAll(map);
+    syncFn?.({ op: "unstar", slug });
   }
 }
 
@@ -84,6 +104,7 @@ export function setStatus(slug: string, status: TrackStatus): void {
   if (map[slug]) {
     map[slug].status = status;
     writeAll(map);
+    syncFn?.({ op: "status", slug, status });
   }
 }
 
@@ -92,7 +113,25 @@ export function setNotes(slug: string, notes: string): void {
   if (map[slug]) {
     map[slug].notes = notes;
     writeAll(map);
+    syncFn?.({ op: "notes", slug, notes });
   }
+}
+
+/**
+ * Merge server-side tracker records into the local store (used once on sign-in). The account is
+ * authoritative for status/notes on a conflicting slug; the earliest `starredAt` is kept so the
+ * "saved on" order is stable. Dispatches a change event so open views refresh.
+ */
+export function mergeServerRecords(records: StarRecord[]): void {
+  if (!canUse()) return;
+  const map = readAll();
+  for (const r of records) {
+    const existing = map[r.slug];
+    map[r.slug] = existing
+      ? { ...existing, ...r, starredAt: Math.min(existing.starredAt, r.starredAt) }
+      : r;
+  }
+  writeAll(map);
 }
 
 /** Subscribe to shortlist changes (same-tab custom event + cross-tab storage event). */

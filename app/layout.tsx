@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import Nav from "./Nav";
+import StarSync from "./StarSync";
 
 export const metadata: Metadata = {
   title: "OppMatch",
@@ -25,6 +26,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <body>
         <Nav />
         {children}
+        <StarSync />
       </body>
     </html>
   );

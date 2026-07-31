@@ -81,3 +81,20 @@ export const addTagsSchema = z.object({
 });
 
 export type AddTagsInput = z.infer<typeof addTagsSchema>;
+
+/** Application-tracker statuses (mirror the `application_status` enum in migration 0003). */
+export const TRACK_STATUSES = ["interested", "applied", "accepted", "rejected"] as const;
+
+/**
+ * A single application-tracker mutation for a signed-in student (BUILD_PROMPT §7 ★, account sync).
+ * The tracker is local-first (lib/stars.ts, localStorage) — this endpoint mirrors changes to the
+ * account so a shortlist follows the student across devices. No personality data is involved.
+ */
+export const trackerSchema = z.object({
+  op: z.enum(["star", "unstar", "status", "notes"]),
+  slug: z.string().min(1).max(120),
+  status: z.enum(TRACK_STATUSES).optional(),
+  notes: z.string().max(2000).optional(),
+});
+
+export type TrackerInput = z.infer<typeof trackerSchema>;
