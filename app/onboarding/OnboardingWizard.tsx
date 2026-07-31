@@ -1,15 +1,37 @@
 "use client";
 
 import { useMemo, useRef, useState } from "react";
-import { useRouter } from "next/navigation";
+import Link from "next/link";
 import type { CSSProperties } from "react";
 import type { MatchTag } from "@/lib/match-data";
 import type { ArchetypeVector, TagVector } from "@/lib/match-types";
 import type { ListingKind } from "@/lib/mapping";
 import { classifyUser } from "@/lib/user-classifier";
-import { embedText, warmUpEmbedder, type LoadProgress } from "@/lib/embed-client";
+import { embedText, warmUpEmbedder } from "@/lib/embed-client";
 import { scrubPII, type StrippedPII } from "@/lib/pii";
+import { FINISH_EVENT } from "./OnboardingGlobe";
 import styles from "./onboarding.module.css";
+
+/** One of the student's top matches, as returned by /api/match/top (student-safe fields only). */
+interface TopMatch {
+  slug: string;
+  title: string;
+  kind: ListingKind;
+  matchedTags: string[];
+  short_description: string | null;
+  location: string | null;
+  cost_type: string;
+  url: string | null;
+  fitLabel: string | null;
+}
+const KIND_LABEL: Record<ListingKind, string> = {
+  company: "Company",
+  research_lab: "Research Lab",
+  program: "Program",
+  opportunity: "Opportunity",
+  camp: "Camp",
+  volunteer: "Volunteering",
+};
 
 /**
  * Onboarding wizard (BUILD_PROMPT §6). Five playful steps with a progress bar:
@@ -57,9 +79,11 @@ export default function OnboardingWizard({
 }: {
   catalog: { domain: string; tags: MatchTag[] }[];
 }) {
-  const router = useRouter();
   const [step, setStep] = useState(0);
   const [phase, setPhase] = useState<"in" | "out">("in");
+  const [mode, setMode] = useState<"form" | "finishing" | "results">("form");
+  const [results, setResults] = useState<TopMatch[]>([]);
+  const [allParams, setAllParams] = useState("");
   const [kinds, setKinds] = useState<Set<ListingKind>>(new Set());
   const [broad, setBroad] = useState<Set<string>>(new Set());
   const [selected, setSelected] = useState<Set<string>>(new Set());
@@ -69,8 +93,6 @@ export default function OnboardingWizard({
   const [age, setAge] = useState<number | null>(null);
   const [resumeText, setResumeText] = useState("");
   const [stripped, setStripped] = useState<StrippedPII[]>([]);
-  const [busy, setBusy] = useState(false);
-  const [load, setLoad] = useState<{ pct: number; msg: string } | null>(null);
   const [err, setErr] = useState<string | null>(null);
   const vectorsRef = useRef<{ tags: TagVector[]; archetypes: ArchetypeVector[] } | null>(null);
 
@@ -110,10 +132,6 @@ export default function OnboardingWizard({
     return vectorsRef.current;
   }
 
-  const onProgress = (p: LoadProgress) => {
-    if (typeof p.progress === "number") setLoad({ pct: Math.round(p.progress), msg: `Warming up… ${Math.round(p.progress)}%` });
-  };
-
   function onResume(text: string) {
     setResumeText(text);
     setStripped(text.trim() ? scrubPII(text).stripped : []);
@@ -126,9 +144,14 @@ export default function OnboardingWizard({
   }
 
   async function finish() {
-    setBusy(true);
     setErr(null);
-    setLoad({ pct: 0, msg: "Finding your matches…" });
+    setMode("finishing"); // hides the card — the globe spins up + floods with pins as it "searches"
+    if (typeof window !== "undefined") window.dispatchEvent(new Event(FINISH_EVENT));
+    // Give the globe climax its moment even if the matching is fast.
+    const climax = new Promise<void>((resolve) => setTimeout(resolve, 2900));
+
+    let finalTags: string[] = [...selected];
+    let nicheSlugs: string[] = [];
     try {
       const { tags, archetypes } = await ensureVectors();
       const { student, result } = await classifyUser(
@@ -138,8 +161,9 @@ export default function OnboardingWizard({
           adjectives: adjList,
           resumeText: resumeText.trim() || undefined,
         },
-        { embed: (t) => embedText(t, onProgress), tagVectors: tags, archetypeVectors: archetypes },
+        { embed: (t) => embedText(t), tagVectors: tags, archetypeVectors: archetypes },
       );
+      finalTags = student.interestTagSlugs;
       // Persist to profile if signed in (the personality vector is written to the guarded column).
       try {
         await fetch("/api/profile", {
@@ -156,8 +180,7 @@ export default function OnboardingWizard({
       } catch {
         /* not signed in — fine */
       }
-      // Niche free-text interests: embed on-device, then match to specific niche tags server-side.
-      let nicheSlugs: string[] = [];
+      // Niche free-text interests: embed server-side, then match to specific niche tags.
       if (additional.trim()) {
         try {
           const v = await embedText(additional.trim());
@@ -166,32 +189,40 @@ export default function OnboardingWizard({
             headers: { "content-type": "application/json" },
             body: JSON.stringify({ vector: v }),
           });
-          if (res.ok) {
-            const d = (await res.json()) as { tags: { slug: string }[] };
-            nicheSlugs = d.tags.map((t) => t.slug);
-          }
+          if (res.ok) nicheSlugs = ((await res.json()) as { tags: { slug: string }[] }).tags.map((t) => t.slug);
         } catch {
           /* niche match optional */
         }
       }
-
-      const params = new URLSearchParams();
-      if (student.interestTagSlugs.length) params.set("tags", student.interestTagSlugs.join(","));
-      if (nicheSlugs.length) params.set("niche", nicheSlugs.join(","));
-      if (kinds.size) params.set("kinds", [...kinds].join(","));
-      if (grade != null) params.set("grade", String(grade));
-      if (age != null) params.set("age", String(age));
-      // Land on the rating deck to fine-tune before showing everything.
-      router.push(`/refine?${params.toString()}`);
     } catch {
-      // Model failed to load — still continue with the explicit picks.
-      const params = new URLSearchParams();
-      if (selected.size) params.set("tags", [...selected].join(","));
-      if (kinds.size) params.set("kinds", [...kinds].join(","));
-      if (grade != null) params.set("grade", String(grade));
-      if (age != null) params.set("age", String(age));
-      router.push(`/refine?${params.toString()}`);
+      /* model failed to load — fall back to the explicit interest picks */
     }
+
+    // Params for the "see all matches" links.
+    const params = new URLSearchParams();
+    if (finalTags.length) params.set("tags", finalTags.join(","));
+    if (nicheSlugs.length) params.set("niche", nicheSlugs.join(","));
+    if (kinds.size) params.set("kinds", [...kinds].join(","));
+    if (grade != null) params.set("grade", String(grade));
+    if (age != null) params.set("age", String(age));
+    setAllParams(params.toString());
+
+    // The top 5, ranked server-side (personality fit included from the just-saved vector).
+    let top: TopMatch[] = [];
+    try {
+      const res = await fetch("/api/match/top", {
+        method: "POST",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify({ tags: finalTags, niche: nicheSlugs, kinds: [...kinds], grade, age }),
+      });
+      if (res.ok) top = ((await res.json()) as { results: TopMatch[] }).results ?? [];
+    } catch {
+      /* show the empty-state fallback */
+    }
+
+    await climax; // let the globe finish its spin-up
+    setResults(top);
+    setMode("results");
   }
 
   const progress = ((step + 1) / STEPS.length) * 100;
@@ -228,22 +259,74 @@ export default function OnboardingWizard({
     }, EXIT_MS);
   }
 
-  if (busy) {
+  // Finishing: the card is gone and the globe does the "searching" — spinning up and flooding with
+  // waypoints (see OnboardingGlobe). Just a small glass caption sits over it.
+  if (mode === "finishing") {
+    return (
+      <div className={styles.finishing}>
+        <span className={styles.finishDot} />
+        <span className={styles.finishText}>Scanning the globe for your best matches…</span>
+      </div>
+    );
+  }
+
+  // Results: the top 5, revealed right here in a glass card over the (now gently-spinning) globe.
+  if (mode === "results") {
     return (
       <div className={`${styles.card} ${styles.cardIn}`}>
-        <div className={styles.loading}>
-        <div className={styles.spinner} />
-        <p className={styles.loadMsg}>{load?.msg}</p>
-        {load && load.pct > 0 && (
-          <div className={styles.loadBar}>
-            <div className={styles.loadFill} style={{ width: `${load.pct}%` }} />
+        {results.length > 0 ? (
+          <div className={styles.results}>
+            <h1 className={styles.resultsTitle}>Your top matches ✨</h1>
+            <p className={styles.resultsSub}>
+              The best fits from what you told us — here are your top {results.length}.
+            </p>
+            <ul className={styles.resultList}>
+              {results.map((r) => (
+                <li key={r.slug}>
+                  <Link href={`/listing/${r.slug}`} className={styles.resultRow}>
+                    <div className={styles.resultMain}>
+                      <span className={styles.resultName}>{r.title}</span>
+                      <span className={styles.resultMeta}>
+                        {KIND_LABEL[r.kind]}
+                        {r.location ? ` · ${r.location}` : ""}
+                        {r.fitLabel ? ` · ${r.fitLabel}` : ""}
+                      </span>
+                    </div>
+                    {r.matchedTags.length > 0 && (
+                      <div className={styles.resultTags}>
+                        {r.matchedTags.map((t) => (
+                          <span key={t} className={styles.resultTag}>
+                            {t}
+                          </span>
+                        ))}
+                      </div>
+                    )}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+            <div className={styles.resultsActions}>
+              <Link className={styles.primary} href={`/match?${allParams}`}>
+                See all my matches →
+              </Link>
+              <Link className={styles.refineLink} href={`/refine?${allParams}`}>
+                Rate these to fine-tune
+              </Link>
+            </div>
+          </div>
+        ) : (
+          <div className={styles.results}>
+            <h1 className={styles.resultsTitle}>Let&apos;s explore</h1>
+            <p className={styles.resultsSub}>
+              We couldn&apos;t pull a top 5 right now — browse everything that matches your interests.
+            </p>
+            <div className={styles.resultsActions}>
+              <Link className={styles.primary} href={`/match?${allParams}`}>
+                See my matches →
+              </Link>
+            </div>
           </div>
         )}
-        <p className={styles.loadNote}>
-          Personal info is scrubbed on your device first; only the cleaned text is matched on our
-          server, and it&apos;s never stored.
-        </p>
-        </div>
       </div>
     );
   }
@@ -362,7 +445,7 @@ export default function OnboardingWizard({
               placeholder="curious, creative, driven, competitive…"
               value={adjectives}
               onChange={(e) => setAdjectives(e.target.value)}
-              onFocus={() => warmUpEmbedder(onProgress)}
+              onFocus={() => warmUpEmbedder()}
             />
             <span className={styles.hint}>
               {adjList.length}/3 — these stay private and help us rank your matches.
@@ -414,7 +497,7 @@ export default function OnboardingWizard({
             placeholder="Paste your resume here…"
             value={resumeText}
             onChange={(e) => onResume(e.target.value)}
-            onFocus={() => warmUpEmbedder(onProgress)}
+            onFocus={() => warmUpEmbedder()}
           />
           <input className={styles.file} type="file" accept=".txt,text/plain" onChange={(e) => onResumeFile(e.target.files?.[0])} />
           {stripped.length > 0 && (

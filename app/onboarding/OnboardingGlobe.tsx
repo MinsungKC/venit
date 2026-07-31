@@ -12,6 +12,9 @@ import { useEffect, useRef } from "react";
 const COUNTRIES = "https://unpkg.com/three-globe/example/country-polygons/ne_110m_admin_0_countries.geojson";
 /** The wizard dispatches this on each step advance; we drop a burst of new pins in response. */
 export const STEP_EVENT = "oppmatch:onboarding-step";
+/** Dispatched when the form is submitted: the globe spins up fast and floods with pins as it
+ *  "searches", climaxing while the top matches are computed. */
+export const FINISH_EVENT = "oppmatch:onboarding-finish";
 
 const PIN_SPOTS: [number, number][] = [
   [37.77, -122.42], [40.71, -74.0], [51.51, -0.13], [48.85, 2.35], [52.52, 13.4],
@@ -34,23 +37,46 @@ export default function OnboardingGlobe() {
     let world: GlobeInstance = null;
     let resize: (() => void) | null = null;
     const timers: ReturnType<typeof setTimeout>[] = [];
+    const intervals: ReturnType<typeof setInterval>[] = [];
     const pins: { lat: number; lng: number }[] = [];
     let pinIndex = 0;
+    let targetSpeed = 0.55; // controls.autoRotateSpeed is eased toward this each frame
 
+    const addPin = (lat: number, lng: number, delay: number) => {
+      timers.push(
+        setTimeout(() => {
+          if (cancelled || !world || pins.length >= 80) return;
+          pins.push({ lat, lng });
+          world.htmlElementsData([...pins]);
+        }, delay),
+      );
+    };
     const dropPins = (n: number) => {
       for (let k = 0; k < n && pinIndex < PIN_SPOTS.length; k++) {
-        const [lat, lng] = PIN_SPOTS[pinIndex++];
-        // Stagger each so a burst cascades in rather than appearing all at once.
-        timers.push(
-          setTimeout(() => {
-            if (cancelled || !world) return;
-            pins.push({ lat, lng });
-            world.htmlElementsData([...pins]);
-          }, k * 160),
-        );
+        addPin(PIN_SPOTS[pinIndex][0], PIN_SPOTS[pinIndex][1], k * 160);
+        pinIndex++;
+      }
+    };
+    const dropRandomPins = (n: number) => {
+      for (let k = 0; k < n; k++) {
+        const lat = (Math.asin(2 * Math.random() - 1) * 180) / Math.PI; // uniform over the sphere
+        addPin(lat, Math.random() * 360 - 180, k * 55);
       }
     };
     const onStep = () => dropPins(6);
+    const onFinish = () => {
+      if (!world) return;
+      targetSpeed = 18; // spin up fast while "searching"
+      const flurry = setInterval(() => dropRandomPins(5), 200);
+      intervals.push(flurry);
+      // After the climax, stop flooding and ease back to a gentle-fast idle behind the results.
+      timers.push(
+        setTimeout(() => {
+          clearInterval(flurry);
+          targetSpeed = 1.4;
+        }, 2900),
+      );
+    };
 
     const destroy = () => {
       try {
@@ -98,6 +124,14 @@ export default function OnboardingGlobe() {
       c.autoRotateSpeed = 0.55;
       c.enableZoom = false;
       c.enablePan = false;
+      // Ease the rotation speed toward `targetSpeed` each frame (smooth spin-up/spin-down).
+      intervals.push(
+        setInterval(() => {
+          if (cancelled || !world) return;
+          const ctrl = world.controls();
+          ctrl.autoRotateSpeed += (targetSpeed - ctrl.autoRotateSpeed) * 0.06;
+        }, 33),
+      );
 
       try {
         const geo = await fetch(COUNTRIES).then((r) => r.json());
@@ -119,14 +153,17 @@ export default function OnboardingGlobe() {
 
       window.addEventListener("resize", resize);
       window.addEventListener(STEP_EVENT, onStep);
+      window.addEventListener(FINISH_EVENT, onFinish);
       timers.push(setTimeout(() => dropPins(3), 600)); // a few pins on load
     })();
 
     return () => {
       cancelled = true;
       timers.forEach(clearTimeout);
+      intervals.forEach(clearInterval);
       if (resize) window.removeEventListener("resize", resize);
       window.removeEventListener(STEP_EVENT, onStep);
+      window.removeEventListener(FINISH_EVENT, onFinish);
       const el = ref.current;
       destroy();
       // Belt-and-suspenders: clear any leftover canvas so nothing can removeChild a detached node.
