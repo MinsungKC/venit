@@ -227,16 +227,6 @@ export default async function MatchPage({
         <p className={styles.sideSub}>Refine your feed</p>
 
         <div className={styles.group}>
-          <span className={styles.groupLabel}>Sort</span>
-          <Link className={`${styles.item} ${!q.sort ? styles.active : ""}`} href={href(q, { sort: undefined })}>
-            <span className="material-symbols-outlined">verified</span> Best fit
-          </Link>
-          <Link className={`${styles.item} ${q.sort === "cost" ? styles.active : ""}`} href={href(q, { sort: "cost" })}>
-            <span className="material-symbols-outlined">payments</span> Lowest cost
-          </Link>
-        </div>
-
-        <div className={styles.group}>
           <span className={styles.groupLabel}>Type</span>
           <Link className={`${styles.item} ${!q.kind ? styles.active : ""}`} href={href(q, { kind: undefined })}>
             <span className="material-symbols-outlined">apps</span> All
@@ -251,18 +241,14 @@ export default async function MatchPage({
         </div>
 
         <div className={styles.group}>
-          <span className={styles.groupLabel}>Cost</span>
+          <span className={styles.groupLabel}>Refine</span>
           <Link className={`${styles.item} ${q.freeOnly ? styles.active : ""}`} href={href(q, { freeOnly: !q.freeOnly })}>
             <span className="material-symbols-outlined">savings</span> Free only
           </Link>
           <Link className={`${styles.item} ${q.remoteOnly ? styles.active : ""}`} href={href(q, { remoteOnly: !q.remoteOnly })}>
             <span className="material-symbols-outlined">public</span> Remote only
           </Link>
-        </div>
-
-        {broaderCount > 0 && (
-          <div className={styles.group}>
-            <span className={styles.groupLabel}>Match strength</span>
+          {broaderCount > 0 && (
             <Link
               className={`${styles.item} ${q.showBroader ? styles.active : ""}`}
               href={href(q, { showBroader: !q.showBroader })}
@@ -270,8 +256,8 @@ export default async function MatchPage({
               <span className="material-symbols-outlined">{q.showBroader ? "filter_alt" : "filter_alt_off"}</span>
               {q.showBroader ? "Hide broader matches" : `Show ${broaderCount.toLocaleString()} broader matches`}
             </Link>
-          </div>
-        )}
+          )}
+        </div>
 
         <div className={styles.spacer}>
           <Link className={styles.item} href={href(q, {}).replace("/match", "/globe")}>

@@ -4,7 +4,7 @@
     "kind": "research_lab",
     "title": "ALERTCalifornia (UC San Diego)",
     "url": "https://alertcalifornia.org",
-    "short_description": "UC San Diego program using AI, camera networks, and remote sensing to monitor wildfires and climate — engages students in real environmental research.",
+    "short_description": "UC San Diego program using AI, camera networks, and remote sensing to monitor wildfires and climate \u2014 engages students in real environmental research.",
     "location_name": "La Jolla, California",
     "is_remote": false,
     "industry": "Environmental Science",
@@ -12,7 +12,13 @@
     "grade_min": 11,
     "grade_max": 12,
     "cost_type": "unknown",
-    "tags": ["Climate", "Wildfire", "Artificial Intelligence", "Remote Sensing", "Environmental Science"]
+    "tags": [
+      "Climate",
+      "Wildfire",
+      "Artificial Intelligence",
+      "Remote Sensing",
+      "Environmental Science"
+    ]
   },
   {
     "id": "ucsd-rehs",
@@ -27,7 +33,13 @@
     "grade_min": 9,
     "grade_max": 12,
     "cost_type": "free",
-    "tags": ["Computer Science", "Data Science", "Machine Learning", "Bioinformatics", "Research"]
+    "tags": [
+      "Computer Science",
+      "Data Science",
+      "Machine Learning",
+      "Bioinformatics",
+      "Research"
+    ]
   },
   {
     "id": "salk-hs-scholars",
@@ -42,7 +54,12 @@
     "grade_min": 11,
     "grade_max": 12,
     "cost_type": "stipend",
-    "tags": ["Biology", "Neuroscience", "Genetics", "Cancer Research"]
+    "tags": [
+      "Biology",
+      "Neuroscience",
+      "Genetics",
+      "Cancer Research"
+    ]
   },
   {
     "id": "stanford-simr",
@@ -57,7 +74,13 @@
     "grade_min": 11,
     "grade_max": 12,
     "cost_type": "stipend",
-    "tags": ["Medicine", "Biology", "Bioengineering", "Cancer Research", "Immunology"]
+    "tags": [
+      "Medicine",
+      "Biology",
+      "Bioengineering",
+      "Cancer Research",
+      "Immunology"
+    ]
   },
   {
     "id": "mit-rsi",
@@ -72,7 +95,13 @@
     "grade_min": 11,
     "grade_max": 11,
     "cost_type": "free",
-    "tags": ["STEM Research", "Mathematics", "Physics", "Engineering", "Computer Science"]
+    "tags": [
+      "STEM Research",
+      "Mathematics",
+      "Physics",
+      "Engineering",
+      "Computer Science"
+    ]
   },
   {
     "id": "stonybrook-garcia",
@@ -87,7 +116,12 @@
     "grade_min": 10,
     "grade_max": 12,
     "cost_type": "paid",
-    "tags": ["Materials Science", "Chemistry", "Engineering", "Nanotechnology"]
+    "tags": [
+      "Materials Science",
+      "Chemistry",
+      "Engineering",
+      "Nanotechnology"
+    ]
   },
   {
     "id": "cornell-bti",
@@ -102,7 +136,12 @@
     "grade_min": 11,
     "grade_max": 12,
     "cost_type": "stipend",
-    "tags": ["Plant Science", "Biology", "Genomics", "Agriculture"]
+    "tags": [
+      "Plant Science",
+      "Biology",
+      "Genomics",
+      "Agriculture"
+    ]
   },
   {
     "id": "fermilab-target",
@@ -117,7 +156,12 @@
     "grade_min": 11,
     "grade_max": 12,
     "cost_type": "stipend",
-    "tags": ["Physics", "Particle Physics", "Engineering", "Computer Science"]
+    "tags": [
+      "Physics",
+      "Particle Physics",
+      "Engineering",
+      "Computer Science"
+    ]
   },
   {
     "id": "jackson-lab-ssp",
@@ -132,12 +176,17 @@
     "grade_min": 12,
     "grade_max": 12,
     "cost_type": "stipend",
-    "tags": ["Genetics", "Genomics", "Biology", "Bioinformatics"]
+    "tags": [
+      "Genetics",
+      "Genomics",
+      "Biology",
+      "Bioinformatics"
+    ]
   },
   {
     "id": "cshl-partners",
     "kind": "research_lab",
-    "title": "Cold Spring Harbor Laboratory — Partners for the Future",
+    "title": "Cold Spring Harbor Laboratory \u2014 Partners for the Future",
     "url": "https://www.cshl.edu",
     "short_description": "Long Island high schoolers conduct mentored research alongside CSHL scientists during the academic year.",
     "location_name": "Cold Spring Harbor, New York",
@@ -147,7 +196,12 @@
     "grade_min": 11,
     "grade_max": 12,
     "cost_type": "free",
-    "tags": ["Molecular Biology", "Genetics", "Neuroscience", "Research"]
+    "tags": [
+      "Molecular Biology",
+      "Genetics",
+      "Neuroscience",
+      "Research"
+    ]
   },
   {
     "id": "rockefeller-ssrp",
@@ -162,7 +216,12 @@
     "grade_min": 11,
     "grade_max": 12,
     "cost_type": "free",
-    "tags": ["Biology", "Neuroscience", "Biochemistry", "Research"]
+    "tags": [
+      "Biology",
+      "Neuroscience",
+      "Biochemistry",
+      "Research"
+    ]
   },
   {
     "id": "nih-hs-sip",
@@ -177,7 +236,12 @@
     "grade_min": 11,
     "grade_max": 12,
     "cost_type": "stipend",
-    "tags": ["Medicine", "Biology", "Public Health", "Research"]
+    "tags": [
+      "Medicine",
+      "Biology",
+      "Public Health",
+      "Research"
+    ]
   },
   {
     "id": "utsw-stars",
@@ -192,7 +256,11 @@
     "grade_min": 11,
     "grade_max": 12,
     "cost_type": "stipend",
-    "tags": ["Biomedical Science", "Medicine", "Research"]
+    "tags": [
+      "Biomedical Science",
+      "Medicine",
+      "Research"
+    ]
   },
   {
     "id": "simons-summer",
@@ -207,7 +275,13 @@
     "grade_min": 11,
     "grade_max": 11,
     "cost_type": "stipend",
-    "tags": ["STEM Research", "Biology", "Physics", "Engineering", "Computer Science"]
+    "tags": [
+      "STEM Research",
+      "Biology",
+      "Physics",
+      "Engineering",
+      "Computer Science"
+    ]
   },
   {
     "id": "clark-scholars",
@@ -222,7 +296,12 @@
     "grade_min": 11,
     "grade_max": 12,
     "cost_type": "stipend",
-    "tags": ["Research", "Science", "Engineering", "Humanities"]
+    "tags": [
+      "Research",
+      "Science",
+      "Engineering",
+      "Humanities"
+    ]
   },
   {
     "id": "genentech-futurelab",
@@ -237,7 +316,12 @@
     "grade_min": 9,
     "grade_max": 12,
     "cost_type": "free",
-    "tags": ["Biotechnology", "Biology", "Chemistry", "Healthcare"]
+    "tags": [
+      "Biotechnology",
+      "Biology",
+      "Chemistry",
+      "Healthcare"
+    ]
   },
   {
     "id": "nasa-ostem",
@@ -252,7 +336,13 @@
     "grade_min": 11,
     "grade_max": 12,
     "cost_type": "stipend",
-    "tags": ["Aerospace", "Engineering", "Space Exploration", "STEM Research", "Data Science"]
+    "tags": [
+      "Aerospace",
+      "Engineering",
+      "Space Exploration",
+      "STEM Research",
+      "Data Science"
+    ]
   },
   {
     "id": "smithsonian-youth",
@@ -267,7 +357,13 @@
     "grade_min": 10,
     "grade_max": 12,
     "cost_type": "unknown",
-    "tags": ["History", "Museums", "Science", "Art", "Research"]
+    "tags": [
+      "History",
+      "Museums",
+      "Science",
+      "Art",
+      "Research"
+    ]
   },
   {
     "id": "google-cssi",
@@ -282,7 +378,11 @@
     "grade_min": 12,
     "grade_max": 12,
     "cost_type": "free",
-    "tags": ["Computer Science", "Software Engineering", "Web Development"]
+    "tags": [
+      "Computer Science",
+      "Software Engineering",
+      "Web Development"
+    ]
   },
   {
     "id": "microsoft-hs",
@@ -297,7 +397,11 @@
     "grade_min": 11,
     "grade_max": 12,
     "cost_type": "stipend",
-    "tags": ["Software Engineering", "Product Management", "Technology"]
+    "tags": [
+      "Software Engineering",
+      "Product Management",
+      "Technology"
+    ]
   },
   {
     "id": "bofa-student-leaders",
@@ -312,7 +416,12 @@
     "grade_min": 11,
     "grade_max": 12,
     "cost_type": "stipend",
-    "tags": ["Leadership", "Community Service", "Nonprofit", "Finance"]
+    "tags": [
+      "Leadership",
+      "Community Service",
+      "Nonprofit",
+      "Finance"
+    ]
   },
   {
     "id": "mit-mites",
@@ -327,7 +436,12 @@
     "grade_min": 11,
     "grade_max": 11,
     "cost_type": "free",
-    "tags": ["Engineering", "STEM Research", "Mathematics", "Science"]
+    "tags": [
+      "Engineering",
+      "STEM Research",
+      "Mathematics",
+      "Science"
+    ]
   },
   {
     "id": "girls-who-code-sip",
@@ -342,7 +456,11 @@
     "grade_min": 9,
     "grade_max": 12,
     "cost_type": "free",
-    "tags": ["Computer Science", "Software Engineering", "Web Development"]
+    "tags": [
+      "Computer Science",
+      "Software Engineering",
+      "Web Development"
+    ]
   },
   {
     "id": "regeneron-sts",
@@ -357,7 +475,12 @@
     "grade_min": 12,
     "grade_max": 12,
     "cost_type": "free",
-    "tags": ["STEM Research", "Science", "Mathematics", "Innovation"]
+    "tags": [
+      "STEM Research",
+      "Science",
+      "Mathematics",
+      "Innovation"
+    ]
   },
   {
     "id": "pgss",
@@ -372,7 +495,14 @@
     "grade_min": 11,
     "grade_max": 11,
     "cost_type": "free",
-    "tags": ["Science", "Mathematics", "Physics", "Chemistry", "Biology", "Computer Science"]
+    "tags": [
+      "Science",
+      "Mathematics",
+      "Physics",
+      "Chemistry",
+      "Biology",
+      "Computer Science"
+    ]
   },
   {
     "id": "ssp",
@@ -387,7 +517,13 @@
     "grade_min": 11,
     "grade_max": 11,
     "cost_type": "paid",
-    "tags": ["Astronomy", "Biochemistry", "Genomics", "Mathematics", "Chemistry"]
+    "tags": [
+      "Astronomy",
+      "Biochemistry",
+      "Genomics",
+      "Mathematics",
+      "Chemistry"
+    ]
   },
   {
     "id": "nyu-arise",
@@ -402,7 +538,13 @@
     "grade_min": 10,
     "grade_max": 11,
     "cost_type": "free",
-    "tags": ["Research", "Engineering", "Biology", "Computer Science", "Chemistry"]
+    "tags": [
+      "Research",
+      "Engineering",
+      "Biology",
+      "Computer Science",
+      "Chemistry"
+    ]
   },
   {
     "id": "ucsc-sip",
@@ -417,7 +559,13 @@
     "grade_min": 9,
     "grade_max": 12,
     "cost_type": "paid",
-    "tags": ["Research", "Astronomy", "Biology", "Computer Science", "Engineering"]
+    "tags": [
+      "Research",
+      "Astronomy",
+      "Biology",
+      "Computer Science",
+      "Engineering"
+    ]
   },
   {
     "id": "ucsb-rmp",
@@ -432,7 +580,13 @@
     "grade_min": 10,
     "grade_max": 12,
     "cost_type": "paid",
-    "tags": ["Research", "STEM Research", "Engineering", "Physics", "Data Science"]
+    "tags": [
+      "Research",
+      "STEM Research",
+      "Engineering",
+      "Physics",
+      "Data Science"
+    ]
   },
   {
     "id": "ucd-ysp",
@@ -447,7 +601,12 @@
     "grade_min": 10,
     "grade_max": 11,
     "cost_type": "paid",
-    "tags": ["Biology", "Agriculture", "Environmental Science", "Research"]
+    "tags": [
+      "Biology",
+      "Agriculture",
+      "Environmental Science",
+      "Research"
+    ]
   },
   {
     "id": "bu-rise",
@@ -462,7 +621,13 @@
     "grade_min": 11,
     "grade_max": 12,
     "cost_type": "paid",
-    "tags": ["Research", "Engineering", "Neuroscience", "Computer Science", "Physics"]
+    "tags": [
+      "Research",
+      "Engineering",
+      "Neuroscience",
+      "Computer Science",
+      "Physics"
+    ]
   },
   {
     "id": "fredhutch-ship",
@@ -477,7 +642,12 @@
     "grade_min": 12,
     "grade_max": 12,
     "cost_type": "stipend",
-    "tags": ["Cancer Research", "Biology", "Public Health", "Research"]
+    "tags": [
+      "Cancer Research",
+      "Biology",
+      "Public Health",
+      "Research"
+    ]
   },
   {
     "id": "jhu-jhibs",
@@ -492,7 +662,12 @@
     "grade_min": 11,
     "grade_max": 12,
     "cost_type": "stipend",
-    "tags": ["Neuroscience", "Medicine", "Biology", "Research"]
+    "tags": [
+      "Neuroscience",
+      "Medicine",
+      "Biology",
+      "Research"
+    ]
   },
   {
     "id": "jhu-engineering-innovation",
@@ -507,7 +682,11 @@
     "grade_min": 9,
     "grade_max": 12,
     "cost_type": "paid",
-    "tags": ["Engineering", "Mathematics", "Physics"]
+    "tags": [
+      "Engineering",
+      "Mathematics",
+      "Physics"
+    ]
   },
   {
     "id": "utexas-arl-seap",
@@ -522,7 +701,13 @@
     "grade_min": 11,
     "grade_max": 12,
     "cost_type": "stipend",
-    "tags": ["Engineering", "Physics", "Geophysics", "Computer Science", "Research"]
+    "tags": [
+      "Engineering",
+      "Physics",
+      "Geophysics",
+      "Computer Science",
+      "Research"
+    ]
   },
   {
     "id": "mit-primes",
@@ -537,7 +722,12 @@
     "grade_min": 9,
     "grade_max": 12,
     "cost_type": "free",
-    "tags": ["Mathematics", "Computer Science", "Computational Biology", "Research"]
+    "tags": [
+      "Mathematics",
+      "Computer Science",
+      "Computational Biology",
+      "Research"
+    ]
   },
   {
     "id": "stanford-ai4all",
@@ -552,7 +742,11 @@
     "grade_min": 9,
     "grade_max": 9,
     "cost_type": "free",
-    "tags": ["Artificial Intelligence", "Machine Learning", "Computer Science"]
+    "tags": [
+      "Artificial Intelligence",
+      "Machine Learning",
+      "Computer Science"
+    ]
   },
   {
     "id": "cmu-sams",
@@ -567,7 +761,12 @@
     "grade_min": 11,
     "grade_max": 11,
     "cost_type": "free",
-    "tags": ["Mathematics", "Science", "Engineering", "Computer Science"]
+    "tags": [
+      "Mathematics",
+      "Science",
+      "Engineering",
+      "Computer Science"
+    ]
   },
   {
     "id": "princeton-llp",
@@ -582,7 +781,13 @@
     "grade_min": 11,
     "grade_max": 12,
     "cost_type": "free",
-    "tags": ["Research", "Engineering", "Physics", "Biology", "Chemistry"]
+    "tags": [
+      "Research",
+      "Engineering",
+      "Physics",
+      "Biology",
+      "Chemistry"
+    ]
   },
   {
     "id": "upenn-mtsi",
@@ -597,7 +802,12 @@
     "grade_min": 10,
     "grade_max": 12,
     "cost_type": "paid",
-    "tags": ["Entrepreneurship", "Engineering", "Technology", "Business"]
+    "tags": [
+      "Entrepreneurship",
+      "Engineering",
+      "Technology",
+      "Business"
+    ]
   },
   {
     "id": "columbia-shp",
@@ -612,7 +822,12 @@
     "grade_min": 10,
     "grade_max": 12,
     "cost_type": "free",
-    "tags": ["Science", "Mathematics", "Physics", "Computer Science"]
+    "tags": [
+      "Science",
+      "Mathematics",
+      "Physics",
+      "Computer Science"
+    ]
   },
   {
     "id": "gmu-assip",
@@ -627,7 +842,13 @@
     "grade_min": 9,
     "grade_max": 12,
     "cost_type": "unknown",
-    "tags": ["Research", "Biology", "Computer Science", "Engineering", "Chemistry"]
+    "tags": [
+      "Research",
+      "Biology",
+      "Computer Science",
+      "Engineering",
+      "Chemistry"
+    ]
   },
   {
     "id": "msu-hshsp",
@@ -642,7 +863,12 @@
     "grade_min": 11,
     "grade_max": 11,
     "cost_type": "paid",
-    "tags": ["Research", "STEM Research", "Science", "Engineering"]
+    "tags": [
+      "Research",
+      "STEM Research",
+      "Science",
+      "Engineering"
+    ]
   },
   {
     "id": "msk-hopp",
@@ -657,7 +883,12 @@
     "grade_min": 12,
     "grade_max": 12,
     "cost_type": "stipend",
-    "tags": ["Cancer Research", "Biology", "Medicine", "Research"]
+    "tags": [
+      "Cancer Research",
+      "Biology",
+      "Medicine",
+      "Research"
+    ]
   },
   {
     "id": "scripps-hs",
@@ -672,7 +903,12 @@
     "grade_min": 11,
     "grade_max": 12,
     "cost_type": "stipend",
-    "tags": ["Chemistry", "Biology", "Medicine", "Research"]
+    "tags": [
+      "Chemistry",
+      "Biology",
+      "Medicine",
+      "Research"
+    ]
   },
   {
     "id": "ornl-hs",
@@ -687,7 +923,12 @@
     "grade_min": 11,
     "grade_max": 12,
     "cost_type": "stipend",
-    "tags": ["Physics", "Engineering", "Computer Science", "Energy"]
+    "tags": [
+      "Physics",
+      "Engineering",
+      "Computer Science",
+      "Energy"
+    ]
   },
   {
     "id": "argonne-hs",
@@ -702,7 +943,12 @@
     "grade_min": 11,
     "grade_max": 12,
     "cost_type": "stipend",
-    "tags": ["Physics", "Engineering", "Computer Science", "Energy"]
+    "tags": [
+      "Physics",
+      "Engineering",
+      "Computer Science",
+      "Energy"
+    ]
   },
   {
     "id": "uiowa-sstp",
@@ -717,7 +963,12 @@
     "grade_min": 10,
     "grade_max": 11,
     "cost_type": "paid",
-    "tags": ["Research", "STEM Research", "Science", "Medicine"]
+    "tags": [
+      "Research",
+      "STEM Research",
+      "Science",
+      "Medicine"
+    ]
   },
   {
     "id": "baylor-smart",
@@ -732,7 +983,12 @@
     "grade_min": 11,
     "grade_max": 12,
     "cost_type": "stipend",
-    "tags": ["Biology", "Medicine", "Genetics", "Research"]
+    "tags": [
+      "Biology",
+      "Medicine",
+      "Genetics",
+      "Research"
+    ]
   },
   {
     "id": "cityofhope-roberts",
@@ -747,12 +1003,17 @@
     "grade_min": 11,
     "grade_max": 12,
     "cost_type": "stipend",
-    "tags": ["Cancer Research", "Biology", "Medicine", "Research"]
+    "tags": [
+      "Cancer Research",
+      "Biology",
+      "Medicine",
+      "Research"
+    ]
   },
   {
     "id": "space-camp",
     "kind": "camp",
-    "title": "U.S. Space & Rocket Center — Advanced Space Academy",
+    "title": "U.S. Space & Rocket Center \u2014 Advanced Space Academy",
     "url": "https://www.rocketcenter.com/SpaceCamp",
     "short_description": "Immersive astronaut-style training camp with simulated missions, rocketry, and aerospace engineering challenges.",
     "location_name": "Huntsville, Alabama",
@@ -762,7 +1023,11 @@
     "grade_min": 9,
     "grade_max": 12,
     "cost_type": "paid",
-    "tags": ["Space Exploration", "Aerospace Engineering", "Astronomy"]
+    "tags": [
+      "Space Exploration",
+      "Aerospace Engineering",
+      "Astronomy"
+    ]
   },
   {
     "id": "nasa-has",
@@ -777,7 +1042,11 @@
     "grade_min": 11,
     "grade_max": 11,
     "cost_type": "free",
-    "tags": ["Aerospace Engineering", "Space Exploration", "Engineering"]
+    "tags": [
+      "Aerospace Engineering",
+      "Space Exploration",
+      "Engineering"
+    ]
   },
   {
     "id": "id-tech",
@@ -792,7 +1061,12 @@
     "grade_min": 9,
     "grade_max": 12,
     "cost_type": "paid",
-    "tags": ["Software Engineering", "Game Development", "Artificial Intelligence", "Robotics"]
+    "tags": [
+      "Software Engineering",
+      "Game Development",
+      "Artificial Intelligence",
+      "Robotics"
+    ]
   },
   {
     "id": "kode-with-klossy",
@@ -807,7 +1081,11 @@
     "grade_min": 9,
     "grade_max": 12,
     "cost_type": "free",
-    "tags": ["Software Engineering", "Web Development", "Machine Learning"]
+    "tags": [
+      "Software Engineering",
+      "Web Development",
+      "Machine Learning"
+    ]
   },
   {
     "id": "mit-bwsi",
@@ -822,7 +1100,12 @@
     "grade_min": 11,
     "grade_max": 11,
     "cost_type": "free",
-    "tags": ["Machine Learning", "Robotics", "Data Science", "Autonomous Vehicles"]
+    "tags": [
+      "Machine Learning",
+      "Robotics",
+      "Data Science",
+      "Autonomous Vehicles"
+    ]
   },
   {
     "id": "nysc",
@@ -837,7 +1120,12 @@
     "grade_min": 12,
     "grade_max": 12,
     "cost_type": "free",
-    "tags": ["Physics", "Biology", "Chemistry", "Mathematics"]
+    "tags": [
+      "Physics",
+      "Biology",
+      "Chemistry",
+      "Mathematics"
+    ]
   },
   {
     "id": "interlochen",
@@ -852,7 +1140,12 @@
     "grade_min": 9,
     "grade_max": 12,
     "cost_type": "paid",
-    "tags": ["Music", "Theater & Performing Arts", "Visual Arts", "Creative Writing"]
+    "tags": [
+      "Music",
+      "Theater & Performing Arts",
+      "Visual Arts",
+      "Creative Writing"
+    ]
   },
   {
     "id": "idyllwild-arts",
@@ -867,7 +1160,12 @@
     "grade_min": 9,
     "grade_max": 12,
     "cost_type": "paid",
-    "tags": ["Visual Arts", "Music", "Creative Writing", "Theater & Performing Arts"]
+    "tags": [
+      "Visual Arts",
+      "Music",
+      "Creative Writing",
+      "Theater & Performing Arts"
+    ]
   },
   {
     "id": "buti",
@@ -882,7 +1180,9 @@
     "grade_min": 9,
     "grade_max": 12,
     "cost_type": "paid",
-    "tags": ["Music"]
+    "tags": [
+      "Music"
+    ]
   },
   {
     "id": "csssa",
@@ -897,7 +1197,13 @@
     "grade_min": 9,
     "grade_max": 12,
     "cost_type": "paid",
-    "tags": ["Visual Arts", "Film & Video", "Theater & Performing Arts", "Creative Writing", "Music"]
+    "tags": [
+      "Visual Arts",
+      "Film & Video",
+      "Theater & Performing Arts",
+      "Creative Writing",
+      "Music"
+    ]
   },
   {
     "id": "risd-precollege",
@@ -912,7 +1218,12 @@
     "grade_min": 10,
     "grade_max": 12,
     "cost_type": "paid",
-    "tags": ["Visual Arts", "Graphic & UX Design", "Product & Industrial Design", "Architecture"]
+    "tags": [
+      "Visual Arts",
+      "Graphic & UX Design",
+      "Product & Industrial Design",
+      "Architecture"
+    ]
   },
   {
     "id": "nyfa-camps",
@@ -927,7 +1238,11 @@
     "grade_min": 9,
     "grade_max": 12,
     "cost_type": "paid",
-    "tags": ["Film & Video", "Photography", "Digital Media & Content"]
+    "tags": [
+      "Film & Video",
+      "Photography",
+      "Digital Media & Content"
+    ]
   },
   {
     "id": "stagedoor",
@@ -942,7 +1257,10 @@
     "grade_min": 9,
     "grade_max": 12,
     "cost_type": "paid",
-    "tags": ["Theater & Performing Arts", "Music"]
+    "tags": [
+      "Theater & Performing Arts",
+      "Music"
+    ]
   },
   {
     "id": "iowa-young-writers",
@@ -957,7 +1275,10 @@
     "grade_min": 10,
     "grade_max": 12,
     "cost_type": "paid",
-    "tags": ["Creative Writing", "Literature"]
+    "tags": [
+      "Creative Writing",
+      "Literature"
+    ]
   },
   {
     "id": "cty",
@@ -972,12 +1293,17 @@
     "grade_min": 7,
     "grade_max": 12,
     "cost_type": "paid",
-    "tags": ["Mathematics", "Computer Science", "Creative Writing", "Physics"]
+    "tags": [
+      "Mathematics",
+      "Computer Science",
+      "Creative Writing",
+      "Physics"
+    ]
   },
   {
     "id": "promys",
     "kind": "camp",
-    "title": "PROMYS — Program in Mathematics for Young Scientists",
+    "title": "PROMYS \u2014 Program in Mathematics for Young Scientists",
     "url": "https://promys.org",
     "short_description": "Immersive six-week program in deep number theory and mathematical problem-solving at Boston University.",
     "location_name": "Boston, Massachusetts",
@@ -987,7 +1313,9 @@
     "grade_min": 9,
     "grade_max": 12,
     "cost_type": "paid",
-    "tags": ["Mathematics"]
+    "tags": [
+      "Mathematics"
+    ]
   },
   {
     "id": "ross-math",
@@ -1002,7 +1330,9 @@
     "grade_min": 9,
     "grade_max": 12,
     "cost_type": "paid",
-    "tags": ["Mathematics"]
+    "tags": [
+      "Mathematics"
+    ]
   },
   {
     "id": "mathcamp",
@@ -1017,7 +1347,10 @@
     "grade_min": 9,
     "grade_max": 12,
     "cost_type": "paid",
-    "tags": ["Mathematics", "Applied & Computational Math"]
+    "tags": [
+      "Mathematics",
+      "Applied & Computational Math"
+    ]
   },
   {
     "id": "hcssim",
@@ -1032,7 +1365,9 @@
     "grade_min": 10,
     "grade_max": 12,
     "cost_type": "paid",
-    "tags": ["Mathematics"]
+    "tags": [
+      "Mathematics"
+    ]
   },
   {
     "id": "gencyber",
@@ -1047,7 +1382,10 @@
     "grade_min": 9,
     "grade_max": 12,
     "cost_type": "free",
-    "tags": ["Cybersecurity", "Computer Networks"]
+    "tags": [
+      "Cybersecurity",
+      "Computer Networks"
+    ]
   },
   {
     "id": "digipen-projectfun",
@@ -1062,7 +1400,11 @@
     "grade_min": 9,
     "grade_max": 12,
     "cost_type": "paid",
-    "tags": ["Game Development", "Software Engineering", "Computer Graphics & Vision"]
+    "tags": [
+      "Game Development",
+      "Software Engineering",
+      "Computer Graphics & Vision"
+    ]
   },
   {
     "id": "concordia-language",
@@ -1077,7 +1419,9 @@
     "grade_min": 9,
     "grade_max": 12,
     "cost_type": "paid",
-    "tags": ["Languages & Linguistics"]
+    "tags": [
+      "Languages & Linguistics"
+    ]
   },
   {
     "id": "jsa-summer",
@@ -1092,7 +1436,11 @@
     "grade_min": 9,
     "grade_max": 12,
     "cost_type": "paid",
-    "tags": ["Political Science & Government", "Debate & Model UN", "Leadership"]
+    "tags": [
+      "Political Science & Government",
+      "Debate & Model UN",
+      "Leadership"
+    ]
   },
   {
     "id": "snfi",
@@ -1107,7 +1455,9 @@
     "grade_min": 9,
     "grade_max": 12,
     "cost_type": "paid",
-    "tags": ["Debate & Model UN"]
+    "tags": [
+      "Debate & Model UN"
+    ]
   },
   {
     "id": "launchx",
@@ -1122,7 +1472,11 @@
     "grade_min": 9,
     "grade_max": 12,
     "cost_type": "paid",
-    "tags": ["Entrepreneurship & Startups", "Product Management", "Marketing & Growth"]
+    "tags": [
+      "Entrepreneurship & Startups",
+      "Product Management",
+      "Marketing & Growth"
+    ]
   },
   {
     "id": "duke-marine-lab",
@@ -1137,7 +1491,11 @@
     "grade_min": 10,
     "grade_max": 12,
     "cost_type": "paid",
-    "tags": ["Marine & Ocean Science", "Ecology & Evolution", "Biology"]
+    "tags": [
+      "Marine & Ocean Science",
+      "Ecology & Evolution",
+      "Biology"
+    ]
   },
   {
     "id": "acadia-oceanography",
@@ -1152,7 +1510,11 @@
     "grade_min": 9,
     "grade_max": 12,
     "cost_type": "paid",
-    "tags": ["Marine & Ocean Science", "Oceanography & Atmospheric Science", "Environmental Science"]
+    "tags": [
+      "Marine & Ocean Science",
+      "Oceanography & Atmospheric Science",
+      "Environmental Science"
+    ]
   },
   {
     "id": "eaa-air-academy",
@@ -1167,7 +1529,10 @@
     "grade_min": 9,
     "grade_max": 12,
     "cost_type": "paid",
-    "tags": ["Aerospace Engineering", "Mechanical Engineering"]
+    "tags": [
+      "Aerospace Engineering",
+      "Mechanical Engineering"
+    ]
   },
   {
     "id": "teton-science",
@@ -1182,7 +1547,11 @@
     "grade_min": 9,
     "grade_max": 12,
     "cost_type": "paid",
-    "tags": ["Ecology & Evolution", "Environmental Science", "Earth & Geoscience"]
+    "tags": [
+      "Ecology & Evolution",
+      "Environmental Science",
+      "Earth & Geoscience"
+    ]
   },
   {
     "id": "nols",
@@ -1197,12 +1566,16 @@
     "grade_min": 9,
     "grade_max": 12,
     "cost_type": "paid",
-    "tags": ["Leadership", "Environmental Science", "Sports & Athletics"]
+    "tags": [
+      "Leadership",
+      "Environmental Science",
+      "Sports & Athletics"
+    ]
   },
   {
     "id": "cia-culinary",
     "kind": "program",
-    "title": "Culinary Institute of America — Summer at the CIA",
+    "title": "Culinary Institute of America \u2014 Summer at the CIA",
     "url": "https://www.ciachef.edu",
     "short_description": "Pre-college culinary program teaching professional cooking, baking, and kitchen fundamentals.",
     "location_name": "Hyde Park, New York",
@@ -1212,7 +1585,9 @@
     "grade_min": 10,
     "grade_max": 12,
     "cost_type": "paid",
-    "tags": ["Culinary Arts"]
+    "tags": [
+      "Culinary Arts"
+    ]
   },
   {
     "id": "astrocamp",
@@ -1227,7 +1602,11 @@
     "grade_min": 9,
     "grade_max": 11,
     "cost_type": "paid",
-    "tags": ["Astronomy & Astrophysics", "Physics", "Space Exploration"]
+    "tags": [
+      "Astronomy & Astrophysics",
+      "Physics",
+      "Space Exploration"
+    ]
   },
   {
     "id": "wolfram-camp",
@@ -1242,7 +1621,11 @@
     "grade_min": 9,
     "grade_max": 12,
     "cost_type": "paid",
-    "tags": ["Computer Science", "Data Science", "Mathematics"]
+    "tags": [
+      "Computer Science",
+      "Data Science",
+      "Mathematics"
+    ]
   },
   {
     "id": "cmu-precollege",
@@ -1257,7 +1640,12 @@
     "grade_min": 11,
     "grade_max": 12,
     "cost_type": "paid",
-    "tags": ["Computer Science", "Engineering", "Visual Arts", "Theater & Performing Arts"]
+    "tags": [
+      "Computer Science",
+      "Engineering",
+      "Visual Arts",
+      "Theater & Performing Arts"
+    ]
   },
   {
     "id": "yygs",
@@ -1272,7 +1660,11 @@
     "grade_min": 10,
     "grade_max": 11,
     "cost_type": "paid",
-    "tags": ["International Relations", "Political Science & Government", "Philosophy & Ethics"]
+    "tags": [
+      "International Relations",
+      "Political Science & Government",
+      "Philosophy & Ethics"
+    ]
   },
   {
     "id": "stanford-spcs",
@@ -1287,7 +1679,12 @@
     "grade_min": 8,
     "grade_max": 11,
     "cost_type": "paid",
-    "tags": ["Mathematics", "Computer Science", "Philosophy & Ethics", "Neuroscience"]
+    "tags": [
+      "Mathematics",
+      "Computer Science",
+      "Philosophy & Ethics",
+      "Neuroscience"
+    ]
   },
   {
     "id": "nylf-medicine",
@@ -1302,7 +1699,11 @@
     "grade_min": 9,
     "grade_max": 12,
     "cost_type": "paid",
-    "tags": ["Medicine & Clinical Health", "Nursing & Patient Care", "Public Health & Epidemiology"]
+    "tags": [
+      "Medicine & Clinical Health",
+      "Nursing & Patient Care",
+      "Public Health & Epidemiology"
+    ]
   },
   {
     "id": "hoby",
@@ -1317,12 +1718,15 @@
     "grade_min": 10,
     "grade_max": 10,
     "cost_type": "paid",
-    "tags": ["Leadership", "Nonprofit & Community"]
+    "tags": [
+      "Leadership",
+      "Nonprofit & Community"
+    ]
   },
   {
     "id": "sea-hs-seminar",
     "kind": "program",
-    "title": "Sea Education Association — High School Summer Seminars",
+    "title": "Sea Education Association \u2014 High School Summer Seminars",
     "url": "https://sea.edu",
     "short_description": "Oceanography and sailing seminar blending marine science with hands-on time at sea.",
     "location_name": "Woods Hole, Massachusetts",
@@ -1332,7 +1736,10 @@
     "grade_min": 10,
     "grade_max": 12,
     "cost_type": "paid",
-    "tags": ["Marine & Ocean Science", "Oceanography & Atmospheric Science"]
+    "tags": [
+      "Marine & Ocean Science",
+      "Oceanography & Atmospheric Science"
+    ]
   },
   {
     "id": "berklee-fivewk",
@@ -1347,7 +1754,9 @@
     "grade_min": 9,
     "grade_max": 12,
     "cost_type": "paid",
-    "tags": ["Music"]
+    "tags": [
+      "Music"
+    ]
   },
   {
     "id": "acs-project-seed",
@@ -1362,7 +1771,12 @@
     "grade_min": 10,
     "grade_max": 12,
     "cost_type": "stipend",
-    "tags": ["Chemistry", "Research", "Biochemistry", "Environmental Science"]
+    "tags": [
+      "Chemistry",
+      "Research",
+      "Biochemistry",
+      "Environmental Science"
+    ]
   },
   {
     "id": "conrad-challenge",
@@ -1377,7 +1791,13 @@
     "grade_min": 8,
     "grade_max": 12,
     "cost_type": "unknown",
-    "tags": ["Entrepreneurship", "Innovation", "Aerospace", "Engineering", "Business"]
+    "tags": [
+      "Entrepreneurship",
+      "Innovation",
+      "Aerospace",
+      "Engineering",
+      "Business"
+    ]
   },
   {
     "id": "usabo",
@@ -1392,7 +1812,12 @@
     "grade_min": 9,
     "grade_max": 12,
     "cost_type": "unknown",
-    "tags": ["Biology", "Genetics", "Neuroscience", "Research"]
+    "tags": [
+      "Biology",
+      "Genetics",
+      "Neuroscience",
+      "Research"
+    ]
   },
   {
     "id": "usaaao",
@@ -1407,7 +1832,12 @@
     "grade_min": 9,
     "grade_max": 12,
     "cost_type": "paid",
-    "tags": ["Astronomy", "Astrophysics", "Physics", "Mathematics"]
+    "tags": [
+      "Astronomy",
+      "Astrophysics",
+      "Physics",
+      "Mathematics"
+    ]
   },
   {
     "id": "waksman-wssp",
@@ -1422,7 +1852,13 @@
     "grade_min": 9,
     "grade_max": 12,
     "cost_type": "unknown",
-    "tags": ["Molecular Biology", "Bioinformatics", "Genetics", "Research", "Computer Science"]
+    "tags": [
+      "Molecular Biology",
+      "Bioinformatics",
+      "Genetics",
+      "Research",
+      "Computer Science"
+    ]
   },
   {
     "id": "jlab-hsshp",
@@ -1437,7 +1873,12 @@
     "grade_min": 11,
     "grade_max": 12,
     "cost_type": "stipend",
-    "tags": ["Physics", "Nuclear Science", "Research", "Engineering"]
+    "tags": [
+      "Physics",
+      "Nuclear Science",
+      "Research",
+      "Engineering"
+    ]
   },
   {
     "id": "technovation-girls",
@@ -1452,7 +1893,12 @@
     "grade_min": 8,
     "grade_max": 12,
     "cost_type": "free",
-    "tags": ["Computer Science", "Entrepreneurship", "Mobile Development", "Women in STEM"]
+    "tags": [
+      "Computer Science",
+      "Entrepreneurship",
+      "Mobile Development",
+      "Women in STEM"
+    ]
   },
   {
     "id": "picoctf",
@@ -1467,7 +1913,11 @@
     "grade_min": 8,
     "grade_max": 12,
     "cost_type": "free",
-    "tags": ["Cybersecurity", "Computer Science", "Cryptography"]
+    "tags": [
+      "Cybersecurity",
+      "Computer Science",
+      "Cryptography"
+    ]
   },
   {
     "id": "frc",
@@ -1482,7 +1932,12 @@
     "grade_min": 9,
     "grade_max": 12,
     "cost_type": "paid",
-    "tags": ["Robotics", "Engineering", "Computer Science", "Mechanical Engineering"]
+    "tags": [
+      "Robotics",
+      "Engineering",
+      "Computer Science",
+      "Mechanical Engineering"
+    ]
   },
   {
     "id": "mathily",
@@ -1497,7 +1952,10 @@
     "grade_min": 9,
     "grade_max": 12,
     "cost_type": "paid",
-    "tags": ["Mathematics", "Computer Science"]
+    "tags": [
+      "Mathematics",
+      "Computer Science"
+    ]
   },
   {
     "id": "youngarts",
@@ -1512,7 +1970,14 @@
     "grade_min": 10,
     "grade_max": 12,
     "cost_type": "free",
-    "tags": ["Visual Arts", "Music", "Film", "Creative Writing", "Theater", "Dance"]
+    "tags": [
+      "Visual Arts",
+      "Music",
+      "Film",
+      "Creative Writing",
+      "Theater",
+      "Dance"
+    ]
   },
   {
     "id": "jimmy-awards",
@@ -1527,7 +1992,11 @@
     "grade_min": 9,
     "grade_max": 12,
     "cost_type": "unknown",
-    "tags": ["Theater", "Music", "Performing Arts"]
+    "tags": [
+      "Theater",
+      "Music",
+      "Performing Arts"
+    ]
   },
   {
     "id": "scholastic-art-writing",
@@ -1542,7 +2011,12 @@
     "grade_min": 9,
     "grade_max": 12,
     "cost_type": "paid",
-    "tags": ["Visual Arts", "Creative Writing", "Photography", "Design"]
+    "tags": [
+      "Visual Arts",
+      "Creative Writing",
+      "Photography",
+      "Design"
+    ]
   },
   {
     "id": "adf-pdi",
@@ -1557,7 +2031,10 @@
     "grade_min": 8,
     "grade_max": 12,
     "cost_type": "paid",
-    "tags": ["Dance", "Performing Arts"]
+    "tags": [
+      "Dance",
+      "Performing Arts"
+    ]
   },
   {
     "id": "kenyon-young-writers",
@@ -1572,7 +2049,10 @@
     "grade_min": 9,
     "grade_max": 12,
     "cost_type": "paid",
-    "tags": ["Creative Writing", "Literature"]
+    "tags": [
+      "Creative Writing",
+      "Literature"
+    ]
   },
   {
     "id": "segl",
@@ -1587,7 +2067,12 @@
     "grade_min": 11,
     "grade_max": 11,
     "cost_type": "paid",
-    "tags": ["Political Science", "Ethics", "International Relations", "Leadership"]
+    "tags": [
+      "Political Science",
+      "Ethics",
+      "International Relations",
+      "Leadership"
+    ]
   },
   {
     "id": "bezos-scholars",
@@ -1602,7 +2087,11 @@
     "grade_min": 11,
     "grade_max": 11,
     "cost_type": "free",
-    "tags": ["Leadership", "Community Service", "Social Impact"]
+    "tags": [
+      "Leadership",
+      "Community Service",
+      "Social Impact"
+    ]
   },
   {
     "id": "national-economics-challenge",
@@ -1617,7 +2106,11 @@
     "grade_min": 9,
     "grade_max": 12,
     "cost_type": "unknown",
-    "tags": ["Economics", "Finance", "Business"]
+    "tags": [
+      "Economics",
+      "Finance",
+      "Business"
+    ]
   },
   {
     "id": "national-history-day",
@@ -1632,7 +2125,12 @@
     "grade_min": 9,
     "grade_max": 12,
     "cost_type": "unknown",
-    "tags": ["History", "Research", "Journalism", "Film"]
+    "tags": [
+      "History",
+      "Research",
+      "Journalism",
+      "Film"
+    ]
   },
   {
     "id": "cornell-young-birders",
@@ -1647,7 +2145,12 @@
     "grade_min": 10,
     "grade_max": 12,
     "cost_type": "paid",
-    "tags": ["Ecology", "Biology", "Environmental Science", "Wildlife Conservation"]
+    "tags": [
+      "Ecology",
+      "Biology",
+      "Environmental Science",
+      "Wildlife Conservation"
+    ]
   },
   {
     "id": "cornell-precollege-architecture",
@@ -1662,7 +2165,11 @@
     "grade_min": 10,
     "grade_max": 12,
     "cost_type": "paid",
-    "tags": ["Architecture", "Design", "Urban Planning"]
+    "tags": [
+      "Architecture",
+      "Design",
+      "Urban Planning"
+    ]
   },
   {
     "id": "cap-ncsa",
@@ -1677,7 +2184,12 @@
     "grade_min": 9,
     "grade_max": 12,
     "cost_type": "paid",
-    "tags": ["Aerospace", "Aviation", "Leadership", "Emergency Services"]
+    "tags": [
+      "Aerospace",
+      "Aviation",
+      "Leadership",
+      "Emergency Services"
+    ]
   },
   {
     "id": "isef",
@@ -1692,7 +2204,14 @@
     "grade_min": 9,
     "grade_max": 12,
     "cost_type": "unknown",
-    "tags": ["Research", "STEM Research", "Engineering", "Biology", "Chemistry", "Computer Science"]
+    "tags": [
+      "Research",
+      "STEM Research",
+      "Engineering",
+      "Biology",
+      "Chemistry",
+      "Computer Science"
+    ]
   },
   {
     "id": "science-olympiad",
@@ -1707,7 +2226,13 @@
     "grade_min": 9,
     "grade_max": 12,
     "cost_type": "unknown",
-    "tags": ["Biology", "Chemistry", "Physics", "Earth Science", "Engineering"]
+    "tags": [
+      "Biology",
+      "Chemistry",
+      "Physics",
+      "Earth Science",
+      "Engineering"
+    ]
   },
   {
     "id": "usaco",
@@ -1722,7 +2247,11 @@
     "grade_min": 9,
     "grade_max": 12,
     "cost_type": "free",
-    "tags": ["Computer Science", "Algorithms", "Mathematics"]
+    "tags": [
+      "Computer Science",
+      "Algorithms",
+      "Mathematics"
+    ]
   },
   {
     "id": "amc-aime-usamo",
@@ -1737,7 +2266,9 @@
     "grade_min": 9,
     "grade_max": 12,
     "cost_type": "paid",
-    "tags": ["Mathematics"]
+    "tags": [
+      "Mathematics"
+    ]
   },
   {
     "id": "usnco",
@@ -1752,7 +2283,9 @@
     "grade_min": 9,
     "grade_max": 12,
     "cost_type": "unknown",
-    "tags": ["Chemistry"]
+    "tags": [
+      "Chemistry"
+    ]
   },
   {
     "id": "usapho",
@@ -1767,7 +2300,10 @@
     "grade_min": 9,
     "grade_max": 12,
     "cost_type": "unknown",
-    "tags": ["Physics", "Mathematics"]
+    "tags": [
+      "Physics",
+      "Mathematics"
+    ]
   },
   {
     "id": "deca",
@@ -1782,7 +2318,13 @@
     "grade_min": 9,
     "grade_max": 12,
     "cost_type": "paid",
-    "tags": ["Business", "Marketing", "Finance", "Entrepreneurship", "Hospitality"]
+    "tags": [
+      "Business",
+      "Marketing",
+      "Finance",
+      "Entrepreneurship",
+      "Hospitality"
+    ]
   },
   {
     "id": "fbla",
@@ -1797,7 +2339,12 @@
     "grade_min": 9,
     "grade_max": 12,
     "cost_type": "paid",
-    "tags": ["Business", "Leadership", "Computer Science", "Finance"]
+    "tags": [
+      "Business",
+      "Leadership",
+      "Computer Science",
+      "Finance"
+    ]
   },
   {
     "id": "hosa",
@@ -1812,7 +2359,12 @@
     "grade_min": 9,
     "grade_max": 12,
     "cost_type": "paid",
-    "tags": ["Medicine", "Healthcare", "Biology", "Emergency Medicine"]
+    "tags": [
+      "Medicine",
+      "Healthcare",
+      "Biology",
+      "Emergency Medicine"
+    ]
   },
   {
     "id": "we-the-people",
@@ -1827,7 +2379,12 @@
     "grade_min": 9,
     "grade_max": 12,
     "cost_type": "unknown",
-    "tags": ["Political Science", "Law", "History", "Public Speaking"]
+    "tags": [
+      "Political Science",
+      "Law",
+      "History",
+      "Public Speaking"
+    ]
   },
   {
     "id": "mock-trial-championship",
@@ -1842,7 +2399,11 @@
     "grade_min": 9,
     "grade_max": 12,
     "cost_type": "unknown",
-    "tags": ["Law", "Public Speaking", "Debate"]
+    "tags": [
+      "Law",
+      "Public Speaking",
+      "Debate"
+    ]
   },
   {
     "id": "nsda-nationals",
@@ -1857,7 +2418,11 @@
     "grade_min": 9,
     "grade_max": 12,
     "cost_type": "paid",
-    "tags": ["Debate", "Public Speaking", "Political Science"]
+    "tags": [
+      "Debate",
+      "Public Speaking",
+      "Political Science"
+    ]
   },
   {
     "id": "nosb",
@@ -1872,7 +2437,11 @@
     "grade_min": 9,
     "grade_max": 12,
     "cost_type": "unknown",
-    "tags": ["Marine & Ocean Science", "Oceanography & Atmospheric Science", "Environmental Science"]
+    "tags": [
+      "Marine & Ocean Science",
+      "Oceanography & Atmospheric Science",
+      "Environmental Science"
+    ]
   },
   {
     "id": "national-science-bowl",
@@ -1887,7 +2456,13 @@
     "grade_min": 9,
     "grade_max": 12,
     "cost_type": "unknown",
-    "tags": ["Biology", "Chemistry", "Physics", "Earth Science", "Mathematics"]
+    "tags": [
+      "Biology",
+      "Chemistry",
+      "Physics",
+      "Earth Science",
+      "Mathematics"
+    ]
   },
   {
     "id": "vex-robotics",
@@ -1902,7 +2477,11 @@
     "grade_min": 9,
     "grade_max": 12,
     "cost_type": "paid",
-    "tags": ["Robotics", "Engineering", "Computer Science"]
+    "tags": [
+      "Robotics",
+      "Engineering",
+      "Computer Science"
+    ]
   },
   {
     "id": "ftc",
@@ -1917,7 +2496,11 @@
     "grade_min": 9,
     "grade_max": 12,
     "cost_type": "paid",
-    "tags": ["Robotics", "Engineering", "Computer Science"]
+    "tags": [
+      "Robotics",
+      "Engineering",
+      "Computer Science"
+    ]
   },
   {
     "id": "odyssey-of-the-mind",
@@ -1932,7 +2515,12 @@
     "grade_min": 9,
     "grade_max": 12,
     "cost_type": "paid",
-    "tags": ["Engineering", "Theater", "Creative Writing", "Design"]
+    "tags": [
+      "Engineering",
+      "Theater",
+      "Creative Writing",
+      "Design"
+    ]
   },
   {
     "id": "destination-imagination",
@@ -1947,7 +2535,12 @@
     "grade_min": 9,
     "grade_max": 12,
     "cost_type": "paid",
-    "tags": ["Engineering", "Visual Arts", "Theater", "Design"]
+    "tags": [
+      "Engineering",
+      "Visual Arts",
+      "Theater",
+      "Design"
+    ]
   },
   {
     "id": "cyberpatriot",
@@ -1962,7 +2555,10 @@
     "grade_min": 9,
     "grade_max": 12,
     "cost_type": "paid",
-    "tags": ["Cybersecurity", "Computer Science"]
+    "tags": [
+      "Cybersecurity",
+      "Computer Science"
+    ]
   },
   {
     "id": "congressional-app-challenge",
@@ -1977,7 +2573,11 @@
     "grade_min": 9,
     "grade_max": 12,
     "cost_type": "free",
-    "tags": ["Computer Science", "Software Engineering", "Mobile Development"]
+    "tags": [
+      "Computer Science",
+      "Software Engineering",
+      "Mobile Development"
+    ]
   },
   {
     "id": "usamts",
@@ -1992,7 +2592,9 @@
     "grade_min": 9,
     "grade_max": 12,
     "cost_type": "free",
-    "tags": ["Mathematics"]
+    "tags": [
+      "Mathematics"
+    ]
   },
   {
     "id": "tarc-rocketry",
@@ -2007,7 +2609,11 @@
     "grade_min": 9,
     "grade_max": 12,
     "cost_type": "paid",
-    "tags": ["Aerospace", "Engineering", "Physics"]
+    "tags": [
+      "Aerospace",
+      "Engineering",
+      "Physics"
+    ]
   },
   {
     "id": "genius-olympiad",
@@ -2022,7 +2628,13 @@
     "grade_min": 9,
     "grade_max": 12,
     "cost_type": "paid",
-    "tags": ["Environmental Science", "Climate", "Engineering", "Visual Arts", "Film"]
+    "tags": [
+      "Environmental Science",
+      "Climate",
+      "Engineering",
+      "Visual Arts",
+      "Film"
+    ]
   },
   {
     "id": "poetry-out-loud",
@@ -2037,7 +2649,12 @@
     "grade_min": 9,
     "grade_max": 12,
     "cost_type": "free",
-    "tags": ["Creative Writing", "Literature", "Public Speaking", "Theater"]
+    "tags": [
+      "Creative Writing",
+      "Literature",
+      "Public Speaking",
+      "Theater"
+    ]
   },
   {
     "id": "nhsmun",
@@ -2052,7 +2669,12 @@
     "grade_min": 9,
     "grade_max": 12,
     "cost_type": "paid",
-    "tags": ["International Relations", "Political Science", "Public Speaking", "Debate"]
+    "tags": [
+      "International Relations",
+      "Political Science",
+      "Public Speaking",
+      "Debate"
+    ]
   },
   {
     "id": "diamond-challenge",
@@ -2067,7 +2689,11 @@
     "grade_min": 9,
     "grade_max": 12,
     "cost_type": "free",
-    "tags": ["Entrepreneurship", "Business", "Social Impact"]
+    "tags": [
+      "Entrepreneurship",
+      "Business",
+      "Social Impact"
+    ]
   },
   {
     "id": "jshs",
@@ -2082,7 +2708,13 @@
     "grade_min": 9,
     "grade_max": 12,
     "cost_type": "free",
-    "tags": ["Research", "STEM Research", "Biology", "Engineering", "Physics"]
+    "tags": [
+      "Research",
+      "STEM Research",
+      "Biology",
+      "Engineering",
+      "Physics"
+    ]
   },
   {
     "id": "agdiscovery",
@@ -2097,7 +2729,12 @@
     "grade_min": 9,
     "grade_max": 11,
     "cost_type": "free",
-    "tags": ["Agriculture", "Animal Science", "Wildlife Conservation", "Biology"]
+    "tags": [
+      "Agriculture",
+      "Animal Science",
+      "Wildlife Conservation",
+      "Biology"
+    ]
   },
   {
     "id": "mit-wtp",
@@ -2112,7 +2749,12 @@
     "grade_min": 11,
     "grade_max": 11,
     "cost_type": "unknown",
-    "tags": ["Electrical Engineering", "Computer Science", "Mechanical Engineering", "Women in STEM"]
+    "tags": [
+      "Electrical Engineering",
+      "Computer Science",
+      "Mechanical Engineering",
+      "Women in STEM"
+    ]
   },
   {
     "id": "medill-cherubs",
@@ -2127,7 +2769,11 @@
     "grade_min": 12,
     "grade_max": 12,
     "cost_type": "paid",
-    "tags": ["Journalism", "Creative Writing", "Media & Communications"]
+    "tags": [
+      "Journalism",
+      "Creative Writing",
+      "Media & Communications"
+    ]
   },
   {
     "id": "boys-girls-state",
@@ -2142,7 +2788,12 @@
     "grade_min": 11,
     "grade_max": 11,
     "cost_type": "free",
-    "tags": ["Political Science", "Leadership", "Public Speaking", "Government"]
+    "tags": [
+      "Political Science",
+      "Leadership",
+      "Public Speaking",
+      "Government"
+    ]
   },
   {
     "id": "senate-youth-program",
@@ -2157,7 +2808,12 @@
     "grade_min": 11,
     "grade_max": 12,
     "cost_type": "free",
-    "tags": ["Political Science", "Government", "Public Policy", "Leadership"]
+    "tags": [
+      "Political Science",
+      "Government",
+      "Public Policy",
+      "Leadership"
+    ]
   },
   {
     "id": "fte-economics-for-leaders",
@@ -2172,7 +2828,11 @@
     "grade_min": 10,
     "grade_max": 12,
     "cost_type": "paid",
-    "tags": ["Economics", "Leadership", "Public Policy"]
+    "tags": [
+      "Economics",
+      "Leadership",
+      "Public Policy"
+    ]
   },
   {
     "id": "dnalc-stars",
@@ -2187,7 +2847,12 @@
     "grade_min": 10,
     "grade_max": 12,
     "cost_type": "free",
-    "tags": ["Genetics", "Molecular Biology", "Bioinformatics", "Research"]
+    "tags": [
+      "Genetics",
+      "Molecular Biology",
+      "Bioinformatics",
+      "Research"
+    ]
   },
   {
     "id": "higher-orbits-go-for-launch",
@@ -2202,7 +2867,12 @@
     "grade_min": 9,
     "grade_max": 12,
     "cost_type": "unknown",
-    "tags": ["Aerospace", "Space Exploration", "Engineering", "Leadership"]
+    "tags": [
+      "Aerospace",
+      "Space Exploration",
+      "Engineering",
+      "Leadership"
+    ]
   },
   {
     "id": "usc-cinematic-arts-summer",
@@ -2217,7 +2887,12 @@
     "grade_min": 10,
     "grade_max": 12,
     "cost_type": "paid",
-    "tags": ["Film", "Animation", "Game Design", "Media & Communications"]
+    "tags": [
+      "Film",
+      "Animation",
+      "Game Design",
+      "Media & Communications"
+    ]
   },
   {
     "id": "nyu-tisch-summer-hs",
@@ -2232,7 +2907,14 @@
     "grade_min": 10,
     "grade_max": 11,
     "cost_type": "paid",
-    "tags": ["Film", "Dance", "Theater", "Game Design", "Music", "Photography"]
+    "tags": [
+      "Film",
+      "Dance",
+      "Theater",
+      "Game Design",
+      "Music",
+      "Photography"
+    ]
   },
   {
     "id": "parsons-summer-intensive",
@@ -2247,7 +2929,13 @@
     "grade_min": 10,
     "grade_max": 12,
     "cost_type": "paid",
-    "tags": ["Fashion Design", "Graphic Design", "Architecture", "Visual Arts", "Design"]
+    "tags": [
+      "Fashion Design",
+      "Graphic Design",
+      "Architecture",
+      "Visual Arts",
+      "Design"
+    ]
   },
   {
     "id": "hog-island-audubon-teens",
@@ -2262,7 +2950,12 @@
     "grade_min": 9,
     "grade_max": 12,
     "cost_type": "paid",
-    "tags": ["Ecology", "Environmental Science", "Wildlife Conservation", "Visual Arts"]
+    "tags": [
+      "Ecology",
+      "Environmental Science",
+      "Wildlife Conservation",
+      "Visual Arts"
+    ]
   },
   {
     "id": "middlebury-language-academy",
@@ -2277,7 +2970,10 @@
     "grade_min": 9,
     "grade_max": 12,
     "cost_type": "paid",
-    "tags": ["World Languages", "Linguistics"]
+    "tags": [
+      "World Languages",
+      "Linguistics"
+    ]
   },
   {
     "id": "outward-bound-hs",
@@ -2292,7 +2988,11 @@
     "grade_min": 9,
     "grade_max": 12,
     "cost_type": "paid",
-    "tags": ["Environmental Science", "Leadership", "Outdoor Education"]
+    "tags": [
+      "Environmental Science",
+      "Leadership",
+      "Outdoor Education"
+    ]
   },
   {
     "id": "bri-student-fellowship",
@@ -2307,7 +3007,12 @@
     "grade_min": 10,
     "grade_max": 12,
     "cost_type": "free",
-    "tags": ["Political Science", "Law", "History", "Government"]
+    "tags": [
+      "Political Science",
+      "Law",
+      "History",
+      "Government"
+    ]
   },
   {
     "id": "national-history-academy",
@@ -2322,7 +3027,10 @@
     "grade_min": 10,
     "grade_max": 12,
     "cost_type": "paid",
-    "tags": ["History", "Political Science"]
+    "tags": [
+      "History",
+      "Political Science"
+    ]
   },
   {
     "id": "rice-architecture-immersion",
@@ -2337,7 +3045,10 @@
     "grade_min": 10,
     "grade_max": 11,
     "cost_type": "free",
-    "tags": ["Architecture", "Design"]
+    "tags": [
+      "Architecture",
+      "Design"
+    ]
   },
   {
     "id": "purdue-boiler-vet-camp",
@@ -2352,7 +3063,11 @@
     "grade_min": 9,
     "grade_max": 12,
     "cost_type": "paid",
-    "tags": ["Veterinary Medicine", "Biology", "Animal Science"]
+    "tags": [
+      "Veterinary Medicine",
+      "Biology",
+      "Animal Science"
+    ]
   },
   {
     "id": "nc-governors-school",
@@ -2367,7 +3082,12 @@
     "grade_min": 11,
     "grade_max": 12,
     "cost_type": "free",
-    "tags": ["Interdisciplinary Studies", "Visual Arts", "Mathematics", "Humanities"]
+    "tags": [
+      "Interdisciplinary Studies",
+      "Visual Arts",
+      "Mathematics",
+      "Humanities"
+    ]
   },
   {
     "id": "va-governors-school",
@@ -2382,7 +3102,12 @@
     "grade_min": 10,
     "grade_max": 12,
     "cost_type": "free",
-    "tags": ["Interdisciplinary Studies", "Science", "Visual Arts", "Humanities"]
+    "tags": [
+      "Interdisciplinary Studies",
+      "Science",
+      "Visual Arts",
+      "Humanities"
+    ]
   },
   {
     "id": "georgia-ghp",
@@ -2397,7 +3122,12 @@
     "grade_min": 10,
     "grade_max": 12,
     "cost_type": "free",
-    "tags": ["Interdisciplinary Studies", "Visual Arts", "Science", "Humanities"]
+    "tags": [
+      "Interdisciplinary Studies",
+      "Visual Arts",
+      "Science",
+      "Humanities"
+    ]
   },
   {
     "id": "nj-govschool-engineering",
@@ -2412,7 +3142,11 @@
     "grade_min": 12,
     "grade_max": 12,
     "cost_type": "free",
-    "tags": ["Engineering", "Technology", "Mathematics"]
+    "tags": [
+      "Engineering",
+      "Technology",
+      "Mathematics"
+    ]
   },
   {
     "id": "nj-govschool-sciences",
@@ -2427,7 +3161,13 @@
     "grade_min": 12,
     "grade_max": 12,
     "cost_type": "free",
-    "tags": ["Science", "Research", "Biology", "Chemistry", "Physics"]
+    "tags": [
+      "Science",
+      "Research",
+      "Biology",
+      "Chemistry",
+      "Physics"
+    ]
   },
   {
     "id": "nd-governors-school",
@@ -2442,7 +3182,11 @@
     "grade_min": 10,
     "grade_max": 12,
     "cost_type": "free",
-    "tags": ["Interdisciplinary Studies", "Science", "Humanities"]
+    "tags": [
+      "Interdisciplinary Studies",
+      "Science",
+      "Humanities"
+    ]
   },
   {
     "id": "ms-governors-school",
@@ -2457,7 +3201,12 @@
     "grade_min": 11,
     "grade_max": 12,
     "cost_type": "free",
-    "tags": ["Interdisciplinary Studies", "Visual Arts", "Science", "Humanities"]
+    "tags": [
+      "Interdisciplinary Studies",
+      "Visual Arts",
+      "Science",
+      "Humanities"
+    ]
   },
   {
     "id": "harvard-precollege",
@@ -2472,7 +3221,11 @@
     "grade_min": 11,
     "grade_max": 12,
     "cost_type": "paid",
-    "tags": ["Interdisciplinary Studies", "Neuroscience", "Computer Science"]
+    "tags": [
+      "Interdisciplinary Studies",
+      "Neuroscience",
+      "Computer Science"
+    ]
   },
   {
     "id": "columbia-precollege",
@@ -2487,7 +3240,11 @@
     "grade_min": 10,
     "grade_max": 12,
     "cost_type": "paid",
-    "tags": ["Interdisciplinary Studies", "Science", "Humanities"]
+    "tags": [
+      "Interdisciplinary Studies",
+      "Science",
+      "Humanities"
+    ]
   },
   {
     "id": "cornell-precollege-general",
@@ -2502,7 +3259,12 @@
     "grade_min": 10,
     "grade_max": 12,
     "cost_type": "paid",
-    "tags": ["Interdisciplinary Studies", "Science", "Engineering", "Humanities"]
+    "tags": [
+      "Interdisciplinary Studies",
+      "Science",
+      "Engineering",
+      "Humanities"
+    ]
   },
   {
     "id": "jhu-precollege-summer",
@@ -2517,7 +3279,12 @@
     "grade_min": 10,
     "grade_max": 12,
     "cost_type": "paid",
-    "tags": ["Interdisciplinary Studies", "Research", "Medicine", "Business"]
+    "tags": [
+      "Interdisciplinary Studies",
+      "Research",
+      "Medicine",
+      "Business"
+    ]
   },
   {
     "id": "bu-summer-term-hs",
@@ -2532,7 +3299,11 @@
     "grade_min": 10,
     "grade_max": 12,
     "cost_type": "paid",
-    "tags": ["Interdisciplinary Studies", "Research", "Science"]
+    "tags": [
+      "Interdisciplinary Studies",
+      "Research",
+      "Science"
+    ]
   },
   {
     "id": "usc-summer-programs",
@@ -2547,7 +3318,12 @@
     "grade_min": 10,
     "grade_max": 12,
     "cost_type": "paid",
-    "tags": ["Interdisciplinary Studies", "Film", "Business", "Science"]
+    "tags": [
+      "Interdisciplinary Studies",
+      "Film",
+      "Business",
+      "Science"
+    ]
   },
   {
     "id": "telluride-tass",
@@ -2562,7 +3338,11 @@
     "grade_min": 10,
     "grade_max": 11,
     "cost_type": "free",
-    "tags": ["History", "Political Science", "Humanities"]
+    "tags": [
+      "History",
+      "Political Science",
+      "Humanities"
+    ]
   },
   {
     "id": "brown-precollege",
@@ -2577,7 +3357,12 @@
     "grade_min": 9,
     "grade_max": 12,
     "cost_type": "paid",
-    "tags": ["Artificial Intelligence", "Computer Science", "Data Science", "Interdisciplinary Studies"]
+    "tags": [
+      "Artificial Intelligence",
+      "Computer Science",
+      "Data Science",
+      "Interdisciplinary Studies"
+    ]
   },
   {
     "id": "columbia-engineering-hs",
@@ -2592,7 +3377,11 @@
     "grade_min": 10,
     "grade_max": 12,
     "cost_type": "paid",
-    "tags": ["Engineering", "Mechanical Engineering", "Electrical Engineering"]
+    "tags": [
+      "Engineering",
+      "Mechanical Engineering",
+      "Electrical Engineering"
+    ]
   },
   {
     "id": "ucla-summer-sessions-hs",
@@ -2607,7 +3396,11 @@
     "grade_min": 10,
     "grade_max": 12,
     "cost_type": "paid",
-    "tags": ["Engineering", "Computer Science", "Electrical Engineering"]
+    "tags": [
+      "Engineering",
+      "Computer Science",
+      "Electrical Engineering"
+    ]
   },
   {
     "id": "umich-see-camp",
@@ -2622,7 +3415,11 @@
     "grade_min": 10,
     "grade_max": 12,
     "cost_type": "paid",
-    "tags": ["Engineering", "Mechanical Engineering", "Civil Engineering"]
+    "tags": [
+      "Engineering",
+      "Mechanical Engineering",
+      "Civil Engineering"
+    ]
   },
   {
     "id": "upenn-engineering-summer-academy",
@@ -2637,7 +3434,11 @@
     "grade_min": 10,
     "grade_max": 12,
     "cost_type": "paid",
-    "tags": ["Engineering", "Computer Science", "Bioengineering"]
+    "tags": [
+      "Engineering",
+      "Computer Science",
+      "Bioengineering"
+    ]
   },
   {
     "id": "purdue-summer-engineering",
@@ -2652,7 +3453,13 @@
     "grade_min": 10,
     "grade_max": 12,
     "cost_type": "paid",
-    "tags": ["Aerospace", "Biomedical Engineering", "Civil Engineering", "Electrical Engineering", "Mechanical Engineering"]
+    "tags": [
+      "Aerospace",
+      "Biomedical Engineering",
+      "Civil Engineering",
+      "Electrical Engineering",
+      "Mechanical Engineering"
+    ]
   },
   {
     "id": "utaustin-mite",
@@ -2667,7 +3474,10 @@
     "grade_min": 11,
     "grade_max": 11,
     "cost_type": "unknown",
-    "tags": ["Engineering", "Mechanical Engineering"]
+    "tags": [
+      "Engineering",
+      "Mechanical Engineering"
+    ]
   },
   {
     "id": "tamu-aggie-stem",
@@ -2682,7 +3492,11 @@
     "grade_min": 9,
     "grade_max": 12,
     "cost_type": "paid",
-    "tags": ["Aerospace", "Mechanical Engineering", "Civil Engineering"]
+    "tags": [
+      "Aerospace",
+      "Mechanical Engineering",
+      "Civil Engineering"
+    ]
   },
   {
     "id": "msu-engineering-summer",
@@ -2697,7 +3511,10 @@
     "grade_min": 9,
     "grade_max": 12,
     "cost_type": "paid",
-    "tags": ["Engineering", "Robotics"]
+    "tags": [
+      "Engineering",
+      "Robotics"
+    ]
   },
   {
     "id": "upenn-biomedical-research-academy",
@@ -2712,7 +3529,12 @@
     "grade_min": 10,
     "grade_max": 12,
     "cost_type": "paid",
-    "tags": ["Molecular Biology", "Genetics", "Medicine", "Biology"]
+    "tags": [
+      "Molecular Biology",
+      "Genetics",
+      "Medicine",
+      "Biology"
+    ]
   },
   {
     "id": "stanford-csi",
@@ -2727,7 +3549,10 @@
     "grade_min": 11,
     "grade_max": 12,
     "cost_type": "paid",
-    "tags": ["Medicine", "Biology"]
+    "tags": [
+      "Medicine",
+      "Biology"
+    ]
   },
   {
     "id": "nova-aim-medicine",
@@ -2742,7 +3567,10 @@
     "grade_min": 9,
     "grade_max": 12,
     "cost_type": "paid",
-    "tags": ["Medicine", "Healthcare"]
+    "tags": [
+      "Medicine",
+      "Healthcare"
+    ]
   },
   {
     "id": "harvard-medscience",
@@ -2757,7 +3585,10 @@
     "grade_min": 9,
     "grade_max": 12,
     "cost_type": "paid",
-    "tags": ["Medicine", "Healthcare"]
+    "tags": [
+      "Medicine",
+      "Healthcare"
+    ]
   },
   {
     "id": "tufts-mini-med-school",
@@ -2772,7 +3603,11 @@
     "grade_min": 9,
     "grade_max": 12,
     "cost_type": "paid",
-    "tags": ["Medicine", "Healthcare", "Biology"]
+    "tags": [
+      "Medicine",
+      "Healthcare",
+      "Biology"
+    ]
   },
   {
     "id": "upenn-coding-academy",
@@ -2787,7 +3622,10 @@
     "grade_min": 9,
     "grade_max": 12,
     "cost_type": "paid",
-    "tags": ["Computer Science", "Software Engineering"]
+    "tags": [
+      "Computer Science",
+      "Software Engineering"
+    ]
   },
   {
     "id": "caltech-summer-tech-camp",
@@ -2802,7 +3640,10 @@
     "grade_min": 9,
     "grade_max": 12,
     "cost_type": "paid",
-    "tags": ["Computer Science", "Game Design"]
+    "tags": [
+      "Computer Science",
+      "Game Design"
+    ]
   },
   {
     "id": "columbia-cs-bootcamps",
@@ -2817,7 +3658,12 @@
     "grade_min": 9,
     "grade_max": 12,
     "cost_type": "paid",
-    "tags": ["Computer Science", "Cybersecurity", "Data Science", "UX/UI Design"]
+    "tags": [
+      "Computer Science",
+      "Cybersecurity",
+      "Data Science",
+      "UX/UI Design"
+    ]
   },
   {
     "id": "berkeley-cs-academy",
@@ -2832,7 +3678,10 @@
     "grade_min": 9,
     "grade_max": 12,
     "cost_type": "paid",
-    "tags": ["Computer Science", "Software Engineering"]
+    "tags": [
+      "Computer Science",
+      "Software Engineering"
+    ]
   },
   {
     "id": "cmu-cs-academy-precollege",
@@ -2847,7 +3696,10 @@
     "grade_min": 11,
     "grade_max": 12,
     "cost_type": "paid",
-    "tags": ["Computer Science", "Software Engineering"]
+    "tags": [
+      "Computer Science",
+      "Software Engineering"
+    ]
   },
   {
     "id": "umd-terp-young-scholars",
@@ -2862,7 +3714,10 @@
     "grade_min": 10,
     "grade_max": 12,
     "cost_type": "paid",
-    "tags": ["Computer Science", "Interdisciplinary Studies"]
+    "tags": [
+      "Computer Science",
+      "Interdisciplinary Studies"
+    ]
   },
   {
     "id": "utaustin-ecs-camp",
@@ -2877,7 +3732,10 @@
     "grade_min": 10,
     "grade_max": 12,
     "cost_type": "paid",
-    "tags": ["Computer Science", "Engineering"]
+    "tags": [
+      "Computer Science",
+      "Engineering"
+    ]
   },
   {
     "id": "babson-summer-study",
@@ -2892,7 +3750,11 @@
     "grade_min": 11,
     "grade_max": 12,
     "cost_type": "paid",
-    "tags": ["Entrepreneurship", "Business", "Leadership"]
+    "tags": [
+      "Entrepreneurship",
+      "Business",
+      "Leadership"
+    ]
   },
   {
     "id": "fordham-exploring-entrepreneurship",
@@ -2907,7 +3769,10 @@
     "grade_min": 11,
     "grade_max": 12,
     "cost_type": "paid",
-    "tags": ["Entrepreneurship", "Business"]
+    "tags": [
+      "Entrepreneurship",
+      "Business"
+    ]
   },
   {
     "id": "georgetown-entrepreneurship-academy",
@@ -2922,7 +3787,11 @@
     "grade_min": 10,
     "grade_max": 12,
     "cost_type": "paid",
-    "tags": ["Entrepreneurship", "Business", "Public Policy"]
+    "tags": [
+      "Entrepreneurship",
+      "Business",
+      "Public Policy"
+    ]
   },
   {
     "id": "hsa-business-academy",
@@ -2937,7 +3806,10 @@
     "grade_min": 9,
     "grade_max": 12,
     "cost_type": "paid",
-    "tags": ["Business", "Entrepreneurship"]
+    "tags": [
+      "Business",
+      "Entrepreneurship"
+    ]
   },
   {
     "id": "tufts-entrepreneurship",
@@ -2952,7 +3824,10 @@
     "grade_min": 9,
     "grade_max": 12,
     "cost_type": "paid",
-    "tags": ["Entrepreneurship", "Business"]
+    "tags": [
+      "Entrepreneurship",
+      "Business"
+    ]
   },
   {
     "id": "columbia-business-economics-immersion",
@@ -2967,7 +3842,11 @@
     "grade_min": 10,
     "grade_max": 12,
     "cost_type": "paid",
-    "tags": ["Economics", "Business", "Finance"]
+    "tags": [
+      "Economics",
+      "Business",
+      "Finance"
+    ]
   },
   {
     "id": "wharton-lbw",
@@ -2982,7 +3861,11 @@
     "grade_min": 12,
     "grade_max": 12,
     "cost_type": "paid",
-    "tags": ["Business", "Leadership", "Finance"]
+    "tags": [
+      "Business",
+      "Leadership",
+      "Finance"
+    ]
   },
   {
     "id": "sadie-nash-leadership",
@@ -2997,7 +3880,11 @@
     "grade_min": 9,
     "grade_max": 12,
     "cost_type": "free",
-    "tags": ["Leadership", "Social Impact", "Gender Studies"]
+    "tags": [
+      "Leadership",
+      "Social Impact",
+      "Gender Studies"
+    ]
   },
   {
     "id": "notre-dame-leadership-seminars",
@@ -3012,7 +3899,11 @@
     "grade_min": 10,
     "grade_max": 12,
     "cost_type": "paid",
-    "tags": ["Leadership", "Public Policy", "Community Service"]
+    "tags": [
+      "Leadership",
+      "Public Policy",
+      "Community Service"
+    ]
   },
   {
     "id": "nslc",
@@ -3027,7 +3918,13 @@
     "grade_min": 9,
     "grade_max": 12,
     "cost_type": "paid",
-    "tags": ["Leadership", "Business", "Medicine", "Engineering", "International Relations"]
+    "tags": [
+      "Leadership",
+      "Business",
+      "Medicine",
+      "Engineering",
+      "International Relations"
+    ]
   },
   {
     "id": "barnard-nextgen-leadership",
@@ -3042,7 +3939,11 @@
     "grade_min": 9,
     "grade_max": 12,
     "cost_type": "paid",
-    "tags": ["Leadership", "Women in STEM", "Public Speaking"]
+    "tags": [
+      "Leadership",
+      "Women in STEM",
+      "Public Speaking"
+    ]
   },
   {
     "id": "trio-upward-bound",
@@ -3057,7 +3958,11 @@
     "grade_min": 9,
     "grade_max": 11,
     "cost_type": "free",
-    "tags": ["College Access", "Academic Enrichment", "Community Service"]
+    "tags": [
+      "College Access",
+      "Academic Enrichment",
+      "Community Service"
+    ]
   },
   {
     "id": "dod-seap",
@@ -3072,7 +3977,12 @@
     "grade_min": 10,
     "grade_max": 12,
     "cost_type": "stipend",
-    "tags": ["Engineering", "Physics", "Research", "Computer Science"]
+    "tags": [
+      "Engineering",
+      "Physics",
+      "Research",
+      "Computer Science"
+    ]
   },
   {
     "id": "nasa-sees",
@@ -3087,7 +3997,12 @@
     "grade_min": 10,
     "grade_max": 12,
     "cost_type": "unknown",
-    "tags": ["Earth Science", "Astronomy", "Data Science", "Remote Sensing"]
+    "tags": [
+      "Earth Science",
+      "Astronomy",
+      "Data Science",
+      "Remote Sensing"
+    ]
   },
   {
     "id": "nsli-y",
@@ -3102,7 +4017,11 @@
     "grade_min": 9,
     "grade_max": 12,
     "cost_type": "free",
-    "tags": ["World Languages", "Linguistics", "International Relations"]
+    "tags": [
+      "World Languages",
+      "Linguistics",
+      "International Relations"
+    ]
   },
   {
     "id": "cbyx",
@@ -3117,7 +4036,10 @@
     "grade_min": 12,
     "grade_max": 12,
     "cost_type": "free",
-    "tags": ["World Languages", "International Relations"]
+    "tags": [
+      "World Languages",
+      "International Relations"
+    ]
   },
   {
     "id": "rotary-youth-exchange",
@@ -3132,7 +4054,11 @@
     "grade_min": 9,
     "grade_max": 12,
     "cost_type": "unknown",
-    "tags": ["World Languages", "International Relations", "Cultural Exchange"]
+    "tags": [
+      "World Languages",
+      "International Relations",
+      "Cultural Exchange"
+    ]
   },
   {
     "id": "jkcf-young-scholars",
@@ -3147,7 +4073,10 @@
     "grade_min": 9,
     "grade_max": 12,
     "cost_type": "free",
-    "tags": ["College Access", "Academic Enrichment"]
+    "tags": [
+      "College Access",
+      "Academic Enrichment"
+    ]
   },
   {
     "id": "coca-cola-scholars",
@@ -3162,7 +4091,11 @@
     "grade_min": 12,
     "grade_max": 12,
     "cost_type": "free",
-    "tags": ["Leadership", "Community Service", "College Access"]
+    "tags": [
+      "Leadership",
+      "Community Service",
+      "College Access"
+    ]
   },
   {
     "id": "questbridge-national-college-match",
@@ -3177,7 +4110,10 @@
     "grade_min": 12,
     "grade_max": 12,
     "cost_type": "free",
-    "tags": ["College Access", "Leadership"]
+    "tags": [
+      "College Access",
+      "Leadership"
+    ]
   },
   {
     "id": "amnh-srmp",
@@ -3192,7 +4128,13 @@
     "grade_min": 10,
     "grade_max": 11,
     "cost_type": "stipend",
-    "tags": ["Research", "Astrophysics", "Biology", "Anthropology", "Data Science"]
+    "tags": [
+      "Research",
+      "Astrophysics",
+      "Biology",
+      "Anthropology",
+      "Data Science"
+    ]
   },
   {
     "id": "john-locke-essay-competition",
@@ -3207,7 +4149,14 @@
     "grade_min": 9,
     "grade_max": 12,
     "cost_type": "paid",
-    "tags": ["Philosophy", "Political Science", "Law", "Psychology", "Economics", "Creative Writing"]
+    "tags": [
+      "Philosophy",
+      "Political Science",
+      "Law",
+      "Psychology",
+      "Economics",
+      "Creative Writing"
+    ]
   },
   {
     "id": "yes-abroad",
@@ -3222,7 +4171,11 @@
     "grade_min": 10,
     "grade_max": 12,
     "cost_type": "free",
-    "tags": ["International Relations", "World Languages", "Cultural Exchange"]
+    "tags": [
+      "International Relations",
+      "World Languages",
+      "Cultural Exchange"
+    ]
   },
   {
     "id": "asu-art-camp",
@@ -3237,7 +4190,10 @@
     "grade_min": 9,
     "grade_max": 12,
     "cost_type": "paid",
-    "tags": ["Visual Arts", "Design"]
+    "tags": [
+      "Visual Arts",
+      "Design"
+    ]
   },
   {
     "id": "academy-art-university-pcae",
@@ -3252,7 +4208,10 @@
     "grade_min": 9,
     "grade_max": 12,
     "cost_type": "free",
-    "tags": ["Visual Arts", "Design"]
+    "tags": [
+      "Visual Arts",
+      "Design"
+    ]
   },
   {
     "id": "ucla-acting-performance-lab",
@@ -3267,7 +4226,10 @@
     "grade_min": 9,
     "grade_max": 12,
     "cost_type": "paid",
-    "tags": ["Theater", "Performing Arts"]
+    "tags": [
+      "Theater",
+      "Performing Arts"
+    ]
   },
   {
     "id": "scad-rising-star",
@@ -3282,7 +4244,12 @@
     "grade_min": 10,
     "grade_max": 12,
     "cost_type": "paid",
-    "tags": ["Visual Arts", "Design", "Film", "Fashion Design"]
+    "tags": [
+      "Visual Arts",
+      "Design",
+      "Film",
+      "Fashion Design"
+    ]
   },
   {
     "id": "uncg-summer-art",
@@ -3297,7 +4264,11 @@
     "grade_min": 9,
     "grade_max": 12,
     "cost_type": "paid",
-    "tags": ["Visual Arts", "Design", "Film"]
+    "tags": [
+      "Visual Arts",
+      "Design",
+      "Film"
+    ]
   },
   {
     "id": "uga-summer-art-camp",
@@ -3312,7 +4283,10 @@
     "grade_min": 9,
     "grade_max": 12,
     "cost_type": "paid",
-    "tags": ["Visual Arts", "Design"]
+    "tags": [
+      "Visual Arts",
+      "Design"
+    ]
   },
   {
     "id": "brown-bell",
@@ -3327,7 +4301,11 @@
     "grade_min": 9,
     "grade_max": 12,
     "cost_type": "paid",
-    "tags": ["Environmental Science", "Climate", "Public Policy"]
+    "tags": [
+      "Environmental Science",
+      "Climate",
+      "Public Policy"
+    ]
   },
   {
     "id": "upenn-trees",
@@ -3342,7 +4320,11 @@
     "grade_min": 10,
     "grade_max": 12,
     "cost_type": "free",
-    "tags": ["Environmental Science", "Research", "Earth Science"]
+    "tags": [
+      "Environmental Science",
+      "Research",
+      "Earth Science"
+    ]
   },
   {
     "id": "teennat-pepperwood",
@@ -3357,7 +4339,11 @@
     "grade_min": 9,
     "grade_max": 12,
     "cost_type": "free",
-    "tags": ["Environmental Science", "Ecology", "Wildlife Conservation"]
+    "tags": [
+      "Environmental Science",
+      "Ecology",
+      "Wildlife Conservation"
+    ]
   },
   {
     "id": "ccnc-conservation-crew",
@@ -3372,7 +4358,11 @@
     "grade_min": 9,
     "grade_max": 12,
     "cost_type": "stipend",
-    "tags": ["Environmental Science", "Wildlife Conservation", "Outdoor Education"]
+    "tags": [
+      "Environmental Science",
+      "Wildlife Conservation",
+      "Outdoor Education"
+    ]
   },
   {
     "id": "sohlis-environmental-camp",
@@ -3387,7 +4377,11 @@
     "grade_min": 9,
     "grade_max": 12,
     "cost_type": "paid",
-    "tags": ["Environmental Science", "Ecology", "Biology"]
+    "tags": [
+      "Environmental Science",
+      "Ecology",
+      "Biology"
+    ]
   },
   {
     "id": "princeton-summer-journalism",
@@ -3402,7 +4396,11 @@
     "grade_min": 11,
     "grade_max": 12,
     "cost_type": "free",
-    "tags": ["Journalism", "Political Science", "Creative Writing"]
+    "tags": [
+      "Journalism",
+      "Political Science",
+      "Creative Writing"
+    ]
   },
   {
     "id": "columbia-journalism-workshop",
@@ -3417,7 +4415,11 @@
     "grade_min": 9,
     "grade_max": 12,
     "cost_type": "paid",
-    "tags": ["Journalism", "Creative Writing", "Media & Communications"]
+    "tags": [
+      "Journalism",
+      "Creative Writing",
+      "Media & Communications"
+    ]
   },
   {
     "id": "stanford-newsroom-by-the-bay",
@@ -3432,7 +4434,10 @@
     "grade_min": 9,
     "grade_max": 12,
     "cost_type": "paid",
-    "tags": ["Journalism", "Media & Communications"]
+    "tags": [
+      "Journalism",
+      "Media & Communications"
+    ]
   },
   {
     "id": "multicultural-journalism-workshop-alabama",
@@ -3447,7 +4452,10 @@
     "grade_min": 9,
     "grade_max": 12,
     "cost_type": "free",
-    "tags": ["Journalism", "Media & Communications"]
+    "tags": [
+      "Journalism",
+      "Media & Communications"
+    ]
   },
   {
     "id": "washington-journalism-media-conference",
@@ -3462,7 +4470,11 @@
     "grade_min": 9,
     "grade_max": 12,
     "cost_type": "paid",
-    "tags": ["Journalism", "Media & Communications", "Political Science"]
+    "tags": [
+      "Journalism",
+      "Media & Communications",
+      "Political Science"
+    ]
   },
   {
     "id": "stanford-cnix",
@@ -3477,7 +4489,11 @@
     "grade_min": 9,
     "grade_max": 12,
     "cost_type": "paid",
-    "tags": ["Neuroscience", "Psychology", "Medicine"]
+    "tags": [
+      "Neuroscience",
+      "Psychology",
+      "Medicine"
+    ]
   },
   {
     "id": "harvard-ssp",
@@ -3492,7 +4508,11 @@
     "grade_min": 11,
     "grade_max": 12,
     "cost_type": "paid",
-    "tags": ["Psychology", "Neuroscience", "Interdisciplinary Studies"]
+    "tags": [
+      "Psychology",
+      "Neuroscience",
+      "Interdisciplinary Studies"
+    ]
   },
   {
     "id": "duke-precollege",
@@ -3507,7 +4527,11 @@
     "grade_min": 9,
     "grade_max": 12,
     "cost_type": "paid",
-    "tags": ["Psychology", "Neuroscience", "Interdisciplinary Studies"]
+    "tags": [
+      "Psychology",
+      "Neuroscience",
+      "Interdisciplinary Studies"
+    ]
   },
   {
     "id": "nih-histep",
@@ -3522,7 +4546,12 @@
     "grade_min": 9,
     "grade_max": 12,
     "cost_type": "unknown",
-    "tags": ["Medicine", "Biology", "Research", "Healthcare"]
+    "tags": [
+      "Medicine",
+      "Biology",
+      "Research",
+      "Healthcare"
+    ]
   },
   {
     "id": "penn-carey-law-hs",
@@ -3537,7 +4566,10 @@
     "grade_min": 10,
     "grade_max": 12,
     "cost_type": "paid",
-    "tags": ["Law", "Political Science"]
+    "tags": [
+      "Law",
+      "Political Science"
+    ]
   },
   {
     "id": "columbia-american-law-summer",
@@ -3552,7 +4584,10 @@
     "grade_min": 10,
     "grade_max": 12,
     "cost_type": "paid",
-    "tags": ["Law", "Political Science"]
+    "tags": [
+      "Law",
+      "Political Science"
+    ]
   },
   {
     "id": "stanford-law-trial-program",
@@ -3567,7 +4602,10 @@
     "grade_min": 9,
     "grade_max": 12,
     "cost_type": "paid",
-    "tags": ["Law", "Debate"]
+    "tags": [
+      "Law",
+      "Debate"
+    ]
   },
   {
     "id": "georgetown-precollege-online",
@@ -3582,7 +4620,12 @@
     "grade_min": 8,
     "grade_max": 12,
     "cost_type": "paid",
-    "tags": ["Law", "International Relations", "Business", "Interdisciplinary Studies"]
+    "tags": [
+      "Law",
+      "International Relations",
+      "Business",
+      "Interdisciplinary Studies"
+    ]
   },
   {
     "id": "northwestern-law-society-seminar",
@@ -3597,7 +4640,11 @@
     "grade_min": 10,
     "grade_max": 12,
     "cost_type": "paid",
-    "tags": ["Law", "Political Science", "Sociology"]
+    "tags": [
+      "Law",
+      "Political Science",
+      "Sociology"
+    ]
   },
   {
     "id": "arizona-astronomy-camp",
@@ -3612,7 +4659,10 @@
     "grade_min": 9,
     "grade_max": 12,
     "cost_type": "paid",
-    "tags": ["Astronomy", "Physics"]
+    "tags": [
+      "Astronomy",
+      "Physics"
+    ]
   },
   {
     "id": "yale-yspa",
@@ -3627,7 +4677,12 @@
     "grade_min": 10,
     "grade_max": 12,
     "cost_type": "paid",
-    "tags": ["Astrophysics", "Astronomy", "Physics", "Research"]
+    "tags": [
+      "Astrophysics",
+      "Astronomy",
+      "Physics",
+      "Research"
+    ]
   },
   {
     "id": "reach-ciera-northwestern",
@@ -3642,7 +4697,11 @@
     "grade_min": 9,
     "grade_max": 12,
     "cost_type": "unknown",
-    "tags": ["Astrophysics", "Astronomy", "Research"]
+    "tags": [
+      "Astrophysics",
+      "Astronomy",
+      "Research"
+    ]
   },
   {
     "id": "rutgers-astronomy-academy",
@@ -3657,7 +4716,11 @@
     "grade_min": 10,
     "grade_max": 11,
     "cost_type": "paid",
-    "tags": ["Astronomy", "Astrophysics", "Physics"]
+    "tags": [
+      "Astronomy",
+      "Astrophysics",
+      "Physics"
+    ]
   },
   {
     "id": "sphinx-performance-academy",
@@ -3672,7 +4735,10 @@
     "grade_min": 9,
     "grade_max": 12,
     "cost_type": "free",
-    "tags": ["Music", "Performing Arts"]
+    "tags": [
+      "Music",
+      "Performing Arts"
+    ]
   },
   {
     "id": "oberlin-conservatory-summer",
@@ -3687,7 +4753,10 @@
     "grade_min": 9,
     "grade_max": 12,
     "cost_type": "paid",
-    "tags": ["Music", "Performing Arts"]
+    "tags": [
+      "Music",
+      "Performing Arts"
+    ]
   },
   {
     "id": "cmu-precollege-music",
@@ -3702,7 +4771,10 @@
     "grade_min": 10,
     "grade_max": 12,
     "cost_type": "paid",
-    "tags": ["Music", "Performing Arts"]
+    "tags": [
+      "Music",
+      "Performing Arts"
+    ]
   },
   {
     "id": "brevard-hs-orchestra-institute",
@@ -3717,7 +4789,10 @@
     "grade_min": 9,
     "grade_max": 12,
     "cost_type": "paid",
-    "tags": ["Music", "Performing Arts"]
+    "tags": [
+      "Music",
+      "Performing Arts"
+    ]
   },
   {
     "id": "walden-school-music",
@@ -3732,7 +4807,11 @@
     "grade_min": 9,
     "grade_max": 12,
     "cost_type": "paid",
-    "tags": ["Music", "Composition", "Performing Arts"]
+    "tags": [
+      "Music",
+      "Composition",
+      "Performing Arts"
+    ]
   },
   {
     "id": "georgetown-ir-academy",
@@ -3747,7 +4826,11 @@
     "grade_min": 10,
     "grade_max": 12,
     "cost_type": "paid",
-    "tags": ["International Relations", "Political Science", "Public Policy"]
+    "tags": [
+      "International Relations",
+      "Political Science",
+      "Public Policy"
+    ]
   },
   {
     "id": "yale-ir-leadership-institute",
@@ -3762,7 +4845,11 @@
     "grade_min": 9,
     "grade_max": 12,
     "cost_type": "paid",
-    "tags": ["International Relations", "Debate", "Leadership"]
+    "tags": [
+      "International Relations",
+      "Debate",
+      "Leadership"
+    ]
   },
   {
     "id": "national-merit-scholarship",
@@ -3777,7 +4864,10 @@
     "grade_min": 11,
     "grade_max": 11,
     "cost_type": "free",
-    "tags": ["Academic Enrichment", "College Access"]
+    "tags": [
+      "Academic Enrichment",
+      "College Access"
+    ]
   },
   {
     "id": "davidson-fellows",
@@ -3792,7 +4882,11 @@
     "grade_min": 9,
     "grade_max": 12,
     "cost_type": "free",
-    "tags": ["Research", "Academic Enrichment", "Interdisciplinary Studies"]
+    "tags": [
+      "Research",
+      "Academic Enrichment",
+      "Interdisciplinary Studies"
+    ]
   },
   {
     "id": "gates-scholarship",
@@ -3807,7 +4901,10 @@
     "grade_min": 12,
     "grade_max": 12,
     "cost_type": "free",
-    "tags": ["College Access", "Academic Enrichment"]
+    "tags": [
+      "College Access",
+      "Academic Enrichment"
+    ]
   },
   {
     "id": "cameron-impact-scholarship",
@@ -3822,7 +4919,11 @@
     "grade_min": 12,
     "grade_max": 12,
     "cost_type": "free",
-    "tags": ["Leadership", "Community Service", "College Access"]
+    "tags": [
+      "Leadership",
+      "Community Service",
+      "College Access"
+    ]
   },
   {
     "id": "coolidge-scholarship",
@@ -3837,7 +4938,11 @@
     "grade_min": 11,
     "grade_max": 11,
     "cost_type": "free",
-    "tags": ["Academic Enrichment", "College Access", "History"]
+    "tags": [
+      "Academic Enrichment",
+      "College Access",
+      "History"
+    ]
   },
   {
     "id": "ron-brown-scholar-program",
@@ -3852,7 +4957,11 @@
     "grade_min": 12,
     "grade_max": 12,
     "cost_type": "free",
-    "tags": ["Leadership", "Community Service", "College Access"]
+    "tags": [
+      "Leadership",
+      "Community Service",
+      "College Access"
+    ]
   },
   {
     "id": "al-neuharth-free-spirit",
@@ -3867,7 +4976,11 @@
     "grade_min": 11,
     "grade_max": 11,
     "cost_type": "free",
-    "tags": ["Journalism", "Media & Communications", "Creative Writing"]
+    "tags": [
+      "Journalism",
+      "Media & Communications",
+      "Creative Writing"
+    ]
   },
   {
     "id": "point-foundation-scholarship",
@@ -3882,7 +4995,11 @@
     "grade_min": 12,
     "grade_max": 12,
     "cost_type": "free",
-    "tags": ["College Access", "Leadership", "LGBTQ+"]
+    "tags": [
+      "College Access",
+      "Leadership",
+      "LGBTQ+"
+    ]
   },
   {
     "id": "nyo-usa",
@@ -3897,7 +5014,10 @@
     "grade_min": 10,
     "grade_max": 12,
     "cost_type": "free",
-    "tags": ["Music", "Performing Arts"]
+    "tags": [
+      "Music",
+      "Performing Arts"
+    ]
   },
   {
     "id": "horatio-alger-scholarship",
@@ -3912,7 +5032,10 @@
     "grade_min": 11,
     "grade_max": 12,
     "cost_type": "free",
-    "tags": ["College Access", "Academic Enrichment"]
+    "tags": [
+      "College Access",
+      "Academic Enrichment"
+    ]
   },
   {
     "id": "amazon-future-engineer",
@@ -3927,7 +5050,10 @@
     "grade_min": 11,
     "grade_max": 12,
     "cost_type": "stipend",
-    "tags": ["Computer Science", "College Access"]
+    "tags": [
+      "Computer Science",
+      "College Access"
+    ]
   },
   {
     "id": "google-code-next",
@@ -3942,7 +5068,10 @@
     "grade_min": 9,
     "grade_max": 11,
     "cost_type": "free",
-    "tags": ["Computer Science", "Software Engineering"]
+    "tags": [
+      "Computer Science",
+      "Software Engineering"
+    ]
   },
   {
     "id": "dartmouth-summer-scholars",
@@ -3957,7 +5086,12 @@
     "grade_min": 9,
     "grade_max": 12,
     "cost_type": "paid",
-    "tags": ["Data Science", "Creative Writing", "Business", "Design"]
+    "tags": [
+      "Data Science",
+      "Creative Writing",
+      "Business",
+      "Design"
+    ]
   },
   {
     "id": "dartmouth-bound",
@@ -3972,7 +5106,10 @@
     "grade_min": 12,
     "grade_max": 12,
     "cost_type": "free",
-    "tags": ["College Access", "Academic Enrichment"]
+    "tags": [
+      "College Access",
+      "Academic Enrichment"
+    ]
   },
   {
     "id": "georgetown-college-prep-summer",
@@ -3987,7 +5124,10 @@
     "grade_min": 10,
     "grade_max": 12,
     "cost_type": "paid",
-    "tags": ["Interdisciplinary Studies", "College Access"]
+    "tags": [
+      "Interdisciplinary Studies",
+      "College Access"
+    ]
   },
   {
     "id": "yale-summer-session-hs",
@@ -4002,7 +5142,9 @@
     "grade_min": 12,
     "grade_max": 12,
     "cost_type": "paid",
-    "tags": ["Interdisciplinary Studies"]
+    "tags": [
+      "Interdisciplinary Studies"
+    ]
   },
   {
     "id": "socapa-teen-camps",
@@ -4017,7 +5159,11 @@
     "grade_min": 9,
     "grade_max": 12,
     "cost_type": "paid",
-    "tags": ["Film", "Photography", "Visual Arts"]
+    "tags": [
+      "Film",
+      "Photography",
+      "Visual Arts"
+    ]
   },
   {
     "id": "maine-media-academy",
@@ -4032,7 +5178,11 @@
     "grade_min": 9,
     "grade_max": 12,
     "cost_type": "paid",
-    "tags": ["Photography", "Film", "Visual Arts"]
+    "tags": [
+      "Photography",
+      "Film",
+      "Visual Arts"
+    ]
   },
   {
     "id": "wharton-data-science-academy",
@@ -4047,7 +5197,11 @@
     "grade_min": 10,
     "grade_max": 11,
     "cost_type": "paid",
-    "tags": ["Data Science", "Statistics", "Business"]
+    "tags": [
+      "Data Science",
+      "Statistics",
+      "Business"
+    ]
   },
   {
     "id": "uchicago-dsi-summer-lab",
@@ -4062,7 +5216,11 @@
     "grade_min": 10,
     "grade_max": 12,
     "cost_type": "unknown",
-    "tags": ["Data Science", "Research", "Public Policy"]
+    "tags": [
+      "Data Science",
+      "Research",
+      "Public Policy"
+    ]
   },
   {
     "id": "cdc-disease-detective-camp",
@@ -4077,7 +5235,11 @@
     "grade_min": 11,
     "grade_max": 12,
     "cost_type": "free",
-    "tags": ["Public Health", "Biology", "Epidemiology"]
+    "tags": [
+      "Public Health",
+      "Biology",
+      "Epidemiology"
+    ]
   },
   {
     "id": "rutgers-phocus",
@@ -4092,7 +5254,10 @@
     "grade_min": 9,
     "grade_max": 12,
     "cost_type": "paid",
-    "tags": ["Public Health", "Biology"]
+    "tags": [
+      "Public Health",
+      "Biology"
+    ]
   },
   {
     "id": "ucsf-hs-intern-program",
@@ -4107,7 +5272,12 @@
     "grade_min": 11,
     "grade_max": 12,
     "cost_type": "stipend",
-    "tags": ["Medicine", "Biology", "Research", "Healthcare"]
+    "tags": [
+      "Medicine",
+      "Biology",
+      "Research",
+      "Healthcare"
+    ]
   },
   {
     "id": "harvard-statstart",
@@ -4122,7 +5292,11 @@
     "grade_min": 10,
     "grade_max": 12,
     "cost_type": "unknown",
-    "tags": ["Statistics", "Data Science", "Public Health"]
+    "tags": [
+      "Statistics",
+      "Data Science",
+      "Public Health"
+    ]
   },
   {
     "id": "nyu-public-health-hs",
@@ -4137,7 +5311,10 @@
     "grade_min": 10,
     "grade_max": 12,
     "cost_type": "paid",
-    "tags": ["Public Health", "Biology"]
+    "tags": [
+      "Public Health",
+      "Biology"
+    ]
   },
   {
     "id": "ucsd-sports-medicine-academy",
@@ -4152,7 +5329,11 @@
     "grade_min": 11,
     "grade_max": 12,
     "cost_type": "paid",
-    "tags": ["Sports Medicine", "Biology", "Medicine"]
+    "tags": [
+      "Sports Medicine",
+      "Biology",
+      "Medicine"
+    ]
   },
   {
     "id": "miami-summer-scholars-sports-med",
@@ -4167,7 +5348,10 @@
     "grade_min": 10,
     "grade_max": 12,
     "cost_type": "paid",
-    "tags": ["Sports Medicine", "Biology"]
+    "tags": [
+      "Sports Medicine",
+      "Biology"
+    ]
   },
   {
     "id": "missouri-state-sports-med-camp",
@@ -4182,7 +5366,10 @@
     "grade_min": 9,
     "grade_max": 12,
     "cost_type": "paid",
-    "tags": ["Sports Medicine", "Healthcare"]
+    "tags": [
+      "Sports Medicine",
+      "Healthcare"
+    ]
   },
   {
     "id": "pennstate-sports-performance",
@@ -4197,7 +5384,10 @@
     "grade_min": 9,
     "grade_max": 12,
     "cost_type": "paid",
-    "tags": ["Sports Medicine", "Biology"]
+    "tags": [
+      "Sports Medicine",
+      "Biology"
+    ]
   },
   {
     "id": "juniper-institute-young-writers",
@@ -4212,7 +5402,10 @@
     "grade_min": 9,
     "grade_max": 12,
     "cost_type": "paid",
-    "tags": ["Creative Writing", "Literature"]
+    "tags": [
+      "Creative Writing",
+      "Literature"
+    ]
   },
   {
     "id": "columbia-creative-writing-workshop",
@@ -4227,7 +5420,10 @@
     "grade_min": 9,
     "grade_max": 12,
     "cost_type": "paid",
-    "tags": ["Creative Writing", "Literature"]
+    "tags": [
+      "Creative Writing",
+      "Literature"
+    ]
   },
   {
     "id": "princeton-ai4all",
@@ -4242,7 +5438,11 @@
     "grade_min": 10,
     "grade_max": 11,
     "cost_type": "free",
-    "tags": ["Artificial Intelligence", "Computer Science", "Machine Learning"]
+    "tags": [
+      "Artificial Intelligence",
+      "Computer Science",
+      "Machine Learning"
+    ]
   },
   {
     "id": "cmu-ai-scholars",
@@ -4257,7 +5457,11 @@
     "grade_min": 10,
     "grade_max": 12,
     "cost_type": "free",
-    "tags": ["Artificial Intelligence", "Machine Learning", "Computer Science"]
+    "tags": [
+      "Artificial Intelligence",
+      "Machine Learning",
+      "Computer Science"
+    ]
   },
   {
     "id": "harvard-debate-council-camp",
@@ -4272,7 +5476,10 @@
     "grade_min": 9,
     "grade_max": 12,
     "cost_type": "paid",
-    "tags": ["Debate", "Public Speaking"]
+    "tags": [
+      "Debate",
+      "Public Speaking"
+    ]
   },
   {
     "id": "cornell-debate-camp",
@@ -4287,7 +5494,10 @@
     "grade_min": 9,
     "grade_max": 12,
     "cost_type": "paid",
-    "tags": ["Debate", "Public Speaking"]
+    "tags": [
+      "Debate",
+      "Public Speaking"
+    ]
   },
   {
     "id": "genes-in-space",
@@ -4302,7 +5512,12 @@
     "grade_min": 9,
     "grade_max": 12,
     "cost_type": "free",
-    "tags": ["Genetics", "Biotechnology", "Space Exploration", "Research"]
+    "tags": [
+      "Genetics",
+      "Biotechnology",
+      "Space Exploration",
+      "Research"
+    ]
   },
   {
     "id": "breakthrough-junior-challenge",
@@ -4317,7 +5532,12 @@
     "grade_min": 9,
     "grade_max": 12,
     "cost_type": "free",
-    "tags": ["Biology", "Physics", "Mathematics", "Media & Communications"]
+    "tags": [
+      "Biology",
+      "Physics",
+      "Mathematics",
+      "Media & Communications"
+    ]
   },
   {
     "id": "envirothon",
@@ -4332,7 +5552,12 @@
     "grade_min": 9,
     "grade_max": 12,
     "cost_type": "unknown",
-    "tags": ["Environmental Science", "Ecology", "Wildlife Conservation", "Earth Science"]
+    "tags": [
+      "Environmental Science",
+      "Ecology",
+      "Wildlife Conservation",
+      "Earth Science"
+    ]
   },
   {
     "id": "elks-mvs-scholarship",
@@ -4347,7 +5572,11 @@
     "grade_min": 12,
     "grade_max": 12,
     "cost_type": "free",
-    "tags": ["Leadership", "Community Service", "College Access"]
+    "tags": [
+      "Leadership",
+      "Community Service",
+      "College Access"
+    ]
   },
   {
     "id": "mathworks-m3-challenge",
@@ -4362,7 +5591,11 @@
     "grade_min": 11,
     "grade_max": 12,
     "cost_type": "free",
-    "tags": ["Mathematics", "Data Science", "Applied Mathematics"]
+    "tags": [
+      "Mathematics",
+      "Data Science",
+      "Applied Mathematics"
+    ]
   },
   {
     "id": "project-endeavor-fashion",
@@ -4377,7 +5610,10 @@
     "grade_min": 9,
     "grade_max": 12,
     "cost_type": "paid",
-    "tags": ["Fashion Design", "Design"]
+    "tags": [
+      "Fashion Design",
+      "Design"
+    ]
   },
   {
     "id": "stonybrook-precollege-biotech",
@@ -4392,7 +5628,11 @@
     "grade_min": 11,
     "grade_max": 12,
     "cost_type": "paid",
-    "tags": ["Biotechnology", "Molecular Biology", "Genetics"]
+    "tags": [
+      "Biotechnology",
+      "Molecular Biology",
+      "Genetics"
+    ]
   },
   {
     "id": "hudsonalpha-biotech-academy",
@@ -4407,7 +5647,11 @@
     "grade_min": 9,
     "grade_max": 12,
     "cost_type": "unknown",
-    "tags": ["Genetics", "Bioinformatics", "Biotechnology"]
+    "tags": [
+      "Genetics",
+      "Bioinformatics",
+      "Biotechnology"
+    ]
   },
   {
     "id": "broad-institute-ssp",
@@ -4422,7 +5666,12 @@
     "grade_min": 11,
     "grade_max": 12,
     "cost_type": "stipend",
-    "tags": ["Genetics", "Genomics", "Research", "Bioinformatics"]
+    "tags": [
+      "Genetics",
+      "Genomics",
+      "Research",
+      "Bioinformatics"
+    ]
   },
   {
     "id": "embry-riddle-summer-academy",
@@ -4437,7 +5686,12 @@
     "grade_min": 9,
     "grade_max": 12,
     "cost_type": "paid",
-    "tags": ["Aerospace", "Engineering", "Robotics", "Space Exploration"]
+    "tags": [
+      "Aerospace",
+      "Engineering",
+      "Robotics",
+      "Space Exploration"
+    ]
   },
   {
     "id": "wpi-frontiers-aerospace",
@@ -4452,7 +5706,11 @@
     "grade_min": 10,
     "grade_max": 12,
     "cost_type": "paid",
-    "tags": ["Aerospace", "Engineering", "Physics"]
+    "tags": [
+      "Aerospace",
+      "Engineering",
+      "Physics"
+    ]
   },
   {
     "id": "cornell-curie-academy",
@@ -4467,7 +5725,10 @@
     "grade_min": 10,
     "grade_max": 12,
     "cost_type": "paid",
-    "tags": ["Engineering", "Women in STEM"]
+    "tags": [
+      "Engineering",
+      "Women in STEM"
+    ]
   },
   {
     "id": "usc-viterbi-shine",
@@ -4482,7 +5743,10 @@
     "grade_min": 10,
     "grade_max": 12,
     "cost_type": "paid",
-    "tags": ["Engineering", "Aerospace"]
+    "tags": [
+      "Engineering",
+      "Aerospace"
+    ]
   },
   {
     "id": "tsa-teams-competition",
@@ -4497,7 +5761,10 @@
     "grade_min": 9,
     "grade_max": 12,
     "cost_type": "paid",
-    "tags": ["Engineering", "Technology"]
+    "tags": [
+      "Engineering",
+      "Technology"
+    ]
   },
   {
     "id": "nhs-scholarship",
@@ -4512,7 +5779,11 @@
     "grade_min": 12,
     "grade_max": 12,
     "cost_type": "free",
-    "tags": ["Leadership", "Community Service", "College Access"]
+    "tags": [
+      "Leadership",
+      "Community Service",
+      "College Access"
+    ]
   },
   {
     "id": "vfw-voice-of-democracy",
@@ -4527,7 +5798,11 @@
     "grade_min": 9,
     "grade_max": 12,
     "cost_type": "free",
-    "tags": ["Public Speaking", "Political Science", "Creative Writing"]
+    "tags": [
+      "Public Speaking",
+      "Political Science",
+      "Creative Writing"
+    ]
   },
   {
     "id": "dar-history-essay-contest",
@@ -4542,7 +5817,10 @@
     "grade_min": 9,
     "grade_max": 12,
     "cost_type": "free",
-    "tags": ["History", "Creative Writing"]
+    "tags": [
+      "History",
+      "Creative Writing"
+    ]
   },
   {
     "id": "berkeley-embarc-design-academy",
@@ -4557,7 +5835,11 @@
     "grade_min": 10,
     "grade_max": 12,
     "cost_type": "paid",
-    "tags": ["Architecture", "Urban Planning", "Design"]
+    "tags": [
+      "Architecture",
+      "Urban Planning",
+      "Design"
+    ]
   },
   {
     "id": "harvard-gsd-summer",
@@ -4572,7 +5854,11 @@
     "grade_min": 10,
     "grade_max": 12,
     "cost_type": "paid",
-    "tags": ["Architecture", "Urban Planning", "Design"]
+    "tags": [
+      "Architecture",
+      "Urban Planning",
+      "Design"
+    ]
   },
   {
     "id": "bac-summer-academy",
@@ -4587,7 +5873,12 @@
     "grade_min": 9,
     "grade_max": 12,
     "cost_type": "paid",
-    "tags": ["Architecture", "Design", "Urban Planning", "Game Design"]
+    "tags": [
+      "Architecture",
+      "Design",
+      "Urban Planning",
+      "Game Design"
+    ]
   },
   {
     "id": "tamu-camp-arch",
@@ -4602,7 +5893,10 @@
     "grade_min": 9,
     "grade_max": 12,
     "cost_type": "paid",
-    "tags": ["Architecture", "Urban Planning"]
+    "tags": [
+      "Architecture",
+      "Urban Planning"
+    ]
   },
   {
     "id": "cac-teen-fellows-chicago",
@@ -4617,7 +5911,11 @@
     "grade_min": 9,
     "grade_max": 12,
     "cost_type": "stipend",
-    "tags": ["Architecture", "Design", "Urban Planning"]
+    "tags": [
+      "Architecture",
+      "Design",
+      "Urban Planning"
+    ]
   },
   {
     "id": "tufts-engineering-design-lab",
@@ -4632,7 +5930,11 @@
     "grade_min": 9,
     "grade_max": 12,
     "cost_type": "paid",
-    "tags": ["Robotics", "Engineering", "Computer Science"]
+    "tags": [
+      "Robotics",
+      "Engineering",
+      "Computer Science"
+    ]
   },
   {
     "id": "nyu-sparc",
@@ -4647,7 +5949,11 @@
     "grade_min": 9,
     "grade_max": 12,
     "cost_type": "paid",
-    "tags": ["Robotics", "Electrical Engineering", "Computer Science"]
+    "tags": [
+      "Robotics",
+      "Electrical Engineering",
+      "Computer Science"
+    ]
   },
   {
     "id": "usf-hs-robotics-camp",
@@ -4662,7 +5968,10 @@
     "grade_min": 9,
     "grade_max": 12,
     "cost_type": "paid",
-    "tags": ["Robotics", "Engineering"]
+    "tags": [
+      "Robotics",
+      "Engineering"
+    ]
   },
   {
     "id": "battlebots-robotics-academy",
@@ -4677,7 +5986,10 @@
     "grade_min": 9,
     "grade_max": 12,
     "cost_type": "paid",
-    "tags": ["Robotics", "Engineering"]
+    "tags": [
+      "Robotics",
+      "Engineering"
+    ]
   },
   {
     "id": "kennedy-profile-in-courage-contest",
@@ -4692,7 +6004,11 @@
     "grade_min": 9,
     "grade_max": 12,
     "cost_type": "free",
-    "tags": ["Political Science", "History", "Creative Writing"]
+    "tags": [
+      "Political Science",
+      "History",
+      "Creative Writing"
+    ]
   },
   {
     "id": "atlas-shrugged-essay-contest",
@@ -4707,7 +6023,11 @@
     "grade_min": 12,
     "grade_max": 12,
     "cost_type": "free",
-    "tags": ["Philosophy", "Creative Writing", "Literature"]
+    "tags": [
+      "Philosophy",
+      "Creative Writing",
+      "Literature"
+    ]
   },
   {
     "id": "usip-national-hs-essay-contest",
@@ -4722,7 +6042,11 @@
     "grade_min": 9,
     "grade_max": 12,
     "cost_type": "free",
-    "tags": ["International Relations", "Political Science", "Creative Writing"]
+    "tags": [
+      "International Relations",
+      "Political Science",
+      "Creative Writing"
+    ]
   },
   {
     "id": "optimist-oratorical-contest",
@@ -4737,7 +6061,10 @@
     "grade_min": 9,
     "grade_max": 12,
     "cost_type": "free",
-    "tags": ["Public Speaking", "Debate"]
+    "tags": [
+      "Public Speaking",
+      "Debate"
+    ]
   },
   {
     "id": "afrl-scholars-program",
@@ -4752,7 +6079,12 @@
     "grade_min": 11,
     "grade_max": 12,
     "cost_type": "stipend",
-    "tags": ["Engineering", "Physics", "Research", "Aerospace"]
+    "tags": [
+      "Engineering",
+      "Physics",
+      "Research",
+      "Aerospace"
+    ]
   },
   {
     "id": "pnnl-hs-internship",
@@ -4767,7 +6099,11 @@
     "grade_min": 10,
     "grade_max": 12,
     "cost_type": "stipend",
-    "tags": ["Research", "Engineering", "Data Science"]
+    "tags": [
+      "Research",
+      "Engineering",
+      "Data Science"
+    ]
   },
   {
     "id": "inl-hs-internship",
@@ -4782,7 +6118,12 @@
     "grade_min": 10,
     "grade_max": 12,
     "cost_type": "stipend",
-    "tags": ["Nuclear Science", "Engineering", "Chemistry", "Computer Science"]
+    "tags": [
+      "Nuclear Science",
+      "Engineering",
+      "Chemistry",
+      "Computer Science"
+    ]
   },
   {
     "id": "carleton-slai",
@@ -4797,7 +6138,11 @@
     "grade_min": 10,
     "grade_max": 11,
     "cost_type": "paid",
-    "tags": ["Interdisciplinary Studies", "Psychology", "Humanities"]
+    "tags": [
+      "Interdisciplinary Studies",
+      "Psychology",
+      "Humanities"
+    ]
   },
   {
     "id": "emory-precollege",
@@ -4812,7 +6157,9 @@
     "grade_min": 10,
     "grade_max": 11,
     "cost_type": "paid",
-    "tags": ["Interdisciplinary Studies"]
+    "tags": [
+      "Interdisciplinary Studies"
+    ]
   },
   {
     "id": "rensselaer-medal",
@@ -4827,7 +6174,11 @@
     "grade_min": 11,
     "grade_max": 11,
     "cost_type": "free",
-    "tags": ["Mathematics", "Science", "College Access"]
+    "tags": [
+      "Mathematics",
+      "Science",
+      "College Access"
+    ]
   },
   {
     "id": "bausch-lomb-science-award",
@@ -4842,7 +6193,10 @@
     "grade_min": 11,
     "grade_max": 11,
     "cost_type": "free",
-    "tags": ["Science", "College Access"]
+    "tags": [
+      "Science",
+      "College Access"
+    ]
   },
   {
     "id": "comcast-leaders-achievers-scholarship",
@@ -4857,7 +6211,11 @@
     "grade_min": 12,
     "grade_max": 12,
     "cost_type": "free",
-    "tags": ["Leadership", "Community Service", "College Access"]
+    "tags": [
+      "Leadership",
+      "Community Service",
+      "College Access"
+    ]
   },
   {
     "id": "zeta-phi-beta-scholarship",
@@ -4872,7 +6230,11 @@
     "grade_min": 12,
     "grade_max": 12,
     "cost_type": "free",
-    "tags": ["Leadership", "Community Service", "College Access"]
+    "tags": [
+      "Leadership",
+      "Community Service",
+      "College Access"
+    ]
   },
   {
     "id": "legion-auxiliary-girls-nation-scholarship",
@@ -4887,7 +6249,11 @@
     "grade_min": 11,
     "grade_max": 11,
     "cost_type": "free",
-    "tags": ["Political Science", "Leadership", "Government"]
+    "tags": [
+      "Political Science",
+      "Leadership",
+      "Government"
+    ]
   },
   {
     "id": "vanderbilt-summer-academy",
@@ -4902,7 +6268,9 @@
     "grade_min": 9,
     "grade_max": 12,
     "cost_type": "paid",
-    "tags": ["Interdisciplinary Studies"]
+    "tags": [
+      "Interdisciplinary Studies"
+    ]
   },
   {
     "id": "vanderbilt-summer-institute",
@@ -4917,7 +6285,9 @@
     "grade_min": 11,
     "grade_max": 12,
     "cost_type": "paid",
-    "tags": ["Interdisciplinary Studies"]
+    "tags": [
+      "Interdisciplinary Studies"
+    ]
   },
   {
     "id": "tulane-precollege",
@@ -4932,7 +6302,9 @@
     "grade_min": 9,
     "grade_max": 12,
     "cost_type": "paid",
-    "tags": ["Interdisciplinary Studies"]
+    "tags": [
+      "Interdisciplinary Studies"
+    ]
   },
   {
     "id": "uwosh-future-titans",
@@ -4947,7 +6319,9 @@
     "grade_min": 10,
     "grade_max": 12,
     "cost_type": "paid",
-    "tags": ["Interdisciplinary Studies"]
+    "tags": [
+      "Interdisciplinary Studies"
+    ]
   },
   {
     "id": "let-grow-essay-contest",
@@ -4962,7 +6336,10 @@
     "grade_min": 12,
     "grade_max": 12,
     "cost_type": "free",
-    "tags": ["Creative Writing", "Psychology"]
+    "tags": [
+      "Creative Writing",
+      "Psychology"
+    ]
   },
   {
     "id": "cardinal-newman-essay-scholarship",
@@ -4977,7 +6354,11 @@
     "grade_min": 12,
     "grade_max": 12,
     "cost_type": "free",
-    "tags": ["Creative Writing", "Philosophy", "College Access"]
+    "tags": [
+      "Creative Writing",
+      "Philosophy",
+      "College Access"
+    ]
   },
   {
     "id": "national-ffa-cdes",
@@ -4992,7 +6373,11 @@
     "grade_min": 9,
     "grade_max": 12,
     "cost_type": "unknown",
-    "tags": ["Agriculture", "Business", "Leadership"]
+    "tags": [
+      "Agriculture",
+      "Business",
+      "Leadership"
+    ]
   },
   {
     "id": "national-4h-congress",
@@ -5007,7 +6392,11 @@
     "grade_min": 9,
     "grade_max": 12,
     "cost_type": "paid",
-    "tags": ["Leadership", "Community Service", "Agriculture"]
+    "tags": [
+      "Leadership",
+      "Community Service",
+      "Agriculture"
+    ]
   },
   {
     "id": "national-4h-conference",
@@ -5022,7 +6411,11 @@
     "grade_min": 10,
     "grade_max": 12,
     "cost_type": "unknown",
-    "tags": ["Leadership", "Public Policy", "Agriculture"]
+    "tags": [
+      "Leadership",
+      "Public Policy",
+      "Agriculture"
+    ]
   },
   {
     "id": "wake-forest-precollege",
@@ -5037,7 +6430,9 @@
     "grade_min": 9,
     "grade_max": 12,
     "cost_type": "paid",
-    "tags": ["Interdisciplinary Studies"]
+    "tags": [
+      "Interdisciplinary Studies"
+    ]
   },
   {
     "id": "miami-precollege",
@@ -5052,7 +6447,9 @@
     "grade_min": 9,
     "grade_max": 12,
     "cost_type": "paid",
-    "tags": ["Interdisciplinary Studies"]
+    "tags": [
+      "Interdisciplinary Studies"
+    ]
   },
   {
     "id": "case-western-precollege-online",
@@ -5067,7 +6464,11 @@
     "grade_min": 9,
     "grade_max": 12,
     "cost_type": "paid",
-    "tags": ["Neuroscience", "Engineering", "Interdisciplinary Studies"]
+    "tags": [
+      "Neuroscience",
+      "Engineering",
+      "Interdisciplinary Studies"
+    ]
   },
   {
     "id": "sar-knight-essay-contest",
@@ -5082,7 +6483,11 @@
     "grade_min": 9,
     "grade_max": 12,
     "cost_type": "free",
-    "tags": ["History", "Creative Writing", "Political Science"]
+    "tags": [
+      "History",
+      "Creative Writing",
+      "Political Science"
+    ]
   },
   {
     "id": "ayn-rand-anthem-contest",
@@ -5097,7 +6502,11 @@
     "grade_min": 9,
     "grade_max": 12,
     "cost_type": "free",
-    "tags": ["Philosophy", "Creative Writing", "Literature"]
+    "tags": [
+      "Philosophy",
+      "Creative Writing",
+      "Literature"
+    ]
   },
   {
     "id": "ayn-rand-fountainhead-contest",
@@ -5112,7 +6521,11 @@
     "grade_min": 9,
     "grade_max": 12,
     "cost_type": "free",
-    "tags": ["Philosophy", "Creative Writing", "Literature"]
+    "tags": [
+      "Philosophy",
+      "Creative Writing",
+      "Literature"
+    ]
   },
   {
     "id": "lmu-precollege",
@@ -5127,7 +6540,11 @@
     "grade_min": 10,
     "grade_max": 12,
     "cost_type": "paid",
-    "tags": ["Interdisciplinary Studies", "Film", "Entrepreneurship"]
+    "tags": [
+      "Interdisciplinary Studies",
+      "Film",
+      "Entrepreneurship"
+    ]
   },
   {
     "id": "adelphi-precollege",
@@ -5142,7 +6559,9 @@
     "grade_min": 10,
     "grade_max": 12,
     "cost_type": "paid",
-    "tags": ["Interdisciplinary Studies"]
+    "tags": [
+      "Interdisciplinary Studies"
+    ]
   },
   {
     "id": "albany-dual-enrollment",
@@ -5157,7 +6576,10 @@
     "grade_min": 9,
     "grade_max": 12,
     "cost_type": "paid",
-    "tags": ["Interdisciplinary Studies", "College Access"]
+    "tags": [
+      "Interdisciplinary Studies",
+      "College Access"
+    ]
   },
   {
     "id": "alfred-university-summer-institutes",
@@ -5172,7 +6594,10 @@
     "grade_min": 11,
     "grade_max": 12,
     "cost_type": "paid",
-    "tags": ["Interdisciplinary Studies", "Ceramics & Materials Science"]
+    "tags": [
+      "Interdisciplinary Studies",
+      "Ceramics & Materials Science"
+    ]
   },
   {
     "id": "umass-amherst-precollege",
@@ -5187,7 +6612,9 @@
     "grade_min": 10,
     "grade_max": 12,
     "cost_type": "paid",
-    "tags": ["Interdisciplinary Studies"]
+    "tags": [
+      "Interdisciplinary Studies"
+    ]
   },
   {
     "id": "bucknell-academy-summer",
@@ -5202,7 +6629,12 @@
     "grade_min": 10,
     "grade_max": 12,
     "cost_type": "paid",
-    "tags": ["Engineering", "Environmental Science", "Biomedical Engineering", "Visual Arts"]
+    "tags": [
+      "Engineering",
+      "Environmental Science",
+      "Biomedical Engineering",
+      "Visual Arts"
+    ]
   },
   {
     "id": "cca-precollege",
@@ -5217,7 +6649,10 @@
     "grade_min": 9,
     "grade_max": 12,
     "cost_type": "paid",
-    "tags": ["Visual Arts", "Design"]
+    "tags": [
+      "Visual Arts",
+      "Design"
+    ]
   },
   {
     "id": "champlain-precollege",
@@ -5232,7 +6667,12 @@
     "grade_min": 9,
     "grade_max": 12,
     "cost_type": "paid",
-    "tags": ["Game Design", "Business", "Cybersecurity", "Computer Science"]
+    "tags": [
+      "Game Design",
+      "Business",
+      "Cybersecurity",
+      "Computer Science"
+    ]
   },
   {
     "id": "uchicago-summer-session",
@@ -5247,7 +6687,9 @@
     "grade_min": 10,
     "grade_max": 12,
     "cost_type": "paid",
-    "tags": ["Interdisciplinary Studies"]
+    "tags": [
+      "Interdisciplinary Studies"
+    ]
   },
   {
     "id": "dia-teens",
@@ -5262,7 +6704,10 @@
     "grade_min": 10,
     "grade_max": 11,
     "cost_type": "stipend",
-    "tags": ["Visual Arts", "Design"]
+    "tags": [
+      "Visual Arts",
+      "Design"
+    ]
   },
   {
     "id": "fdu-early-college-summer",
@@ -5277,7 +6722,10 @@
     "grade_min": 9,
     "grade_max": 12,
     "cost_type": "paid",
-    "tags": ["Interdisciplinary Studies", "College Access"]
+    "tags": [
+      "Interdisciplinary Studies",
+      "College Access"
+    ]
   },
   {
     "id": "farmingdale-summer-bridge",
@@ -5292,7 +6740,10 @@
     "grade_min": 12,
     "grade_max": 12,
     "cost_type": "free",
-    "tags": ["College Access", "Interdisciplinary Studies"]
+    "tags": [
+      "College Access",
+      "Interdisciplinary Studies"
+    ]
   },
   {
     "id": "fordham-summer-courses",
@@ -5307,7 +6758,9 @@
     "grade_min": 12,
     "grade_max": 12,
     "cost_type": "paid",
-    "tags": ["Interdisciplinary Studies"]
+    "tags": [
+      "Interdisciplinary Studies"
+    ]
   },
   {
     "id": "full-sail-university-summer",
@@ -5322,7 +6775,11 @@
     "grade_min": 12,
     "grade_max": 12,
     "cost_type": "paid",
-    "tags": ["Film", "Media & Communications", "Game Design"]
+    "tags": [
+      "Film",
+      "Media & Communications",
+      "Game Design"
+    ]
   },
   {
     "id": "geneseo-summer-academy",
@@ -5337,7 +6794,12 @@
     "grade_min": 10,
     "grade_max": 11,
     "cost_type": "paid",
-    "tags": ["Interdisciplinary Studies", "Political Science", "Creative Writing", "Environmental Science"]
+    "tags": [
+      "Interdisciplinary Studies",
+      "Political Science",
+      "Creative Writing",
+      "Environmental Science"
+    ]
   },
   {
     "id": "gettysburg-civic-engagement-camp",
@@ -5352,7 +6814,11 @@
     "grade_min": 10,
     "grade_max": 12,
     "cost_type": "paid",
-    "tags": ["Political Science", "History", "Community Service"]
+    "tags": [
+      "Political Science",
+      "History",
+      "Community Service"
+    ]
   },
   {
     "id": "horizon-academic-research-program",
@@ -5367,7 +6833,10 @@
     "grade_min": 9,
     "grade_max": 12,
     "cost_type": "paid",
-    "tags": ["Research", "Interdisciplinary Studies"]
+    "tags": [
+      "Research",
+      "Interdisciplinary Studies"
+    ]
   },
   {
     "id": "illinois-tech-elevate-college-prep",
@@ -5382,7 +6851,11 @@
     "grade_min": 9,
     "grade_max": 12,
     "cost_type": "paid",
-    "tags": ["Engineering", "Computer Science", "Interdisciplinary Studies"]
+    "tags": [
+      "Engineering",
+      "Computer Science",
+      "Interdisciplinary Studies"
+    ]
   },
   {
     "id": "ithaca-college-summer-college",
@@ -5397,7 +6870,9 @@
     "grade_min": 9,
     "grade_max": 12,
     "cost_type": "paid",
-    "tags": ["Interdisciplinary Studies"]
+    "tags": [
+      "Interdisciplinary Studies"
+    ]
   },
   {
     "id": "landmark-college-summer",
@@ -5412,7 +6887,10 @@
     "grade_min": 11,
     "grade_max": 12,
     "cost_type": "paid",
-    "tags": ["College Access", "Interdisciplinary Studies"]
+    "tags": [
+      "College Access",
+      "Interdisciplinary Studies"
+    ]
   },
   {
     "id": "lebanon-valley-actuarial-camp",
@@ -5427,7 +6905,11 @@
     "grade_min": 12,
     "grade_max": 12,
     "cost_type": "paid",
-    "tags": ["Mathematics", "Finance", "Statistics"]
+    "tags": [
+      "Mathematics",
+      "Finance",
+      "Statistics"
+    ]
   },
   {
     "id": "lebanon-valley-data-science-camp",
@@ -5442,7 +6924,10 @@
     "grade_min": 11,
     "grade_max": 12,
     "cost_type": "paid",
-    "tags": ["Computer Science", "Data Science"]
+    "tags": [
+      "Computer Science",
+      "Data Science"
+    ]
   },
   {
     "id": "manhattan-university-engineering-summer",
@@ -5457,7 +6942,12 @@
     "grade_min": 11,
     "grade_max": 12,
     "cost_type": "paid",
-    "tags": ["Engineering", "Civil Engineering", "Electrical Engineering", "Mechanical Engineering"]
+    "tags": [
+      "Engineering",
+      "Civil Engineering",
+      "Electrical Engineering",
+      "Mechanical Engineering"
+    ]
   },
   {
     "id": "marist-summer-precollege",
@@ -5472,7 +6962,9 @@
     "grade_min": 11,
     "grade_max": 12,
     "cost_type": "paid",
-    "tags": ["Interdisciplinary Studies"]
+    "tags": [
+      "Interdisciplinary Studies"
+    ]
   },
   {
     "id": "mercy-university-leadership-academy",
@@ -5487,7 +6979,10 @@
     "grade_min": 12,
     "grade_max": 12,
     "cost_type": "paid",
-    "tags": ["Business", "Leadership"]
+    "tags": [
+      "Business",
+      "Leadership"
+    ]
   },
   {
     "id": "mercy-university-data-analytics",
@@ -5502,7 +6997,11 @@
     "grade_min": 11,
     "grade_max": 12,
     "cost_type": "free",
-    "tags": ["Data Science", "Business", "College Access"]
+    "tags": [
+      "Data Science",
+      "Business",
+      "College Access"
+    ]
   },
   {
     "id": "miami-ohio-summer-scholars",
@@ -5517,7 +7016,9 @@
     "grade_min": 11,
     "grade_max": 12,
     "cost_type": "paid",
-    "tags": ["Interdisciplinary Studies"]
+    "tags": [
+      "Interdisciplinary Studies"
+    ]
   },
   {
     "id": "mount-saint-mary-nursing-steam",
@@ -5532,7 +7033,12 @@
     "grade_min": 10,
     "grade_max": 12,
     "cost_type": "free",
-    "tags": ["Healthcare", "Nursing", "Engineering", "Visual Arts"]
+    "tags": [
+      "Healthcare",
+      "Nursing",
+      "Engineering",
+      "Visual Arts"
+    ]
   },
   {
     "id": "mun-institute",
@@ -5547,7 +7053,11 @@
     "grade_min": 9,
     "grade_max": 12,
     "cost_type": "paid",
-    "tags": ["International Relations", "Debate", "Public Speaking"]
+    "tags": [
+      "International Relations",
+      "Debate",
+      "Public Speaking"
+    ]
   },
   {
     "id": "oxbridge-academic-programs",
@@ -5562,7 +7072,12 @@
     "grade_min": 9,
     "grade_max": 12,
     "cost_type": "paid",
-    "tags": ["Interdisciplinary Studies", "Business", "Law", "Medicine"]
+    "tags": [
+      "Interdisciplinary Studies",
+      "Business",
+      "Law",
+      "Medicine"
+    ]
   },
   {
     "id": "notre-dame-precollege",
@@ -5577,7 +7092,10 @@
     "grade_min": 10,
     "grade_max": 12,
     "cost_type": "paid",
-    "tags": ["Interdisciplinary Studies", "Leadership"]
+    "tags": [
+      "Interdisciplinary Studies",
+      "Leadership"
+    ]
   },
   {
     "id": "nyu-precollege-general",
@@ -5592,7 +7110,9 @@
     "grade_min": 11,
     "grade_max": 12,
     "cost_type": "paid",
-    "tags": ["Interdisciplinary Studies"]
+    "tags": [
+      "Interdisciplinary Studies"
+    ]
   },
   {
     "id": "pratt-institute-precollege",
@@ -5607,7 +7127,11 @@
     "grade_min": 12,
     "grade_max": 12,
     "cost_type": "paid",
-    "tags": ["Visual Arts", "Design", "Architecture"]
+    "tags": [
+      "Visual Arts",
+      "Design",
+      "Architecture"
+    ]
   },
   {
     "id": "rpi-architecture-career-discovery",
@@ -5622,7 +7146,10 @@
     "grade_min": 10,
     "grade_max": 12,
     "cost_type": "paid",
-    "tags": ["Architecture", "Design"]
+    "tags": [
+      "Architecture",
+      "Design"
+    ]
   },
   {
     "id": "rpi-preface-summer",
@@ -5637,7 +7164,10 @@
     "grade_min": 11,
     "grade_max": 12,
     "cost_type": "paid",
-    "tags": ["Engineering", "Technology"]
+    "tags": [
+      "Engineering",
+      "Technology"
+    ]
   },
   {
     "id": "saint-francis-precollege-academies",
@@ -5652,7 +7182,9 @@
     "grade_min": 10,
     "grade_max": 11,
     "cost_type": "paid",
-    "tags": ["Interdisciplinary Studies"]
+    "tags": [
+      "Interdisciplinary Studies"
+    ]
   },
   {
     "id": "sarah-lawrence-writing-performance",
@@ -5667,7 +7199,11 @@
     "grade_min": 9,
     "grade_max": 12,
     "cost_type": "paid",
-    "tags": ["Creative Writing", "Theater", "Performing Arts"]
+    "tags": [
+      "Creative Writing",
+      "Theater",
+      "Performing Arts"
+    ]
   },
   {
     "id": "skidmore-precollege",
@@ -5682,7 +7218,9 @@
     "grade_min": 10,
     "grade_max": 12,
     "cost_type": "paid",
-    "tags": ["Interdisciplinary Studies"]
+    "tags": [
+      "Interdisciplinary Studies"
+    ]
   },
   {
     "id": "smith-college-precollege",
@@ -5697,7 +7235,10 @@
     "grade_min": 9,
     "grade_max": 12,
     "cost_type": "paid",
-    "tags": ["Interdisciplinary Studies", "Women in STEM"]
+    "tags": [
+      "Interdisciplinary Studies",
+      "Women in STEM"
+    ]
   },
   {
     "id": "st-bonaventure-stem-research",
@@ -5712,7 +7253,10 @@
     "grade_min": 10,
     "grade_max": 11,
     "cost_type": "unknown",
-    "tags": ["Research", "Science"]
+    "tags": [
+      "Research",
+      "Science"
+    ]
   },
   {
     "id": "stanford-summer-session-hs",
@@ -5727,7 +7271,9 @@
     "grade_min": 10,
     "grade_max": 12,
     "cost_type": "paid",
-    "tags": ["Interdisciplinary Studies"]
+    "tags": [
+      "Interdisciplinary Studies"
+    ]
   },
   {
     "id": "close-up-foundation",
@@ -5742,7 +7288,11 @@
     "grade_min": 9,
     "grade_max": 12,
     "cost_type": "paid",
-    "tags": ["Political Science", "Government", "Debate"]
+    "tags": [
+      "Political Science",
+      "Government",
+      "Debate"
+    ]
   },
   {
     "id": "stonybrook-summer-session",
@@ -5757,7 +7307,9 @@
     "grade_min": 11,
     "grade_max": 11,
     "cost_type": "paid",
-    "tags": ["Interdisciplinary Studies"]
+    "tags": [
+      "Interdisciplinary Studies"
+    ]
   },
   {
     "id": "suny-new-paltz-young-writers",
@@ -5772,7 +7324,10 @@
     "grade_min": 9,
     "grade_max": 12,
     "cost_type": "paid",
-    "tags": ["Creative Writing", "Literature"]
+    "tags": [
+      "Creative Writing",
+      "Literature"
+    ]
   },
   {
     "id": "syracuse-summer-college",
@@ -5787,7 +7342,9 @@
     "grade_min": 9,
     "grade_max": 12,
     "cost_type": "paid",
-    "tags": ["Interdisciplinary Studies"]
+    "tags": [
+      "Interdisciplinary Studies"
+    ]
   },
   {
     "id": "thomas-jefferson-university-academic-outreach",
@@ -5802,7 +7359,13 @@
     "grade_min": 9,
     "grade_max": 12,
     "cost_type": "paid",
-    "tags": ["Healthcare", "Medicine", "Nursing", "Architecture", "Design"]
+    "tags": [
+      "Healthcare",
+      "Medicine",
+      "Nursing",
+      "Architecture",
+      "Design"
+    ]
   },
   {
     "id": "try-engineering-summer-institute",
@@ -5817,7 +7380,12 @@
     "grade_min": 9,
     "grade_max": 12,
     "cost_type": "paid",
-    "tags": ["Engineering", "Aerospace", "Cybersecurity", "Artificial Intelligence"]
+    "tags": [
+      "Engineering",
+      "Aerospace",
+      "Cybersecurity",
+      "Artificial Intelligence"
+    ]
   },
   {
     "id": "tufts-precollege-general",
@@ -5832,7 +7400,11 @@
     "grade_min": 9,
     "grade_max": 12,
     "cost_type": "paid",
-    "tags": ["Interdisciplinary Studies", "Engineering", "Visual Arts"]
+    "tags": [
+      "Interdisciplinary Studies",
+      "Engineering",
+      "Visual Arts"
+    ]
   },
   {
     "id": "udel-edge-program",
@@ -5847,14 +7419,16 @@
     "grade_min": 11,
     "grade_max": 12,
     "cost_type": "paid",
-    "tags": ["Interdisciplinary Studies"]
+    "tags": [
+      "Interdisciplinary Studies"
+    ]
   },
   {
     "id": "vogue-summer-school-nyc",
     "kind": "camp",
-    "title": "Vogue Summer School (Condé Nast College)",
+    "title": "Vogue Summer School (Cond\u00e9 Nast College)",
     "url": "https://www.voguecollege.com/pre-college-nyc/",
-    "short_description": "Two-week NYC pre-college program teaching fashion business, styling, and media through Vogue and Condé Nast journalists, visits to flagship stores, and designer ateliers.",
+    "short_description": "Two-week NYC pre-college program teaching fashion business, styling, and media through Vogue and Cond\u00e9 Nast journalists, visits to flagship stores, and designer ateliers.",
     "location_name": "New York, New York",
     "is_remote": false,
     "industry": "Fashion",
@@ -5862,7 +7436,11 @@
     "grade_min": 10,
     "grade_max": 12,
     "cost_type": "paid",
-    "tags": ["Fashion Design", "Media & Communications", "Business"]
+    "tags": [
+      "Fashion Design",
+      "Media & Communications",
+      "Business"
+    ]
   },
   {
     "id": "wentworth-institute-stem-programs",
@@ -5877,7 +7455,11 @@
     "grade_min": 9,
     "grade_max": 12,
     "cost_type": "paid",
-    "tags": ["Engineering", "Design", "Architecture"]
+    "tags": [
+      "Engineering",
+      "Design",
+      "Architecture"
+    ]
   },
   {
     "id": "young-founders-lab",
@@ -5892,7 +7474,10 @@
     "grade_min": 9,
     "grade_max": 12,
     "cost_type": "paid",
-    "tags": ["Entrepreneurship", "Business"]
+    "tags": [
+      "Entrepreneurship",
+      "Business"
+    ]
   },
   {
     "id": "un-boston-global-leadership-institute",
@@ -5907,7 +7492,11 @@
     "grade_min": 9,
     "grade_max": 12,
     "cost_type": "paid",
-    "tags": ["International Relations", "Debate", "Leadership"]
+    "tags": [
+      "International Relations",
+      "Debate",
+      "Leadership"
+    ]
   },
   {
     "id": "northwestern-civic-leadership-institute",
@@ -5922,7 +7511,11 @@
     "grade_min": 9,
     "grade_max": 12,
     "cost_type": "paid",
-    "tags": ["Political Science", "Community Service", "Leadership"]
+    "tags": [
+      "Political Science",
+      "Community Service",
+      "Leadership"
+    ]
   },
   {
     "id": "girls-with-impact",
@@ -5937,7 +7530,12 @@
     "grade_min": 9,
     "grade_max": 12,
     "cost_type": "paid",
-    "tags": ["Entrepreneurship", "Business", "Women in STEM", "Leadership"]
+    "tags": [
+      "Entrepreneurship",
+      "Business",
+      "Women in STEM",
+      "Leadership"
+    ]
   },
   {
     "id": "brandeis-precollege",
@@ -5952,7 +7550,10 @@
     "grade_min": 9,
     "grade_max": 12,
     "cost_type": "paid",
-    "tags": ["Interdisciplinary Studies", "Research"]
+    "tags": [
+      "Interdisciplinary Studies",
+      "Research"
+    ]
   },
   {
     "id": "lukeion-project",
@@ -5967,7 +7568,11 @@
     "grade_min": 9,
     "grade_max": 12,
     "cost_type": "paid",
-    "tags": ["Classics", "World Languages", "Literature"]
+    "tags": [
+      "Classics",
+      "World Languages",
+      "Literature"
+    ]
   },
   {
     "id": "summer-discovery-ucla",
@@ -5982,7 +7587,12 @@
     "grade_min": 9,
     "grade_max": 12,
     "cost_type": "paid",
-    "tags": ["Business", "Film", "Leadership", "Interdisciplinary Studies"]
+    "tags": [
+      "Business",
+      "Film",
+      "Leadership",
+      "Interdisciplinary Studies"
+    ]
   },
   {
     "id": "ucsd-academic-connections",
@@ -5997,7 +7607,10 @@
     "grade_min": 9,
     "grade_max": 12,
     "cost_type": "paid",
-    "tags": ["Interdisciplinary Studies", "Research"]
+    "tags": [
+      "Interdisciplinary Studies",
+      "Research"
+    ]
   },
   {
     "id": "beloit-summer-language",
@@ -6012,7 +7625,10 @@
     "grade_min": 9,
     "grade_max": 12,
     "cost_type": "paid",
-    "tags": ["World Languages", "International Relations"]
+    "tags": [
+      "World Languages",
+      "International Relations"
+    ]
   },
   {
     "id": "barnard-summer-programs",
@@ -6027,7 +7643,11 @@
     "grade_min": 9,
     "grade_max": 12,
     "cost_type": "paid",
-    "tags": ["Interdisciplinary Studies", "Leadership", "Women in STEM"]
+    "tags": [
+      "Interdisciplinary Studies",
+      "Leadership",
+      "Women in STEM"
+    ]
   },
   {
     "id": "teach-me-wall-street",
@@ -6042,7 +7662,11 @@
     "grade_min": 9,
     "grade_max": 12,
     "cost_type": "paid",
-    "tags": ["Finance", "Business", "Economics"]
+    "tags": [
+      "Finance",
+      "Business",
+      "Economics"
+    ]
   },
   {
     "id": "polygence",
@@ -6057,7 +7681,10 @@
     "grade_min": 9,
     "grade_max": 12,
     "cost_type": "paid",
-    "tags": ["Research", "Interdisciplinary Studies"]
+    "tags": [
+      "Research",
+      "Interdisciplinary Studies"
+    ]
   },
   {
     "id": "summer-institute-for-the-gifted",
@@ -6072,7 +7699,10 @@
     "grade_min": 9,
     "grade_max": 12,
     "cost_type": "paid",
-    "tags": ["Interdisciplinary Studies", "Gifted Education"]
+    "tags": [
+      "Interdisciplinary Studies",
+      "Gifted Education"
+    ]
   },
   {
     "id": "nurph",
@@ -6087,7 +7717,11 @@
     "grade_min": 10,
     "grade_max": 12,
     "cost_type": "stipend",
-    "tags": ["Research", "Science", "Engineering"]
+    "tags": [
+      "Research",
+      "Science",
+      "Engineering"
+    ]
   },
   {
     "id": "spj-high-school-essay-contest",
@@ -6102,7 +7736,11 @@
     "grade_min": 9,
     "grade_max": 12,
     "cost_type": "free",
-    "tags": ["Journalism", "Creative Writing", "Media & Communications"]
+    "tags": [
+      "Journalism",
+      "Creative Writing",
+      "Media & Communications"
+    ]
   },
   {
     "id": "prudential-spirit-of-community",
@@ -6117,7 +7755,10 @@
     "grade_min": 9,
     "grade_max": 12,
     "cost_type": "free",
-    "tags": ["Community Service", "Leadership"]
+    "tags": [
+      "Community Service",
+      "Leadership"
+    ]
   },
   {
     "id": "toshiba-exploravision",
@@ -6132,7 +7773,12 @@
     "grade_min": 10,
     "grade_max": 12,
     "cost_type": "free",
-    "tags": ["Science", "Engineering", "Research", "Technology"]
+    "tags": [
+      "Science",
+      "Engineering",
+      "Research",
+      "Technology"
+    ]
   },
   {
     "id": "national-beta-club-scholarship",
@@ -6147,7 +7793,11 @@
     "grade_min": 12,
     "grade_max": 12,
     "cost_type": "free",
-    "tags": ["Leadership", "Community Service", "College Access"]
+    "tags": [
+      "Leadership",
+      "Community Service",
+      "College Access"
+    ]
   },
   {
     "id": "diller-teen-tikkun-olam-award",
@@ -6162,7 +7812,11 @@
     "grade_min": 10,
     "grade_max": 12,
     "cost_type": "free",
-    "tags": ["Community Service", "Leadership", "Social Impact"]
+    "tags": [
+      "Community Service",
+      "Leadership",
+      "Social Impact"
+    ]
   },
   {
     "id": "gloria-barron-prize",
@@ -6177,7 +7831,12 @@
     "grade_min": 9,
     "grade_max": 12,
     "cost_type": "free",
-    "tags": ["Community Service", "Environmental Science", "Leadership", "Social Impact"]
+    "tags": [
+      "Community Service",
+      "Environmental Science",
+      "Leadership",
+      "Social Impact"
+    ]
   },
   {
     "id": "congressional-award",
@@ -6192,6 +7851,377 @@
     "grade_min": 9,
     "grade_max": 12,
     "cost_type": "free",
-    "tags": ["Leadership", "Community Service", "Outdoor Education"]
+    "tags": [
+      "Leadership",
+      "Community Service",
+      "Outdoor Education"
+    ]
+  },
+  {
+    "id": "nasa-jpl",
+    "kind": "research_lab",
+    "title": "NASA Jet Propulsion Laboratory (JPL)",
+    "url": "https://www.jpl.nasa.gov",
+    "short_description": "NASA center managed by Caltech, leading robotic space exploration \u2014 Mars rovers, planetary science, and deep-space missions.",
+    "location_name": "Pasadena, California",
+    "is_remote": false,
+    "industry": "Aerospace",
+    "is_recruiting": false,
+    "cost_type": "unknown",
+    "tags": [
+      "Space Exploration",
+      "Robotics",
+      "Planetary Science",
+      "Aerospace Engineering",
+      "Astrobiology"
+    ]
+  },
+  {
+    "id": "nasa-goddard",
+    "kind": "research_lab",
+    "title": "NASA Goddard Space Flight Center",
+    "url": "https://www.nasa.gov/goddard/",
+    "short_description": "NASA's largest science and engineering center, building spacecraft and instruments to study Earth, the Sun, and the universe (Hubble, James Webb operations).",
+    "location_name": "Greenbelt, Maryland",
+    "is_remote": false,
+    "industry": "Aerospace",
+    "is_recruiting": false,
+    "cost_type": "unknown",
+    "tags": [
+      "Astrophysics",
+      "Earth Science",
+      "Space Exploration",
+      "Climate Science"
+    ]
+  },
+  {
+    "id": "nasa-ames",
+    "kind": "research_lab",
+    "title": "NASA Ames Research Center",
+    "url": "https://www.nasa.gov/ames/",
+    "short_description": "NASA center in Silicon Valley researching aeronautics, astrobiology, supercomputing, and entry systems since 1939.",
+    "location_name": "Moffett Field, California",
+    "is_remote": false,
+    "industry": "Aerospace",
+    "is_recruiting": false,
+    "cost_type": "unknown",
+    "tags": [
+      "Aeronautics",
+      "Astrobiology",
+      "Supercomputing",
+      "Space Exploration"
+    ]
+  },
+  {
+    "id": "nasa-langley",
+    "kind": "research_lab",
+    "title": "NASA Langley Research Center",
+    "url": "https://www.nasa.gov/langley/",
+    "short_description": "NASA's first field center, focused on aeronautics research and atmospheric science.",
+    "location_name": "Hampton, Virginia",
+    "is_remote": false,
+    "industry": "Aerospace",
+    "is_recruiting": false,
+    "cost_type": "unknown",
+    "tags": [
+      "Aeronautics",
+      "Atmospheric Science",
+      "Aerospace Engineering"
+    ]
+  },
+  {
+    "id": "nasa-glenn",
+    "kind": "research_lab",
+    "title": "NASA Glenn Research Center",
+    "url": "https://www.nasa.gov/glenn/",
+    "short_description": "NASA center specializing in propulsion and power systems for aircraft and spacecraft.",
+    "location_name": "Cleveland, Ohio",
+    "is_remote": false,
+    "industry": "Aerospace",
+    "is_recruiting": false,
+    "cost_type": "unknown",
+    "tags": [
+      "Propulsion",
+      "Aerospace Engineering",
+      "Power Systems"
+    ]
+  },
+  {
+    "id": "nasa-marshall",
+    "kind": "research_lab",
+    "title": "NASA Marshall Space Flight Center",
+    "url": "https://www.nasa.gov/marshall/",
+    "short_description": "NASA center developing rocket propulsion systems, including the Space Launch System, and managing ISS science payload operations.",
+    "location_name": "Huntsville, Alabama",
+    "is_remote": false,
+    "industry": "Aerospace",
+    "is_recruiting": false,
+    "cost_type": "unknown",
+    "tags": [
+      "Propulsion",
+      "Aerospace Engineering",
+      "Space Exploration"
+    ]
+  },
+  {
+    "id": "nasa-johnson",
+    "kind": "research_lab",
+    "title": "NASA Johnson Space Center",
+    "url": "https://www.nasa.gov/johnson/",
+    "short_description": "NASA's hub for human spaceflight \u2014 astronaut training, mission control, and crewed spacecraft development.",
+    "location_name": "Houston, Texas",
+    "is_remote": false,
+    "industry": "Aerospace",
+    "is_recruiting": false,
+    "cost_type": "unknown",
+    "tags": [
+      "Human Spaceflight",
+      "Aerospace Engineering",
+      "Space Exploration"
+    ]
+  },
+  {
+    "id": "nasa-kennedy",
+    "kind": "research_lab",
+    "title": "NASA Kennedy Space Center",
+    "url": "https://www.nasa.gov/kennedy/",
+    "short_description": "NASA's primary launch center, processing and launching crewed and robotic missions.",
+    "location_name": "Merritt Island, Florida",
+    "is_remote": false,
+    "industry": "Aerospace",
+    "is_recruiting": false,
+    "cost_type": "unknown",
+    "tags": [
+      "Aerospace Engineering",
+      "Space Exploration",
+      "Launch Operations"
+    ]
+  },
+  {
+    "id": "nasa-armstrong",
+    "kind": "research_lab",
+    "title": "NASA Armstrong Flight Research Center",
+    "url": "https://www.nasa.gov/armstrong/",
+    "short_description": "NASA center focused on experimental aircraft and atmospheric flight research.",
+    "location_name": "Edwards, California",
+    "is_remote": false,
+    "industry": "Aerospace",
+    "is_recruiting": false,
+    "cost_type": "unknown",
+    "tags": [
+      "Aeronautics",
+      "Flight Testing",
+      "Aerospace Engineering"
+    ]
+  },
+  {
+    "id": "nasa-stennis",
+    "kind": "research_lab",
+    "title": "NASA Stennis Space Center",
+    "url": "https://www.nasa.gov/stennis/",
+    "short_description": "NASA's primary center for testing and flight-certifying rocket propulsion systems.",
+    "location_name": "Bay St. Louis, Mississippi",
+    "is_remote": false,
+    "industry": "Aerospace",
+    "is_recruiting": false,
+    "cost_type": "unknown",
+    "tags": [
+      "Propulsion",
+      "Aerospace Engineering",
+      "Rocket Testing"
+    ]
+  },
+  {
+    "id": "nvidia-research",
+    "kind": "research_lab",
+    "title": "NVIDIA Research",
+    "url": "https://www.nvidia.com/en-us/research/",
+    "short_description": "NVIDIA's research organization spanning generative AI, robotics, computer graphics, and autonomous vehicles across labs including Deep Imagination and Spatial Intelligence.",
+    "location_name": "Santa Clara, California",
+    "is_remote": false,
+    "industry": "Semiconductors",
+    "is_recruiting": false,
+    "cost_type": "unknown",
+    "tags": [
+      "Artificial Intelligence",
+      "Machine Learning",
+      "Computer Graphics",
+      "Robotics",
+      "Autonomous Vehicles"
+    ]
+  },
+  {
+    "id": "microsoft-research",
+    "kind": "research_lab",
+    "title": "Microsoft Research",
+    "url": "https://www.microsoft.com/en-us/research/",
+    "short_description": "Microsoft's global research organization spanning AI, human-computer interaction, systems, and quantum computing, with labs in Redmond, Cambridge, New York, and beyond.",
+    "location_name": "Redmond, Washington",
+    "is_remote": false,
+    "industry": "Software",
+    "is_recruiting": false,
+    "cost_type": "unknown",
+    "tags": [
+      "Artificial Intelligence",
+      "Computer Science",
+      "Human-Computer Interaction",
+      "Quantum Computing"
+    ]
+  },
+  {
+    "id": "google-research",
+    "kind": "research_lab",
+    "title": "Google Research",
+    "url": "https://research.google",
+    "short_description": "Google's research organization working on machine learning, natural language processing, algorithms, and applied AI for science and health.",
+    "location_name": "Mountain View, California",
+    "is_remote": false,
+    "industry": "Software",
+    "is_recruiting": false,
+    "cost_type": "unknown",
+    "tags": [
+      "Artificial Intelligence",
+      "Machine Learning",
+      "Computer Science",
+      "Natural Language Processing"
+    ]
+  },
+  {
+    "id": "meta-ai-fair",
+    "kind": "research_lab",
+    "title": "Meta AI (FAIR)",
+    "url": "https://ai.meta.com",
+    "short_description": "Meta's AI research division (Fundamental AI Research), working on machine learning, computer vision, and generative AI models.",
+    "location_name": "Menlo Park, California",
+    "is_remote": false,
+    "industry": "Software",
+    "is_recruiting": false,
+    "cost_type": "unknown",
+    "tags": [
+      "Artificial Intelligence",
+      "Machine Learning",
+      "Computer Vision"
+    ]
+  },
+  {
+    "id": "ibm-research",
+    "kind": "research_lab",
+    "title": "IBM Research",
+    "url": "https://research.ibm.com",
+    "short_description": "IBM's research division, a leader in quantum computing hardware and algorithms alongside AI research.",
+    "location_name": "Yorktown Heights, New York",
+    "is_remote": false,
+    "industry": "Technology",
+    "is_recruiting": false,
+    "cost_type": "unknown",
+    "tags": [
+      "Artificial Intelligence",
+      "Quantum Computing",
+      "Computer Science"
+    ]
+  },
+  {
+    "id": "amazon-science",
+    "kind": "research_lab",
+    "title": "Amazon Science",
+    "url": "https://www.amazon.science",
+    "short_description": "Amazon's science and research organization spanning machine learning, robotics, computer vision, and cloud systems.",
+    "location_name": "Seattle, Washington",
+    "is_remote": false,
+    "industry": "Technology",
+    "is_recruiting": false,
+    "cost_type": "unknown",
+    "tags": [
+      "Artificial Intelligence",
+      "Machine Learning",
+      "Robotics",
+      "Cloud Computing"
+    ]
+  },
+  {
+    "id": "adobe-research",
+    "kind": "research_lab",
+    "title": "Adobe Research",
+    "url": "https://research.adobe.com",
+    "short_description": "Adobe's research division working on AI-powered creative tools, computer graphics, and digital media across a dozen research areas.",
+    "location_name": "San Jose, California",
+    "is_remote": false,
+    "industry": "Software",
+    "is_recruiting": false,
+    "cost_type": "unknown",
+    "tags": [
+      "Computer Graphics",
+      "Artificial Intelligence",
+      "Human-Computer Interaction",
+      "Digital Media"
+    ]
+  },
+  {
+    "id": "apple-ml-research",
+    "kind": "research_lab",
+    "title": "Apple Machine Learning Research",
+    "url": "https://machinelearning.apple.com",
+    "short_description": "Apple's machine learning research group, publishing work spanning computer vision, methods and algorithms, and on-device AI.",
+    "location_name": "Cupertino, California",
+    "is_remote": false,
+    "industry": "Technology",
+    "is_recruiting": false,
+    "cost_type": "unknown",
+    "tags": [
+      "Machine Learning",
+      "Artificial Intelligence",
+      "Computer Vision"
+    ]
+  },
+  {
+    "id": "qualcomm-ai-research",
+    "kind": "research_lab",
+    "title": "Qualcomm AI Research",
+    "url": "https://www.qualcomm.com/research",
+    "short_description": "Qualcomm's research division focused on power-efficient on-device AI, 5G/6G wireless technology, and extended reality.",
+    "location_name": "San Diego, California",
+    "is_remote": false,
+    "industry": "Semiconductors",
+    "is_recruiting": false,
+    "cost_type": "unknown",
+    "tags": [
+      "Artificial Intelligence",
+      "Wireless Technology",
+      "Electrical Engineering"
+    ]
+  },
+  {
+    "id": "amd-research",
+    "kind": "research_lab",
+    "title": "AMD Research",
+    "url": "https://www.amd.com",
+    "short_description": "AMD's research organization working on high-performance computer architecture, GPU compute, and AI accelerator design.",
+    "location_name": "Santa Clara, California",
+    "is_remote": false,
+    "industry": "Semiconductors",
+    "is_recruiting": false,
+    "cost_type": "unknown",
+    "tags": [
+      "Computer Architecture",
+      "Artificial Intelligence",
+      "High-Performance Computing"
+    ]
+  },
+  {
+    "id": "intel-labs",
+    "kind": "research_lab",
+    "title": "Intel Labs",
+    "url": "https://www.intel.com",
+    "short_description": "Intel's research organization exploring future computer architecture, including neuromorphic and quantum computing.",
+    "location_name": "Santa Clara, California",
+    "is_remote": false,
+    "industry": "Semiconductors",
+    "is_recruiting": false,
+    "cost_type": "unknown",
+    "tags": [
+      "Computer Architecture",
+      "Artificial Intelligence",
+      "Quantum Computing"
+    ]
   }
 ]
