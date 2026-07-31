@@ -6,13 +6,14 @@
  * `niche_slugs`, so a student's free-text niche interest ("fire monitoring") can match companies
  * carrying a close niche tag — even when it doesn't map to one of the ~109 canonical tags.
  */
-import { mkdirSync, writeFileSync } from "node:fs";
+import { mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
 import { loadAllListings } from "../lib/sources";
-import { buildDataset, labelsToSlugPairs } from "../lib/mapping";
+import { buildDataset, labelsToSlugPairs, slugify } from "../lib/mapping";
 import { applyClassification, applyTaxonomyDomains } from "../lib/classification";
 
 const outDir = join(process.cwd(), "public", "data");
+const CURATED_NICHE = join(process.cwd(), "supabase", "seed", "niche-tags-curated.json");
 
 function main() {
   const raw = loadAllListings();
@@ -25,14 +26,40 @@ function main() {
   const listings = built.listings;
   const tags = applyTaxonomyDomains(built.tags);
 
-  // Attach niche slugs (source tags that aren't already a canonical tag) + collect the vocabulary.
+  // Curated niche tags (supabase/seed/niche-tags-curated.json): a large hand-authored vocabulary of
+  // specific subtopics, keyword-attached to any listing whose text mentions them, so a student's
+  // free-text niche interest ("astrophotography", "immunotherapy") has far more to match against.
+  // Skip any whose slug collides with a canonical tag (those aren't "niche").
+  const canonicalSlugs = new Set(tags.map((t) => t.slug));
+  const curatedNiche = (
+    JSON.parse(readFileSync(CURATED_NICHE, "utf8")) as { label: string; keywords: string[] }[]
+  )
+    .map((c) => ({ slug: slugify(c.label), label: c.label, keywords: c.keywords.map((k) => k.toLowerCase()) }))
+    .filter((c) => c.slug && !canonicalSlugs.has(c.slug));
+
+  // Attach niche slugs (source tags that aren't already a canonical tag, + keyword-matched curated
+  // niche tags) and collect the vocabulary. Seed the vocab with EVERY curated niche tag so the whole
+  // set is available for a student's free-text interest to match against, even the specific ones no
+  // terse listing description happens to mention yet.
   const nicheVocab = new Map<string, string>(); // slug -> label
+  for (const c of curatedNiche) nicheVocab.set(c.slug, c.label);
   for (const l of listings) {
     const pairs = rawTags.get(`${l.source}:${l.external_id}`) ?? [];
-    const canonical = new Set(l.tag_slugs);
-    const niche = pairs.filter((p) => !canonical.has(p.slug));
-    l.niche_slugs = niche.map((p) => p.slug);
-    for (const p of niche) if (!nicheVocab.has(p.slug)) nicheVocab.set(p.slug, p.label);
+    const slugs = new Set<string>();
+    for (const p of pairs) {
+      if (l.tag_slugs.includes(p.slug)) continue; // already canonical
+      slugs.add(p.slug);
+      if (!nicheVocab.has(p.slug)) nicheVocab.set(p.slug, p.label);
+    }
+    const text = `${l.title} ${l.short_description ?? ""} ${l.long_description ?? ""} ${l.industry ?? ""}`.toLowerCase();
+    for (const c of curatedNiche) {
+      if (slugs.has(c.slug)) continue;
+      if (c.keywords.some((k) => text.includes(k))) {
+        slugs.add(c.slug);
+        if (!nicheVocab.has(c.slug)) nicheVocab.set(c.slug, c.label);
+      }
+    }
+    l.niche_slugs = [...slugs];
   }
 
   mkdirSync(outDir, { recursive: true });
