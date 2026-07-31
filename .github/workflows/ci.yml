@@ -1,0 +1,28 @@
+name: CI
+
+# BUILD_PROMPT §1/§8: every change runs typecheck + lint + tests, including the personality
+# leakage tests (__tests__/personality-guard, matching leakage guard) that must fail the build if
+# any personality data can reach a student-facing shape.
+
+on:
+  push:
+    branches: [master, main]
+  pull_request:
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+      - run: npm ci
+      - run: npm run typecheck
+      - run: npm run lint
+      - run: npm run test

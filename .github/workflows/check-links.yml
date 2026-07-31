@@ -1,0 +1,28 @@
+name: Check dead links
+
+# BUILD_PROMPT §7 ★: monthly sweep of listing URLs; files a broken_link report (for admin review,
+# never auto-deletes) for any returning 404/410/5xx. Needs repo secret DATABASE_URL.
+
+on:
+  schedule:
+    - cron: "0 6 1 * *" # 1st of each month, 06:00 UTC
+  workflow_dispatch: {}
+
+concurrency:
+  group: check-links
+  cancel-in-progress: false
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    env:
+      DATABASE_URL: ${{ secrets.DATABASE_URL }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+      - run: npm ci
+      - if: ${{ env.DATABASE_URL != '' }}
+        run: npm run data:check-links
