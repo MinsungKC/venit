@@ -84,7 +84,7 @@ export default function RateDeck({ opps, carry }: { opps: Opp[]; carry: string }
               <div className={styles.cardHead}>
                 <span className={styles.kind}>{KIND_LABEL[opp.kind] ?? opp.kind}</span>
                 <span className={styles.pos}>
-                  {pos + 1} / {opps.length}
+                  {idx + 1} / {opps.length}
                 </span>
               </div>
 
