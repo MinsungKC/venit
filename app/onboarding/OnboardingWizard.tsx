@@ -54,6 +54,7 @@ export default function OnboardingWizard({
 }) {
   const router = useRouter();
   const [step, setStep] = useState(0);
+  const [phase, setPhase] = useState<"in" | "out">("in");
   const [kinds, setKinds] = useState<Set<ListingKind>>(new Set());
   const [broad, setBroad] = useState<Set<string>>(new Set());
   const [selected, setSelected] = useState<Set<string>>(new Set());
@@ -200,6 +201,24 @@ export default function OnboardingWizard({
             ? adjList.length >= 3 && grade != null && age != null
             : true;
 
+  // The current step's class — during an "out" phase it swipes up (revealing the globe) before the
+  // next step rises in. Advancing also fires STEP_EVENT so OnboardingGlobe drops fresh pins.
+  const stageClass = `${styles.stage} ${phase === "out" ? styles.stageOut : ""}`;
+  function advance(dir: "next" | "back") {
+    if (phase === "out") return; // already mid-transition
+    const target = dir === "next" ? Math.min(STEPS.length - 1, step + 1) : Math.max(0, step - 1);
+    if (target === step) return;
+    setPhase("out");
+    if (dir === "next" && typeof window !== "undefined") {
+      window.dispatchEvent(new Event("oppmatch:onboarding-step"));
+    }
+    window.setTimeout(() => {
+      setStep(target);
+      setPhase("in");
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }, 330);
+  }
+
   if (busy) {
     return (
       <div className={styles.loading}>
@@ -237,7 +256,7 @@ export default function OnboardingWizard({
 
       {/* Step 0 — what kind of listing are they looking for */}
       {step === 0 && (
-        <div className={styles.stage}>
+        <div className={stageClass}>
           <h2 className={styles.stageTitle}>What are you looking for?</h2>
           <p className={styles.stageSub}>
             Pick as many as you like — we&apos;ll prioritize these, but you&apos;ll still see
@@ -263,7 +282,7 @@ export default function OnboardingWizard({
 
       {/* Step 1 — broad interests */}
       {step === 1 && (
-        <div className={styles.stage}>
+        <div className={stageClass}>
           <h2 className={styles.stageTitle}>What are you into?</h2>
           <p className={styles.stageSub}>Tap the areas that spark your interest. Pick as many as you like.</p>
           <div className={styles.bubbles}>
@@ -286,7 +305,7 @@ export default function OnboardingWizard({
 
       {/* Step 2 — specific interests */}
       {step === 2 && (
-        <div className={styles.stage}>
+        <div className={stageClass}>
           <h2 className={styles.stageTitle}>Get specific</h2>
           <p className={styles.stageSub}>Which of these fit best? Tap the ones you&apos;d actually want.</p>
           <div className={styles.bubbles}>
@@ -309,7 +328,7 @@ export default function OnboardingWizard({
 
       {/* Step 3 — about you */}
       {step === 3 && (
-        <div className={styles.stage}>
+        <div className={stageClass}>
           <h2 className={styles.stageTitle}>A bit about you</h2>
           <p className={styles.stageSub}>Anything else you&apos;re into, plus a few words that describe you.</p>
 
@@ -371,7 +390,7 @@ export default function OnboardingWizard({
 
       {/* Step 4 — resume */}
       {step === 4 && (
-        <div className={styles.stage}>
+        <div className={stageClass}>
           <h2 className={styles.stageTitle}>Add a resume?</h2>
           <p className={styles.stageSub}>
             Optional. Personal info (emails, phone, address) is stripped on your device first; only
@@ -403,15 +422,25 @@ export default function OnboardingWizard({
 
       {/* Nav */}
       <div className={styles.nav}>
-        <button type="button" className={styles.ghost} onClick={() => setStep((s) => Math.max(0, s - 1))} disabled={step === 0}>
+        <button
+          type="button"
+          className={styles.ghost}
+          onClick={() => advance("back")}
+          disabled={step === 0 || phase === "out"}
+        >
           Back
         </button>
         {step < STEPS.length - 1 ? (
-          <button type="button" className={styles.primary} onClick={() => setStep((s) => s + 1)} disabled={!canNext}>
+          <button
+            type="button"
+            className={styles.primary}
+            onClick={() => advance("next")}
+            disabled={!canNext || phase === "out"}
+          >
             Continue
           </button>
         ) : (
-          <button type="button" className={styles.primary} onClick={finish}>
+          <button type="button" className={styles.primary} onClick={finish} disabled={phase === "out"}>
             See my matches →
           </button>
         )}

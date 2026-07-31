@@ -4,35 +4,64 @@ import { useEffect, useRef } from "react";
 
 /**
  * Onboarding background: a real world-MAP globe (vector country outlines, not satellite imagery)
- * spinning slowly on a white page, with GeoGuessr-style red pins that pop in one by one. Purely
- * decorative (pointer-events: none) so it never intercepts clicks meant for the glass wizard card.
- * globe.gl is loaded client-only (dynamic import) so it stays off the server/initial bundle.
+ * spinning slowly on a white page, with GeoGuessr-style red pins that pop in. A few drop on load,
+ * then a fresh burst appears each time the wizard advances a step (STEP_EVENT) — so the map fills
+ * in as you build your profile. Purely decorative (pointer-events: none). globe.gl is loaded
+ * client-only (dynamic import) so it stays off the server/initial bundle.
  */
 const COUNTRIES = "https://unpkg.com/three-globe/example/country-polygons/ne_110m_admin_0_countries.geojson";
+/** The wizard dispatches this on each step advance; we drop a burst of new pins in response. */
+export const STEP_EVENT = "oppmatch:onboarding-step";
 
-// Decorative pin spots over inhabited land so the red markers land on continents, not oceans.
 const PIN_SPOTS: [number, number][] = [
   [37.77, -122.42], [40.71, -74.0], [51.51, -0.13], [48.85, 2.35], [52.52, 13.4],
   [35.68, 139.69], [1.35, 103.82], [19.08, 72.88], [-33.87, 151.21], [-23.55, -46.63],
   [-33.92, 18.42], [-1.29, 36.82], [25.2, 55.27], [19.43, -99.13], [43.65, -79.38],
-  [55.75, 37.62], [-34.6, -58.38], [39.9, 116.4],
+  [55.75, 37.62], [-34.6, -58.38], [39.9, 116.4], [59.33, 18.06], [28.61, 77.21],
 ];
 
 type GlobeInstance = any; // globe.gl's fluent instance chains awkwardly under strict types.
 
 export default function OnboardingGlobe() {
   const ref = useRef<HTMLDivElement>(null);
-  const worldRef = useRef<GlobeInstance>(null);
 
   useEffect(() => {
     let cancelled = false;
+    let world: GlobeInstance = null;
+    let resize: (() => void) | null = null;
     const timers: ReturnType<typeof setTimeout>[] = [];
+    const pins: { lat: number; lng: number }[] = [];
+    let pinIndex = 0;
+
+    const dropPins = (n: number) => {
+      for (let k = 0; k < n && pinIndex < PIN_SPOTS.length; k++) {
+        const [lat, lng] = PIN_SPOTS[pinIndex++];
+        // Stagger each so a burst cascades in rather than appearing all at once.
+        timers.push(
+          setTimeout(() => {
+            if (cancelled || !world) return;
+            pins.push({ lat, lng });
+            world.htmlElementsData([...pins]);
+          }, k * 160),
+        );
+      }
+    };
+    const onStep = () => dropPins(4);
+
+    const destroy = () => {
+      try {
+        world?._destructor?.();
+      } catch {
+        /* globe.gl teardown can throw if the node is already detached — ignore */
+      }
+      world = null;
+    };
 
     (async () => {
       const Globe: GlobeInstance = (await import("globe.gl")).default;
-      if (!ref.current || cancelled) return;
+      if (cancelled || !ref.current) return;
 
-      const world: GlobeInstance = new Globe(ref.current, { animateIn: true })
+      world = new Globe(ref.current, { animateIn: true })
         .backgroundColor("rgba(0,0,0,0)")
         .showAtmosphere(true)
         .atmosphereColor("#818cf8")
@@ -47,56 +76,62 @@ export default function OnboardingGlobe() {
           el.innerHTML = '<span class="gg-pin-inner"><span class="gg-pin-head"></span></span>';
           return el;
         });
-      worldRef.current = world;
+      // If we were unmounted during the dynamic import, tear down immediately so no orphan render
+      // loop keeps touching a detached canvas (the source of the removeChild crash).
+      if (cancelled) {
+        destroy();
+        return;
+      }
 
-      // A pale world-map globe (subtle on white) with soft indigo country fills + outlines.
       world.globeMaterial().color.set("#eef1ff");
       world.globeMaterial().shininess = 6;
 
-      const resize = () => world.width(window.innerWidth).height(window.innerHeight);
+      resize = () => world && world.width(window.innerWidth).height(window.innerHeight);
       resize();
       world.pointOfView({ lat: 18, lng: -20, altitude: 2.3 });
-      world.controls().autoRotate = true;
-      world.controls().autoRotateSpeed = 0.55;
-      world.controls().enableZoom = false;
-      world.controls().enablePan = false;
+      const c = world.controls();
+      c.autoRotate = true;
+      c.autoRotateSpeed = 0.55;
+      c.enableZoom = false;
+      c.enablePan = false;
 
       try {
         const geo = await fetch(COUNTRIES).then((r) => r.json());
-        if (cancelled) return;
-        world
-          .polygonsData(geo.features)
-          .polygonCapColor(() => "rgba(79,70,229,0.13)")
-          .polygonSideColor(() => "rgba(79,70,229,0.04)")
-          .polygonStrokeColor(() => "rgba(79,70,229,0.45)")
-          .polygonAltitude(0.006);
+        if (!cancelled && world) {
+          world
+            .polygonsData(geo.features)
+            .polygonCapColor(() => "rgba(79,70,229,0.13)")
+            .polygonSideColor(() => "rgba(79,70,229,0.04)")
+            .polygonStrokeColor(() => "rgba(79,70,229,0.45)")
+            .polygonAltitude(0.006);
+        }
       } catch {
         /* offline / blocked — the bare globe + pins still render */
       }
-
-      // Populate the red pins one by one with a pop-in animation.
-      const pins: { lat: number; lng: number }[] = [];
-      const addPin = (i: number) => {
-        if (cancelled || i >= PIN_SPOTS.length) return;
-        pins.push({ lat: PIN_SPOTS[i][0], lng: PIN_SPOTS[i][1] });
-        world.htmlElementsData([...pins]);
-        timers.push(setTimeout(() => addPin(i + 1), 620 + Math.random() * 480));
-      };
-      timers.push(setTimeout(() => addPin(0), 700));
+      if (cancelled) {
+        destroy();
+        return;
+      }
 
       window.addEventListener("resize", resize);
-      (world as { __resize?: () => void }).__resize = resize;
+      window.addEventListener(STEP_EVENT, onStep);
+      timers.push(setTimeout(() => dropPins(3), 600)); // a few pins on load
     })();
 
     return () => {
       cancelled = true;
       timers.forEach(clearTimeout);
-      const w = worldRef.current as ({ __resize?: () => void; _destructor?: () => void } & GlobeInstance) | null;
-      if (w?.__resize) window.removeEventListener("resize", w.__resize);
-      try {
-        w?._destructor?.();
-      } catch {
-        /* ignore teardown errors */
+      if (resize) window.removeEventListener("resize", resize);
+      window.removeEventListener(STEP_EVENT, onStep);
+      const el = ref.current;
+      destroy();
+      // Belt-and-suspenders: clear any leftover canvas so nothing can removeChild a detached node.
+      if (el) {
+        try {
+          while (el.firstChild) el.removeChild(el.firstChild);
+        } catch {
+          /* ignore */
+        }
       }
     };
   }, []);

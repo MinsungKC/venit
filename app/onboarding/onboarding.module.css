@@ -34,17 +34,18 @@
 .homeLink:hover {
   color: var(--text);
 }
-/* The glass card. */
+/* The glass card — deliberately see-through so the world globe reads behind it. */
 .card {
   width: 100%;
   max-width: 820px;
-  background: rgba(255, 255, 255, 0.72);
-  backdrop-filter: blur(24px);
-  -webkit-backdrop-filter: blur(24px);
-  border: 1px solid rgba(255, 255, 255, 0.6);
-  box-shadow: 0 16px 48px rgba(31, 38, 135, 0.16);
+  background: rgba(255, 255, 255, 0.42);
+  backdrop-filter: blur(10px) saturate(1.1);
+  -webkit-backdrop-filter: blur(10px) saturate(1.1);
+  border: 1px solid rgba(255, 255, 255, 0.55);
+  box-shadow: 0 16px 48px rgba(31, 38, 135, 0.14);
   border-radius: 28px;
   padding: 30px clamp(18px, 4vw, 36px) 34px;
+  overflow: hidden; /* keep the swiping step content clipped to the rounded card */
 }
 
 .wizard {
@@ -122,11 +123,20 @@
 /* ---- Stage ---- */
 .stage {
   min-height: 320px;
-  animation: stagein 0.4s var(--ease) both;
+  animation: stagein 0.44s cubic-bezier(0.22, 1, 0.36, 1) both;
 }
 @keyframes stagein {
-  from { opacity: 0; transform: translateY(10px); }
+  from { opacity: 0; transform: translateY(30px); }
   to { opacity: 1; transform: translateY(0); }
+}
+/* Exit: the completed step swipes up and fades, revealing the globe + new pins before the next
+ * step rises in (driven by the `phase` state in OnboardingWizard). */
+.stageOut {
+  animation: stageout 0.34s cubic-bezier(0.4, 0, 1, 1) both;
+}
+@keyframes stageout {
+  from { opacity: 1; transform: translateY(0); }
+  to { opacity: 0; transform: translateY(-36px); }
 }
 .stageTitle {
   margin: 0 0 6px;
