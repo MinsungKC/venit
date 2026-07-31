@@ -145,8 +145,11 @@ export default function OnboardingWizard({
 
   async function finish() {
     setErr(null);
-    setMode("finishing"); // hides the card — the globe spins up + floods with pins as it "searches"
+    // 1) fly the form card off-screen (same transition as between steps) while the globe spins up
+    //    and floods with waypoints as it "searches".
+    setPhase("out");
     if (typeof window !== "undefined") window.dispatchEvent(new Event(FINISH_EVENT));
+    window.setTimeout(() => setMode("finishing"), EXIT_MS); // globe alone once the card has left
     // Give the globe climax its moment even if the matching is fast.
     const climax = new Promise<void>((resolve) => setTimeout(resolve, 2900));
 
@@ -259,15 +262,10 @@ export default function OnboardingWizard({
     }, EXIT_MS);
   }
 
-  // Finishing: the card is gone and the globe does the "searching" — spinning up and flooding with
-  // waypoints (see OnboardingGlobe). Just a small glass caption sits over it.
+  // Finishing: the card is gone and the globe alone does the "searching" — spinning up and flooding
+  // with waypoints (see OnboardingGlobe). No text; just an empty spacer to hold the page height.
   if (mode === "finishing") {
-    return (
-      <div className={styles.finishing}>
-        <span className={styles.finishDot} />
-        <span className={styles.finishText}>Scanning the globe for your best matches…</span>
-      </div>
-    );
+    return <div className={styles.finishing} aria-hidden />;
   }
 
   // Results: the top 5, revealed right here in a glass card over the (now gently-spinning) globe.
@@ -281,8 +279,8 @@ export default function OnboardingWizard({
               The best fits from what you told us — here are your top {results.length}.
             </p>
             <ul className={styles.resultList}>
-              {results.map((r) => (
-                <li key={r.slug}>
+              {results.map((r, i) => (
+                <li key={r.slug} className={styles.resultItem} style={{ animationDelay: `${i * 75}ms` }}>
                   <Link href={`/listing/${r.slug}`} className={styles.resultRow}>
                     <div className={styles.resultMain}>
                       <span className={styles.resultName}>{r.title}</span>
