@@ -52,14 +52,19 @@ built — the schema and libs accept them.
     both backed by `lib/stars.ts` (`StarSnapshot`/`StarRecord`, `onStarsChanged` pub/sub). Star
     snapshots store only public listing fields — never personality.
   - `lib/ics.ts` (deadline → .ics + Google Calendar) and `lib/user-classifier.ts` (Phase-3
-    scrub→embed→classify, model injected so it tests without MiniLM) exist; the browser embed
-    adapter and the resume/adjective UI are still TODO.
+    scrub→embed→classify, embedder injected so it tests without the model). The server-embed adapter
+    (`lib/embed-client.ts`) and the resume/adjective onboarding UI are wired (see below).
 
-- **On-device classifier wired (BUILD_PROMPT §3):** `lib/embeddings-browser.ts` lazy-loads MiniLM
-  in the browser (transformers.js/WASM, dynamic import so it's off the initial bundle; `next.config`
-  aliases out `onnxruntime-node`/`sharp` for the client). The onboarding "describe yourself" step
-  embeds free text + adjectives + an optional pasted resume ON-DEVICE via `classifyUser`, suggests
-  interest tags, and shows the PII scrub result (§0.3). Raw text never leaves the browser.
+- **Classifier wired — embedding runs SERVER-SIDE (BUILD_PROMPT §3, revised):** `lib/embed-client.ts`
+  (`embedText`) POSTs to `/api/embed`, which runs the self-hosted BGE model server-side
+  (`lib/embeddings.ts`); the old in-browser MiniLM is retired (quality too weak on short queries, and
+  it dropped a ~25 MB device download). The onboarding "describe yourself" step embeds free text +
+  adjectives + an optional pasted resume via `classifyUser`, suggests interest tags, and shows the
+  PII scrub result (§0.3). **Privacy revision:** PII is scrubbed ON-DEVICE first, then only the
+  cleaned text crosses to our own server, where it's embedded and never stored/logged — a deliberate
+  trade of the original "only tag IDs leave the device" stance (§0.2) for materially better matching.
+  (`next.config` still aliases out `onnxruntime-node`/`sharp` so the model runtime never enters the
+  client bundle.)
 
 - **Org registration + admin + reports (BUILD_PROMPT §4/§7):** Zod schemas in `lib/schemas.ts`
   guard every input boundary. `POST /api/register` files a `pending` listing into the moderation
@@ -155,7 +160,7 @@ registration, admin, and the results-page polish — the schema and these libs a
   - `supabase/seed/personality.json` — the fixed 10 archetypes (slug = `slugify(label)`,
     enforced by a test), each with `anchor_text` (definition + synonyms) that feeds its
     embedding. Archetype vectors: `scripts/embed-archetypes.ts` (`npm run data:personality`)
-    → committed `public/data/archetype-vectors.json`. Same MiniLM path as the tag classifier.
+    → committed `public/data/archetype-vectors.json` (768-dim). Same BGE path as the tag classifier.
   - `supabase/migrations/0003_profiles.sql` — `profiles` (with the **secret**
     `personality_vector`/`personality_archetypes`), `personality_archetypes`,
     `user_interest_tags`, `orgs`, `listing_desired_personality`, `stars`, `applications`,
@@ -219,8 +224,9 @@ Sources speak different tag languages (yc tags, GICS sectors, OpenAlex fields). 
 classifier unifies them into a canonical taxonomy so matching is consistent:
 - `supabase/seed/taxonomy.json` — ~109 canonical tags (slug = `slugify(label)`, enforced by
   a test), each with a description that feeds its embedding.
-- `lib/embeddings.ts` — MiniLM (`Xenova/all-MiniLM-L6-v2`, 384-dim) via transformers.js;
-  same model the browser will use for the on-device user classifier later (§3).
+- `lib/embeddings.ts` — BGE (`Xenova/bge-base-en-v1.5`, 768-dim) via transformers.js, run
+  SERVER-SIDE (build scripts + `/api/embed`); the same model the browser client (`lib/embed-client.ts`)
+  calls for the user classifier (§3). Upgraded from MiniLM-384 for much better short-query quality.
 - `scripts/classify.ts` (`npm run data:classify`) — embeds taxonomy + each listing, assigns
   nearest tags → `public/data/classification.json` (+ `tag-vectors.json`). Build-time only,
   no per-request AI (§0.7).

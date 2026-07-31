@@ -1,17 +1,18 @@
 /**
- * Client-side interface to the server-hosted embedder (BUILD_PROMPT §3). Embedding now runs on
- * OUR server (POST /api/embed, self-hosted BGE via transformers.js — no paid third-party API,
- * lib/embeddings.ts) rather than in the browser: on-device MiniLM's quality was too weak on
- * short/ambiguous queries ("wildfire" matched "Space Exploration" over Climate/Environmental
- * Science). This also drops the ~25 MB in-browser model download.
+ * Client-side helper that runs embedding THROUGH OUR SERVER, not on the student's device
+ * (BUILD_PROMPT §3, revised). `embedText` POSTs to /api/embed, which runs the self-hosted BGE
+ * model server-side (lib/embeddings.ts) and returns the 768-dim vector. We moved off the old
+ * in-browser MiniLM because its quality was too weak on short/ambiguous queries ("wildfire"
+ * matched "Space Exploration" over Climate/Environmental Science) — and this also drops the
+ * ~25 MB in-browser model download and keeps heavy compute off low-end phones.
  *
- * Same exported shape as the old on-device version (`embedText` / `warmUpEmbedder` /
- * `LoadProgress`) so callers (onboarding wizard, search bar) needed zero changes. Only the
- * resulting vector crosses the network — never stored server-side (§0.2/§0.3).
+ * PRIVACY NOTE: the text (scrubbed of PII on-device first) crosses the network to our own server,
+ * where it is embedded and NOT stored or logged — only the resulting vector is returned. This is a
+ * deliberate revision of the original "only tag IDs leave the device" stance (§0.2), traded for
+ * materially better match quality. Never a paid third-party API.
  */
 
-/** Kept for call-site compatibility with the old on-device downloader; no download happens now,
- *  so at most one "ready" event fires once embedding completes. */
+/** Kept for call-site compatibility with the old on-device downloader; no download happens now. */
 export interface LoadProgress {
   status: string;
   file?: string;

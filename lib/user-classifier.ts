@@ -4,7 +4,7 @@
  *
  * The embedding function is INJECTED (`deps.embed`), so this module never imports the model and
  * unit-tests with a fake embedder. In the browser the app passes an `embed` that calls the
- * server-hosted embedder (POST /api/embed, lib/embeddings-browser.ts); the reference vectors
+ * server-hosted embedder (POST /api/embed, lib/embed-client.ts); the reference vectors
  * (`tagVectors`, `archetypeVectors`) are the committed public/data JSON.
  *
  * GUARDRAIL §0.1/§0.2/§0.3: the raw resume is scrubbed ON-DEVICE and only its cleaned text is

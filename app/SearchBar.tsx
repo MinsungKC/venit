@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { embedText, warmUpEmbedder, type LoadProgress } from "@/lib/embeddings-browser";
+import { embedText, warmUpEmbedder, type LoadProgress } from "@/lib/embed-client";
 import { assignInterestTags } from "@/lib/classifier";
 import type { TagVector } from "@/lib/match-types";
 

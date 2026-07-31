@@ -7,7 +7,7 @@ import type { MatchTag } from "@/lib/match-data";
 import type { ArchetypeVector, TagVector } from "@/lib/match-types";
 import type { ListingKind } from "@/lib/mapping";
 import { classifyUser } from "@/lib/user-classifier";
-import { embedText, warmUpEmbedder, type LoadProgress } from "@/lib/embeddings-browser";
+import { embedText, warmUpEmbedder, type LoadProgress } from "@/lib/embed-client";
 import { scrubPII, type StrippedPII } from "@/lib/pii";
 import styles from "./onboarding.module.css";
 
@@ -202,7 +202,10 @@ export default function OnboardingWizard({
             <div className={styles.loadFill} style={{ width: `${load.pct}%` }} />
           </div>
         )}
-        <p className={styles.loadNote}>Running on your device — your info never leaves the browser.</p>
+        <p className={styles.loadNote}>
+          Personal info is scrubbed on your device first; only the cleaned text is matched on our
+          server, and it&apos;s never stored.
+        </p>
       </div>
     );
   }
@@ -334,7 +337,8 @@ export default function OnboardingWizard({
         <div className={styles.stage}>
           <h2 className={styles.stageTitle}>Add a resume?</h2>
           <p className={styles.stageSub}>
-            Optional. It&apos;s read on your device, scrubbed of personal info, and never uploaded. (.txt for now.)
+            Optional. Personal info (emails, phone, address) is stripped on your device first; only
+            the cleaned text is sent to our server to match, and it&apos;s never stored. (.txt for now.)
           </p>
           <textarea
             className={styles.textarea}
