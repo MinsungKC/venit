@@ -4,7 +4,7 @@ import { useState } from "react";
 import { createClient } from "@/lib/supabase/client";
 
 /** Emails a magic link via Supabase Auth (signInWithOtp). No password. */
-export default function LoginForm() {
+export default function LoginForm({ next }: { next?: string }) {
   const [email, setEmail] = useState("");
   const [status, setStatus] = useState<"idle" | "sending" | "sent" | "error">("idle");
   const [message, setMessage] = useState("");
@@ -13,9 +13,12 @@ export default function LoginForm() {
     e.preventDefault();
     setStatus("sending");
     const supabase = createClient();
+    // Carry the post-login destination through the magic link → /auth/callback reads `next`.
+    const callback = new URL("/auth/callback", window.location.origin);
+    if (next) callback.searchParams.set("next", next);
     const { error } = await supabase.auth.signInWithOtp({
       email,
-      options: { emailRedirectTo: `${window.location.origin}/auth/callback` },
+      options: { emailRedirectTo: callback.toString() },
     });
     if (error) {
       setStatus("error");
