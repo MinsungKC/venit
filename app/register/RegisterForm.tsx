@@ -16,6 +16,7 @@ const KIND_LABEL: Record<string, string> = {
   opportunity: "Opportunity",
   camp: "Camp",
   research_lab: "Research Lab",
+  volunteer: "Volunteering",
 };
 
 export default function RegisterForm({

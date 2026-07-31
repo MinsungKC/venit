@@ -6,7 +6,7 @@ import RateDeck from "./RateDeck";
 
 export const dynamic = "force-dynamic";
 
-const KIND_VALUES: ListingKind[] = ["company", "research_lab", "program", "opportunity", "camp"];
+const KIND_VALUES: ListingKind[] = ["company", "research_lab", "program", "opportunity", "camp", "volunteer"];
 
 function num(v: string | undefined, lo: number, hi: number): number | null {
   const n = Number(v);

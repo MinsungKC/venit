@@ -76,6 +76,15 @@ export interface MatchListing {
   costAmount: number | null;
   /** For research_lab: max distance (km) a student may be from the lab. null = no limit set. */
   radiusKm: number | null;
+  /** Whether the org is actively recruiting — a small positive ranking nudge (never a filter). */
+  isRecruiting?: boolean;
+  /**
+   * Whether this opportunity is genuinely open to high-schoolers (explicit HS grade eligibility, a
+   * hand-curated HS program, or a recruiting program/camp/volunteer role) vs. the large pile of
+   * adult jobs and unknown-HS-policy research groups. A ranking boost so the ~hundreds of real
+   * teen opportunities aren't buried under ~15k adult/unknown listings. Never a hard filter (§0.4).
+   */
+  hsAccessible?: boolean;
   /** SECRET — mean of the listing's desired-archetype vectors; used only for the fit score. */
   desiredPersonalityVector: number[] | null;
 }

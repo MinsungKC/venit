@@ -9,9 +9,12 @@
  * shares ≥1 interest tag (personality never gates, only sorts). §0.5: a research_lab also
  * needs a location match unless remote. §0.6: age/grade are hard filters, never ranking.
  *
- * Default ranking leads with rarity-weighted interest-tag overlap (`tagOverlapScore`), not
- * personality fit — tags are the only §0.4 hard requirement, so how well they actually overlap
- * is the primary relevance signal; personality only refines the order within that.
+ * Default ranking is a composite `relevanceScore`: rarity-weighted interest-tag overlap
+ * (`tagOverlapScore`) modulated by how much of the student's interest set a listing covers
+ * (`coverageScore`) and how focused the listing is on those interests vs. tag-spam
+ * (`focusScore`), with personality fit and an "actively recruiting" nudge folded in as
+ * secondary terms. Tags remain the primary signal (the only §0.4 hard requirement); personality
+ * only refines the order within comparable tag relevance, and never gates (§0.4).
  */
 import { cosine } from "./vec";
 import type { ListingKind } from "./mapping";
@@ -86,6 +89,73 @@ export function tagOverlapScore(
     const df = docFreq.get(slug) ?? 1;
     score += Math.log(1 + totalListings / df);
   }
+  return score;
+}
+
+/**
+ * Breadth: the fraction of the student's DISTINCT interests this listing covers (0..1]. Rewards a
+ * listing that speaks to several of the student's interests over one that hits a single interest
+ * many times, so the feed leans toward well-rounded matches rather than one-note ones.
+ */
+export function coverageScore(profile: MatchProfile, listing: MatchListing): number {
+  const picked = new Set(profile.interestTagSlugs);
+  if (picked.size === 0) return 0;
+  const shared = new Set(sharedTags(profile, listing));
+  return shared.size / picked.size;
+}
+
+/**
+ * Precision / anti-tag-spam: of the listing's OWN tags, the fraction that are ones the student
+ * wants (0..1]. A company tagged with 25 unrelated things that merely happens to include "ai"
+ * scores low here; a company that IS an AI company scores high. This is what stops broadly-tagged
+ * listings from dominating and making every feed look the same ("too broad/samey").
+ */
+export function focusScore(profile: MatchProfile, listing: MatchListing): number {
+  const total = new Set(listing.tagSlugs).size;
+  if (total === 0) return 0;
+  const shared = new Set(sharedTags(profile, listing)).size;
+  return shared / total;
+}
+
+/** How much personality fit can add on top of tag relevance. Kept modest so tags stay primary. */
+const FIT_WEIGHT = 1.5;
+/** Small additive nudge for listings that are actively recruiting (more actionable). */
+const RECRUIT_BONUS = 0.5;
+/**
+ * Boost for opportunities genuinely open to high-schoolers. Deliberately strong — the catalog is
+ * ~97% adult jobs and unknown-HS-policy research groups, so without this a broadly-tagged company
+ * outranks a perfectly-relevant HS summer program. Applied on top of tag relevance, so among
+ * HS-accessible listings tag fit still decides the order; it only lifts the accessible ones as a
+ * group above the adult/unknown pile. Never a hard filter (§0.4) — everything stays discoverable.
+ */
+const HS_ACCESS_BONUS = 2.5;
+
+/**
+ * The default-blend relevance of a listing to a student — higher is better. Composite of:
+ *  - `tagOverlapScore` — rarity-weighted mass of shared interest tags (the PRIMARY signal).
+ *  - `coverageScore`   — breadth over the student's distinct interests (multiplier 0.6–1.0).
+ *  - `focusScore`      — precision vs. tag-spam (multiplier 0.5–1.0).
+ *  - personality fit   — a secondary additive term (only when both vectors exist, §0.1).
+ *  - recruiting nudge  — a small additive bonus.
+ *  - HS-accessible boost — lifts opportunities genuinely open to high-schoolers above the adult pile.
+ * Zero when nothing overlaps (the listing wouldn't pass the §0.4 hard filter anyway). The raw
+ * value is an internal ranking key only; it is never surfaced to the student.
+ */
+export function relevanceScore(
+  profile: MatchProfile,
+  listing: MatchListing,
+  docFreq: Map<string, number>,
+  totalListings: number,
+): number {
+  const overlap = tagOverlapScore(profile, listing, docFreq, totalListings);
+  if (overlap <= 0) return 0;
+  const coverage = coverageScore(profile, listing);
+  const focus = focusScore(profile, listing);
+  let score = overlap * (0.6 + 0.4 * coverage) * (0.5 + 0.5 * focus);
+  const fit = fitScore(profile, listing);
+  if (fit != null && fit > 0) score += FIT_WEIGHT * fit;
+  if (listing.isRecruiting) score += RECRUIT_BONUS;
+  if (listing.hsAccessible) score += HS_ACCESS_BONUS;
   return score;
 }
 
@@ -197,7 +267,8 @@ function sortFit(profile: MatchProfile, listing: MatchListing): number {
  * Filter to eligible listings, rank them, and project each to a student-safe `MatchResult`.
  *
  * Sort axes:
- *  - default ("blend"): tag overlap desc, then fit desc, then distance asc, then cost asc.
+ *  - default ("blend"): composite `relevanceScore` desc (overlap × coverage × focus + fit +
+ *    recruiting), then id — the main relevance ranking students see.
  *  - "fit":      fit desc, then tag overlap desc.
  *  - "distance": distance asc (remote nearest), then tag overlap desc.
  *  - "cost":     cost asc, then tag overlap desc.
@@ -217,32 +288,41 @@ export function match(
   const totalListings = listings.length;
 
   const byId = (a: MatchListing, b: MatchListing) => (a.id < b.id ? -1 : a.id > b.id ? 1 : 0);
-  const byTagOverlapDesc = (a: MatchListing, b: MatchListing) =>
-    tagOverlapScore(profile, b, docFreq, totalListings) -
-    tagOverlapScore(profile, a, docFreq, totalListings);
-  const byFitDesc = (a: MatchListing, b: MatchListing) =>
-    sortFit(profile, b) - sortFit(profile, a);
-  const byDistanceAsc = (a: MatchListing, b: MatchListing) =>
-    sortDistance(profile, a) - sortDistance(profile, b);
-  const byCostAsc = (a: MatchListing, b: MatchListing) => costRank(a) - costRank(b);
 
-  // Compose comparators for the requested axis; fall through to id for a stable order.
-  const comparators: ((a: MatchListing, b: MatchListing) => number)[] =
-    opts?.sort === "fit"
-      ? [byFitDesc, byTagOverlapDesc, byId]
-      : opts?.sort === "distance"
-        ? [byDistanceAsc, byTagOverlapDesc, byId]
-        : opts?.sort === "cost"
-          ? [byCostAsc, byTagOverlapDesc, byId]
-          : [byTagOverlapDesc, byFitDesc, byDistanceAsc, byCostAsc, byId]; // blend (default)
+  let sorted: MatchListing[];
+  if (!opts?.sort) {
+    // Default blend: rank by the composite relevance, precomputed once per listing (not per
+    // comparison) so the sort is O(n log n), then id for a deterministic tiebreak.
+    const relevance = new Map<MatchListing, number>();
+    for (const l of eligible) relevance.set(l, relevanceScore(profile, l, docFreq, totalListings));
+    sorted = [...eligible].sort(
+      (a, b) => relevance.get(b)! - relevance.get(a)! || byId(a, b),
+    );
+  } else {
+    const byTagOverlapDesc = (a: MatchListing, b: MatchListing) =>
+      tagOverlapScore(profile, b, docFreq, totalListings) -
+      tagOverlapScore(profile, a, docFreq, totalListings);
+    const byFitDesc = (a: MatchListing, b: MatchListing) => sortFit(profile, b) - sortFit(profile, a);
+    const byDistanceAsc = (a: MatchListing, b: MatchListing) =>
+      sortDistance(profile, a) - sortDistance(profile, b);
+    const byCostAsc = (a: MatchListing, b: MatchListing) => costRank(a) - costRank(b);
 
-  const sorted = [...eligible].sort((a, b) => {
-    for (const cmp of comparators) {
-      const r = cmp(a, b);
-      if (r !== 0) return r;
-    }
-    return 0;
-  });
+    // Compose comparators for the requested axis; fall through to id for a stable order.
+    const comparators: ((a: MatchListing, b: MatchListing) => number)[] =
+      opts.sort === "fit"
+        ? [byFitDesc, byTagOverlapDesc, byId]
+        : opts.sort === "distance"
+          ? [byDistanceAsc, byTagOverlapDesc, byId]
+          : [byCostAsc, byTagOverlapDesc, byId]; // "cost"
+
+    sorted = [...eligible].sort((a, b) => {
+      for (const cmp of comparators) {
+        const r = cmp(a, b);
+        if (r !== 0) return r;
+      }
+      return 0;
+    });
+  }
 
   return sorted.map((listing) => ({
     id: listing.id,
@@ -272,4 +352,49 @@ export function boostPreferredKinds<T extends { kind: ListingKind }>(
   return [...items].sort(
     (a, b) => Number(preferred.has(b.kind)) - Number(preferred.has(a.kind)),
   );
+}
+
+/**
+ * Gentle diversity re-rank so the top of the feed rotates through a student's different interests
+ * instead of showing a long run of near-identical cards that all matched on the same facet ("too
+ * broad/samey"). Walks the already-relevance-ranked list; once `maxRun` items with the same
+ * `facet` have appeared back-to-back, it pulls forward the first differently-faceted item within a
+ * short `lookahead` window. Relevance still dominates — an item can only move up by at most
+ * `lookahead` slots, so a far-worse listing never leapfrogs a far-better one. Deterministic, and
+ * a no-op when everything shares one facet (nothing to interleave with). Does not mutate `items`.
+ */
+export function diversifyByFacet<T>(
+  items: T[],
+  facet: (item: T) => string,
+  opts: { lookahead?: number; maxRun?: number } = {},
+): T[] {
+  const lookahead = opts.lookahead ?? 8;
+  const maxRun = opts.maxRun ?? 2;
+  const remaining = [...items];
+  const out: T[] = [];
+  let lastFacet: string | null = null;
+  let run = 0;
+
+  while (remaining.length > 0) {
+    let idx = 0;
+    // Only intervene when the current facet run is saturated and the head would extend it.
+    if (lastFacet !== null && run >= maxRun && facet(remaining[0]) === lastFacet) {
+      const limit = Math.min(lookahead, remaining.length);
+      for (let i = 1; i < limit; i++) {
+        if (facet(remaining[i]) !== lastFacet) {
+          idx = i;
+          break;
+        }
+      }
+    }
+    const [picked] = remaining.splice(idx, 1);
+    const f = facet(picked);
+    if (f === lastFacet) run += 1;
+    else {
+      lastFacet = f;
+      run = 1;
+    }
+    out.push(picked);
+  }
+  return out;
 }

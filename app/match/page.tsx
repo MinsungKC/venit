@@ -16,6 +16,7 @@ const KIND_LABEL: Record<ListingKind, string> = {
   program: "Program",
   opportunity: "Opportunity",
   camp: "Camp",
+  volunteer: "Volunteering",
 };
 const KIND_PLURAL: Record<ListingKind, string> = {
   company: "Companies",
@@ -23,6 +24,7 @@ const KIND_PLURAL: Record<ListingKind, string> = {
   program: "Programs",
   opportunity: "Opportunities",
   camp: "Camps",
+  volunteer: "Volunteering",
 };
 const KIND_ICON: Record<ListingKind, string> = {
   company: "business",
@@ -30,8 +32,9 @@ const KIND_ICON: Record<ListingKind, string> = {
   program: "school",
   opportunity: "work",
   camp: "cabin",
+  volunteer: "volunteer_activism",
 };
-const KIND_ORDER: ListingKind[] = ["company", "program", "opportunity", "camp", "research_lab"];
+const KIND_ORDER: ListingKind[] = ["company", "opportunity", "volunteer", "program", "camp", "research_lab"];
 const COST_LABEL: Record<string, string> = {
   free: "Free",
   stipend: "Stipend",

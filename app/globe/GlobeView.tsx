@@ -37,6 +37,7 @@ const KIND_LABEL: Record<string, string> = {
   program: "Program",
   opportunity: "Opportunity",
   camp: "Camp",
+  volunteer: "Volunteering",
 };
 const KIND_COLOR: Record<string, string> = {
   company: "#6366f1",
@@ -44,6 +45,7 @@ const KIND_COLOR: Record<string, string> = {
   program: "#f59e0b",
   camp: "#f97316",
   opportunity: "#10b981",
+  volunteer: "#ec4899",
 };
 
 const TEXTURE = "https://unpkg.com/three-globe/example/img/earth-blue-marble.jpg";

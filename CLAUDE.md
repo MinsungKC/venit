@@ -85,9 +85,13 @@ built — the schema and libs accept them.
   - **Fit ranking:** `lib/personality-data.ts` reads the student's vector service-side (never sent
     to the client) + each listing's desired-personality vector (mean of its archetypes). `runMatch`
     now takes `personalityVector` + `desiredBySlug`, the engine computes the coarse `fitLabel`, and
-    signed-in `/match` ranks fit-first and shows "Great/Good fit". `scripts/seed-desired-personality.ts`
-    (`npm run data:seed-personality`) seeds representative desired archetypes by kind (org choices
-    preserved). Verified: an Analyst student gets research labs as "Great fit", companies as "Good fit".
+    signed-in `/match` ranks fit-first and shows "Great/Good fit". **Real per-listing desired
+    personality:** `scripts/embed-listing-personality.ts` (`npm run data:listing-personality`) embeds
+    each listing's own title+description with the same BGE model and classifies it to its top-3
+    archetypes — genuine per-listing character, replacing the old crude by-kind heuristic
+    (`scripts/seed-desired-personality.ts`, now a fallback). Org self-submissions keep their own
+    chosen traits. The student side already works end-to-end (onboarding → server BGE embed →
+    768-dim personality vector → guarded profile column).
   - **Geocoding:** `scripts/geocode-locations.ts` (`npm run data:geocode`) → `public/data/geocode.json`
     (city coords for lab locations); `/api/geocode` geocodes a student's typed city (Nominatim,
     cached). "Near me" radius measures from the student's real city.
@@ -136,8 +140,14 @@ registration, admin, and the results-page polish — the schema and these libs a
 - **Matching logic (BUILD_PROMPT §5):** `lib/matching.ts` — `passesHardFilters` (approved +
   ≥1 shared tag + age/grade + research_lab location, §0.4/§0.5/§0.6), coarse `fitLabel`
   (private `fitScore` never exported, §0.1), `distanceKm`, `costRank`, and `match()` →
-  student-safe `MatchResult[]` (fit/distance/cost sorts, deterministic by id). No DB/AI in
-  the path.
+  student-safe `MatchResult[]` (deterministic by id). No DB/AI in the path. The default sort
+  ranks by a composite `relevanceScore` = rarity-weighted tag overlap (`tagOverlapScore`) ×
+  breadth (`coverageScore`, how many of the student's interests it hits) × precision
+  (`focusScore`, shared ÷ the listing's own tags — kills tag-spam) + a secondary personality-fit
+  term + a small recruiting nudge; `fit`/`distance`/`cost` remain explicit sort axes.
+  `diversifyByFacet` then spreads out same-facet runs so the feed isn't a wall of near-identical
+  cards (applied in `runMatch` for the default view only). Replaced the old raw-shared-tag-count
+  re-sort that made results feel arbitrary/samey.
 - Both ship with leakage tests proving no personality data reaches the student-facing
   shape. Not yet wired to endpoints/UI or the DB — pure logic only.
 
@@ -176,6 +186,20 @@ registration, admin, and the results-page polish — the schema and these libs a
     disambiguated PI's public research area (ORCID-filtered), tagged by field/subfield,
     located at the university. `is_recruiting=false`; the UI shows no "accepting" status
     for these (their HS policy is unknown) — don't add claims otherwise.
+  - **Curated companies** — `supabase/seed/companies.json` + `lib/sources/companies.ts`: niche-tech
+    + general/private companies missing from yc/sp500. Each entry may carry an `ats` board token.
+    `buildDataset` dedups companies cross-source by website host (kind=company only, so labs sharing
+    a university host aren't collapsed).
+  - **Volunteering** — `supabase/seed/volunteering.json` + `lib/sources/volunteering.ts`: HS-accessible
+    orgs → the `volunteer` listing kind (free, recruiting; 18+ age gate only where the org states one).
+  - **ATS job postings** (live internships) — `scripts/generate-ats-jobs.ts` (`npm run data:jobs`)
+    pulls Greenhouse/Lever/Ashby PUBLIC APIs for the boards declared in companies.json, filters to
+    intern/early-career, parses apply URL + qualifications + age (pure helpers in
+    `lib/sources/ats-parse.ts`), vendored to `ats-jobs.json`; `lib/sources/atsJobs.ts` → `opportunity`
+    listings. **NOT LinkedIn** (ToS/blocked) — go to the ATS (the source of truth) instead. Refresh &
+    expiry: re-running `data:jobs` drops closed roles from the snapshot; `db:import` `pruneStaleAts()`
+    deletes closed `ats` rows from the DB (guarded: skips if 0 fetched). Weekly automation in
+    `.github/workflows/refresh-jobs.yml` (needs repo secret `DATABASE_URL`).
   Logos are favicons derived from each listing's website host (no logo dataset).
   Most entries are **not actively recruiting** but are still listed and matchable by tag
   (guardrail §4 / BUILD_PROMPT §5). An entry that yields **zero tags is dropped**; a

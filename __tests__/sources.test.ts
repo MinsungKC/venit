@@ -3,6 +3,9 @@ import { mapSp500Row } from "../lib/sources/sp500";
 import { mapCuratedEntry } from "../lib/sources/curated";
 import { mapYcCompany, type YcCompany } from "../lib/sources/yc";
 import { mapUniversityLab } from "../lib/sources/universityLabs";
+import { mapCompanyEntry } from "../lib/sources/companies";
+import { mapVolunteerEntry } from "../lib/sources/volunteering";
+import { mapAtsJob } from "../lib/sources/atsJobs";
 
 describe("mapSp500Row", () => {
   it("maps a constituent row and derives tags from sector + sub-industry", () => {
@@ -97,5 +100,103 @@ describe("mapUniversityLab", () => {
     expect(l.badges).toContain("openalex");
     expect(l.short_description).toContain("University of California, San Diego");
     expect(l.tag_labels).toEqual(["Cancer Research", "Molecular Biology"]);
+  });
+});
+
+describe("mapCompanyEntry", () => {
+  it("maps a curated company with its canonical tags", () => {
+    const l = mapCompanyEntry({
+      id: "figma",
+      name: "Figma",
+      website: "https://www.figma.com",
+      industry: "Design Software",
+      is_recruiting: true,
+      ats: { provider: "greenhouse", token: "figma" },
+      tags: ["Graphic & UX Design", "Software Engineering"],
+    });
+    expect(l.source).toBe("companies");
+    expect(l.kind).toBe("company");
+    expect(l.is_recruiting).toBe(true);
+    expect(l.tag_labels).toEqual(["Graphic & UX Design", "Software Engineering"]);
+  });
+});
+
+describe("mapVolunteerEntry", () => {
+  it("maps a volunteering org to the volunteer kind (free, recruiting)", () => {
+    const l = mapVolunteerEntry({
+      id: "habitat",
+      name: "Habitat for Humanity",
+      url: "https://www.habitat.org/volunteer",
+      short_description: "Build affordable housing.",
+      tags: ["Nonprofit & Community", "Civil Engineering"],
+    });
+    expect(l.kind).toBe("volunteer");
+    expect(l.source).toBe("volunteering");
+    expect(l.cost_type).toBe("free");
+    expect(l.is_recruiting).toBe(true);
+    expect(l.tag_labels).toEqual(["Nonprofit & Community", "Civil Engineering"]);
+  });
+
+  it("carries an age minimum when the org states one (e.g. 18+ crisis lines)", () => {
+    const l = mapVolunteerEntry({
+      id: "crisis",
+      name: "Crisis Text Line",
+      is_remote: true,
+      age_min: 18,
+      tags: ["Mental Health"],
+    });
+    expect(l.age_min).toBe(18);
+    expect(l.is_remote).toBe(true);
+  });
+});
+
+describe("mapAtsJob", () => {
+  it("maps an ATS posting to a recruiting opportunity with an apply link + qualifications", () => {
+    const l = mapAtsJob({
+      id: "greenhouse:figma:123",
+      company_id: "figma",
+      company_name: "Figma",
+      company_website: "https://www.figma.com",
+      provider: "greenhouse",
+      title: "Software Engineering Intern",
+      apply_url: "https://boards.greenhouse.io/figma/jobs/123",
+      location_name: "San Francisco, CA",
+      is_remote: false,
+      department: "Engineering",
+      qualifications: "Requirements: pursuing a CS degree.",
+      age_min: null,
+      posted_at: "2026-07-01",
+      tags: ["Software Engineering"],
+    });
+    expect(l.kind).toBe("opportunity");
+    expect(l.source).toBe("ats");
+    expect(l.is_recruiting).toBe(true);
+    expect(l.apply_url).toBe("https://boards.greenhouse.io/figma/jobs/123");
+    expect(l.long_description).toBe("Requirements: pursuing a CS degree."); // qualifications shown as body
+    expect(l.title).toBe("Software Engineering Intern — Figma");
+    expect(l.tag_labels).toEqual(["Software Engineering"]);
+    expect(l.badges).toContain("ats");
+  });
+
+  it("marks a remote posting as remote with no location", () => {
+    const l = mapAtsJob({
+      id: "ashby:notion:9",
+      company_id: "notion",
+      company_name: "Notion",
+      company_website: "https://www.notion.so",
+      provider: "ashby",
+      title: "Data Intern",
+      apply_url: "https://jobs.ashbyhq.com/notion/9/application",
+      location_name: "Remote - US",
+      is_remote: true,
+      department: null,
+      qualifications: null,
+      age_min: 16,
+      posted_at: null,
+      tags: ["Data Science"],
+    });
+    expect(l.is_remote).toBe(true);
+    expect(l.location_name).toBeNull();
+    expect(l.age_min).toBe(16);
   });
 });

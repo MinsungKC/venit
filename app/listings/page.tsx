@@ -10,6 +10,7 @@ const KIND_LABEL: Record<ListingKind, string> = {
   program: "Program",
   opportunity: "Opportunity",
   camp: "Camp",
+  volunteer: "Volunteering",
 };
 
 const KIND_PLURAL: Record<ListingKind, string> = {
@@ -18,9 +19,10 @@ const KIND_PLURAL: Record<ListingKind, string> = {
   program: "Programs",
   opportunity: "Opportunities",
   camp: "Camps",
+  volunteer: "Volunteering",
 };
 
-const KIND_ORDER: ListingKind[] = ["company", "research_lab", "program", "opportunity", "camp"];
+const KIND_ORDER: ListingKind[] = ["company", "opportunity", "volunteer", "research_lab", "program", "camp"];
 
 /** A small logo for a listing, derived from its website host (no dataset needed). */
 function faviconFor(url: string | null): string | null {

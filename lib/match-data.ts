@@ -3,7 +3,7 @@ import { readFileSync } from "node:fs";
 import { join } from "node:path";
 import type { CostType, ListingKind, ListingRecord, TagRecord } from "./mapping";
 import type { FitLabel, MatchListing, MatchProfile, SortAxis } from "./match-types";
-import { boostPreferredKinds, match } from "./matching";
+import { boostPreferredKinds, diversifyByFacet, match } from "./matching";
 import { regionToLatLng } from "./us-states";
 
 /**
@@ -42,6 +42,8 @@ export interface MatchListingLite {
   cost_type: CostType;
   grade_min: number | null;
   grade_max: number | null;
+  age_min?: number | null;
+  age_max?: number | null;
   is_recruiting: boolean;
   badges: string[];
   tag_slugs: string[];
@@ -130,6 +132,27 @@ export function getTagCatalog(): { domain: string; tags: MatchTag[] }[] {
     .sort((a, b) => a.domain.localeCompare(b.domain));
 }
 
+/**
+ * Whether a listing is genuinely open to high-schoolers (drives the HS-accessibility ranking
+ * boost). True for hand-curated HS programs, listings with explicit HS grade eligibility, and
+ * recruiting programs/camps/volunteer roles. False for the ~9.7k OpenAlex research groups (HS
+ * policy unknown — never claim otherwise, per CLAUDE.md) and the adult-company/job pile that
+ * carries no HS signal. Not a filter — everything stays discoverable; this only affects sort.
+ */
+function isHsAccessible(l: MatchListingLite): boolean {
+  if (l.badges?.includes("openalex")) return false; // unknown HS policy — don't boost or claim
+  // The "curated" badge specifically marks hand-picked HS programs / labs / volunteering (NOT the
+  // adult-company directory or ATS job feed, which carry no such badge).
+  if (l.badges?.includes("curated")) return true;
+  // Explicit grade eligibility that overlaps high school (grades 9–12) — from any source.
+  const gMin = l.grade_min ?? 1;
+  const gMax = l.grade_max ?? 13;
+  if ((l.grade_min != null || l.grade_max != null) && gMin <= 12 && gMax >= 9) return true;
+  // NB: deliberately NOT boosting merely-recruiting jobs/companies — an adult internship (ATS feed)
+  // or a hiring company isn't necessarily open to high-schoolers, so it only ranks on tag relevance.
+  return false;
+}
+
 function toMatchListing(
   l: MatchListingLite,
   mode: LocMode,
@@ -150,8 +173,8 @@ function toMatchListing(
     status: "approved", // the static dataset only contains shown (approved) listings
     // Include niche tags so a matched free-text niche interest counts as a shared tag (§0.4).
     tagSlugs: l.niche_slugs?.length ? [...l.tag_slugs, ...l.niche_slugs] : l.tag_slugs,
-    ageMin: null,
-    ageMax: null,
+    ageMin: l.age_min ?? null,
+    ageMax: l.age_max ?? null,
     gradeMin: l.grade_min,
     gradeMax: l.grade_max,
     lat: geo?.lat ?? null,
@@ -160,6 +183,8 @@ function toMatchListing(
     costType: l.cost_type,
     costAmount: null,
     radiusKm,
+    isRecruiting: l.is_recruiting,
+    hsAccessible: isHsAccessible(l),
     desiredPersonalityVector: desiredBySlug?.get(l.slug) ?? null,
   };
 }
@@ -222,7 +247,6 @@ export function runMatch(params: MatchParams): MatchedListing[] {
         ? { lat: params.userLat, lng: params.userLng }
         : regionToLatLng(params.region ?? null)
       : null;
-  const hasFit = !!(params.personalityVector && params.desiredBySlug);
   const nicheSlugs = params.nicheSlugs ?? [];
   const profile: MatchProfile = {
     age: params.age,
@@ -252,11 +276,17 @@ export function runMatch(params: MatchParams): MatchedListing[] {
   const pickedCount = params.tagSlugs.length;
   const minSharedForPrimary = pickedCount <= 1 ? 1 : Math.max(2, Math.min(4, Math.ceil(pickedCount / 2)));
 
+  // slug → the "facet" a listing matched on (its set of shared interest slugs, sorted). Drives the
+  // diversity re-rank below: a long run of listings that all matched on the exact same facet is
+  // what reads as "too samey", so we spread those out.
+  const facetBySlug = new Map<string, string>();
+
   let out: MatchedListing[] = results.map((r) => {
     const l = bySlug.get(r.id)!;
     const hasNicheMatch = r.matchedTagSlugs.some((s) => !labelBySlug.has(s));
     const tier: "primary" | "broader" =
       r.matchedTagSlugs.length >= minSharedForPrimary || hasNicheMatch ? "primary" : "broader";
+    facetBySlug.set(l.slug, [...r.matchedTagSlugs].sort().join("|"));
     return {
       slug: l.slug,
       title: l.title,
@@ -285,6 +315,8 @@ export function runMatch(params: MatchParams): MatchedListing[] {
   if (params.remoteOnly) out = out.filter((l) => l.is_remote);
 
   // Rating-deck curation + niche free-text interests nudge matching listings up (override order).
+  // Otherwise the engine's composite-relevance order (overlap × coverage × focus + fit) already
+  // ranks the feed — no coarse re-sort here; that's what used to make results feel arbitrary.
   const boostAll = [...(params.boostSlugs ?? []), ...nicheSlugs];
   if (!params.sort && boostAll.length) {
     const boost = new Set(boostAll);
@@ -292,10 +324,13 @@ export function runMatch(params: MatchParams): MatchedListing[] {
       l.matchedTags.length +
       3 * [...l.tag_slugs, ...(l.niche_slugs ?? [])].filter((s) => boost.has(s)).length;
     out = [...out].sort((a, b) => score(b) - score(a));
-  } else if (!params.sort && !hasFit) {
-    // No explicit sort, no boosts, no personality fit: order by shared-tag count, the strongest
-    // available signal. (With a personality vector or an explicit sort, keep the engine's order.)
-    out = out.sort((a, b) => b.matchedTags.length - a.matchedTags.length);
+  }
+
+  // Diversity: for the default "best fit" view, break up long runs of same-facet cards so the top
+  // of the feed rotates through the student's different interests (§6). Skipped for explicit
+  // sorts (cost/distance), where the student asked for a strict order.
+  if (!params.sort) {
+    out = diversifyByFacet(out, (l) => facetBySlug.get(l.slug) ?? l.slug);
   }
 
   // Preferred listing kinds (BUILD_PROMPT §6 "what are you looking for") — a stable boost applied
@@ -366,9 +401,11 @@ export function getListingBySlug(slug: string): ListingDetail | null {
     is_recruiting: l.is_recruiting,
     badges: l.badges,
     tag_slugs: l.tag_slugs,
+    age_min: l.age_min ?? null,
+    age_max: l.age_max ?? null,
     deadline: l.deadline,
     long_description: l.long_description,
-    apply_url: (l as ListingRecord & { apply_url?: string | null }).apply_url ?? null,
+    apply_url: l.apply_url ?? null,
     linkedin_url: (l as ListingRecord & { linkedin_url?: string | null }).linkedin_url ?? null,
     industry: l.industry,
     team_size: l.team_size,

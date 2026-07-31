@@ -1,0 +1,60 @@
+name: Refresh job postings
+
+# Keeps live ATS job postings fresh and expires closed ones (items 4 + "refresh/expiry").
+# Weekly (and on-demand): re-pull Greenhouse/Lever/Ashby, rebuild the static dataset, commit the
+# refreshed snapshot, then re-import to the hosted DB — where `pruneStaleAts` deletes closed roles.
+#
+# Requires a repo secret DATABASE_URL (the hosted Supabase connection string). Without it, the
+# import step is skipped but the committed JSON (which /match reads) still refreshes.
+
+on:
+  schedule:
+    - cron: "0 7 * * 1" # every Monday 07:00 UTC
+  workflow_dispatch: {} # allow manual runs from the Actions tab
+
+permissions:
+  contents: write # to commit the refreshed snapshot back to the repo
+
+concurrency:
+  group: refresh-jobs
+  cancel-in-progress: false
+
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+    env:
+      DATABASE_URL: ${{ secrets.DATABASE_URL }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - run: npm ci
+
+      # 1) Re-pull live postings (closed roles simply won't come back).
+      - run: npm run data:jobs
+
+      # 2) Commit the refreshed VENDORED snapshot (the generated public/data/*.json are gitignored
+      #    and rebuilt from this at deploy/build time via `npm run data:build`).
+      - name: Commit refreshed snapshot
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add supabase/seed/source/ats-jobs.json
+          if git diff --cached --quiet; then
+            echo "No job changes this run."
+          else
+            git commit -m "chore(jobs): weekly ATS refresh [skip ci]"
+            git push
+          fi
+
+      # 3) Rebuild the dataset (for the import step below).
+      - run: npm run data:build
+
+      # 3) Upsert to the hosted DB and prune closed ATS roles (only if DATABASE_URL is configured).
+      - name: Import to hosted DB (with stale-job pruning)
+        if: ${{ env.DATABASE_URL != '' }}
+        run: npm run db:import

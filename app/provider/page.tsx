@@ -10,6 +10,7 @@ const KIND_LABEL: Record<string, string> = {
   program: "Program",
   opportunity: "Opportunity",
   camp: "Camp",
+  volunteer: "Volunteering",
 };
 const KIND_ICON: Record<string, string> = {
   company: "business",
@@ -17,6 +18,7 @@ const KIND_ICON: Record<string, string> = {
   program: "school",
   opportunity: "work",
   camp: "cabin",
+  volunteer: "volunteer_activism",
 };
 
 // Illustrative weekly engagement shape (no per-view analytics are tracked yet).

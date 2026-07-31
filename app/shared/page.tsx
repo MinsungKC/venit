@@ -15,6 +15,7 @@ const KIND_LABEL: Record<ListingKind, string> = {
   program: "Program",
   opportunity: "Opportunity",
   camp: "Camp",
+  volunteer: "Volunteering",
 };
 
 const COST_LABEL: Record<string, string> = {

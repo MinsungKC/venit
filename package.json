@@ -13,6 +13,7 @@
     "data:build": "tsx scripts/build-listings-json.ts",
     "data:enrich": "tsx scripts/enrich-sp500.ts",
     "data:gen": "tsx scripts/generate-university-labs.ts",
+    "data:jobs": "tsx scripts/generate-ats-jobs.ts",
     "data:classify": "tsx scripts/classify.ts",
     "data:personality": "tsx scripts/embed-archetypes.ts",
     "db:start": "supabase start",
@@ -23,6 +24,8 @@
     "db:seed": "supabase db reset --no-seed && tsx scripts/import-listings.ts",
     "data:geocode": "tsx scripts/geocode-locations.ts",
     "data:seed-personality": "tsx scripts/seed-desired-personality.ts",
+    "data:listing-personality": "tsx scripts/embed-listing-personality.ts",
+    "data:check-links": "tsx scripts/check-dead-links.ts",
     "data:niche": "tsx scripts/embed-niche.ts",
     "admin:grant": "tsx scripts/grant-admin.ts"
   },

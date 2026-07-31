@@ -103,3 +103,34 @@ describe("buildDataset (guardrails + cross-source merge)", () => {
     expect(new Set(slugs).size).toBe(slugs.length);
   });
 });
+
+describe("buildDataset — cross-source company dedup", () => {
+  it("keeps one company per website host across sources (first source wins)", () => {
+    const items: NormalizedListing[] = [
+      nl({ source: "yc", external_id: "1", title: "Stripe", url: "https://stripe.com", tag_labels: ["Finance & Investing"] }),
+      nl({ source: "companies", external_id: "stripe", title: "Stripe", url: "https://www.stripe.com", tag_labels: ["Software Engineering"] }),
+    ];
+    const { listings } = buildDataset(items);
+    const stripes = listings.filter((l) => /stripe\.com$/.test(new URL(l.url!).host.replace(/^www\./, "")));
+    expect(stripes).toHaveLength(1);
+    expect(stripes[0].source).toBe("yc"); // first-seen source is preserved
+  });
+
+  it("does NOT dedup research labs that share a university host (they are legitimately distinct)", () => {
+    const items: NormalizedListing[] = [
+      nl({ source: "openalex", external_id: "a", kind: "research_lab", title: "Lab A", url: "https://harvard.edu", location_name: "Cambridge, MA", tag_labels: ["Biology"] }),
+      nl({ source: "openalex", external_id: "b", kind: "research_lab", title: "Lab B", url: "https://harvard.edu", location_name: "Cambridge, MA", tag_labels: ["Physics"] }),
+    ];
+    const { listings } = buildDataset(items);
+    expect(listings.filter((l) => l.kind === "research_lab")).toHaveLength(2);
+  });
+
+  it("keeps a company and a same-host job posting (different kinds)", () => {
+    const items: NormalizedListing[] = [
+      nl({ source: "companies", external_id: "figma", kind: "company", title: "Figma", url: "https://figma.com", tag_labels: ["Graphic & UX Design"] }),
+      nl({ source: "ats", external_id: "figma-1", kind: "opportunity", title: "Intern — Figma", url: "https://figma.com", tag_labels: ["Graphic & UX Design"] }),
+    ];
+    const { listings } = buildDataset(items);
+    expect(listings).toHaveLength(2);
+  });
+});

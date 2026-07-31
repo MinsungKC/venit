@@ -10,6 +10,7 @@ const KIND_LABEL: Record<string, string> = {
   program: "Program",
   opportunity: "Opportunity",
   camp: "Camp",
+  volunteer: "Volunteering",
 };
 
 /**

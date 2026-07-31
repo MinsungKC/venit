@@ -2,11 +2,15 @@ import { describe, it, expect } from "vitest";
 import {
   boostPreferredKinds,
   costRank,
+  coverageScore,
   distanceKm,
+  diversifyByFacet,
   fitLabel,
+  focusScore,
   haversineKm,
   match,
   passesHardFilters,
+  relevanceScore,
   tagOverlapScore,
 } from "../lib/matching";
 import type { MatchListing, MatchProfile } from "../lib/match-types";
@@ -232,6 +236,144 @@ describe("tagOverlapScore", () => {
   });
 });
 
+describe("coverageScore", () => {
+  const profile = mkProfile({ interestTagSlugs: ["ai", "biology", "robotics"] });
+
+  it("is the fraction of the student's distinct interests the listing covers", () => {
+    expect(coverageScore(profile, mkListing({ tagSlugs: ["ai"] }))).toBeCloseTo(1 / 3, 6);
+    expect(coverageScore(profile, mkListing({ tagSlugs: ["ai", "biology"] }))).toBeCloseTo(2 / 3, 6);
+  });
+
+  it("ignores listing tags the student didn't pick and de-dupes", () => {
+    expect(
+      coverageScore(profile, mkListing({ tagSlugs: ["ai", "ai", "history", "art"] })),
+    ).toBeCloseTo(1 / 3, 6);
+  });
+
+  it("is 0 when the student picked nothing", () => {
+    expect(coverageScore(mkProfile({ interestTagSlugs: [] }), mkListing())).toBe(0);
+  });
+});
+
+describe("focusScore", () => {
+  const profile = mkProfile({ interestTagSlugs: ["ai", "biology", "robotics"] });
+
+  it("is high for a listing focused on the student's interests", () => {
+    expect(focusScore(profile, mkListing({ tagSlugs: ["ai", "biology"] }))).toBe(1); // 2 shared / 2 total
+  });
+
+  it("is low for a tag-spam listing that merely happens to include a shared tag", () => {
+    const spam = mkListing({ tagSlugs: ["ai", "a", "b", "c", "d", "e", "f", "g", "h", "i"] });
+    expect(focusScore(profile, spam)).toBeCloseTo(0.1, 6); // 1 shared / 10 total
+  });
+});
+
+describe("relevanceScore", () => {
+  const profile = mkProfile({ interestTagSlugs: ["ai", "biology", "robotics"] });
+
+  it("ranks a focused listing above a tag-spam one with the SAME single shared tag", () => {
+    // Both share only "ai"; equal overlap/coverage, but the spam listing dilutes its focus.
+    const docFreq = new Map([["ai", 2]]);
+    const focused = relevanceScore(profile, mkListing({ tagSlugs: ["ai"] }), docFreq, 100);
+    const spam = relevanceScore(
+      profile,
+      mkListing({ tagSlugs: ["ai", "x1", "x2", "x3", "x4"] }),
+      docFreq,
+      100,
+    );
+    expect(focused).toBeGreaterThan(spam);
+  });
+
+  it("ranks a broader-coverage listing above a one-note one at equal overlap mass", () => {
+    // Two tags of df=2 vs one tag of df=1: near-equal IDF mass, but broader coverage wins.
+    const docFreq = new Map([
+      ["ai", 2],
+      ["biology", 2],
+      ["robotics", 1],
+    ]);
+    const broad = relevanceScore(profile, mkListing({ tagSlugs: ["ai", "biology"] }), docFreq, 100);
+    const narrow = relevanceScore(profile, mkListing({ tagSlugs: ["robotics"] }), docFreq, 100);
+    expect(broad).toBeGreaterThan(narrow);
+  });
+
+  it("gives actively-recruiting listings a nudge over otherwise-identical ones", () => {
+    const docFreq = new Map([["ai", 2]]);
+    const recruiting = relevanceScore(
+      profile,
+      mkListing({ tagSlugs: ["ai"], isRecruiting: true }),
+      docFreq,
+      100,
+    );
+    const not = relevanceScore(profile, mkListing({ tagSlugs: ["ai"] }), docFreq, 100);
+    expect(recruiting).toBeGreaterThan(not);
+  });
+
+  it("lifts an HS-accessible opportunity above the adult pile at equal tag relevance", () => {
+    const docFreq = new Map([["ai", 500]]); // "ai" is common, so overlap alone is small
+    const hsProgram = relevanceScore(
+      profile,
+      mkListing({ tagSlugs: ["ai"], hsAccessible: true }),
+      docFreq,
+      1000,
+    );
+    const adultCompany = relevanceScore(profile, mkListing({ tagSlugs: ["ai"] }), docFreq, 1000);
+    expect(hsProgram).toBeGreaterThan(adultCompany);
+  });
+
+  it("HS boost can outrank a modestly deeper adult match (surfacing teen opportunities)", () => {
+    // Adult company shares two common tags; HS program shares one — the boost still lifts it.
+    const docFreq = new Map([["ai", 400], ["biology", 400]]);
+    const hsProgram = relevanceScore(
+      profile,
+      mkListing({ tagSlugs: ["ai"], hsAccessible: true }),
+      docFreq,
+      1000,
+    );
+    const adultCompany = relevanceScore(
+      profile,
+      mkListing({ tagSlugs: ["ai", "biology"] }),
+      docFreq,
+      1000,
+    );
+    expect(hsProgram).toBeGreaterThan(adultCompany);
+  });
+
+  it("is 0 when nothing overlaps", () => {
+    const docFreq = new Map([["history", 2]]);
+    expect(relevanceScore(profile, mkListing({ tagSlugs: ["history"] }), docFreq, 100)).toBe(0);
+  });
+});
+
+describe("diversifyByFacet", () => {
+  const mk = (id: string, f: string) => ({ id, f });
+  const facet = (x: { f: string }) => x.f;
+
+  it("breaks up a long run of same-facet items using later different-facet ones", () => {
+    // maxRun 2: after two "a"s, the next "a" is deferred in favor of the nearest non-"a".
+    const items = [mk("a1", "a"), mk("a2", "a"), mk("a3", "a"), mk("b1", "b")];
+    const out = diversifyByFacet(items, facet, { maxRun: 2, lookahead: 8 });
+    expect(out.map((i) => i.id)).toEqual(["a1", "a2", "b1", "a3"]);
+  });
+
+  it("is a no-op when everything shares one facet (nothing to interleave with)", () => {
+    const items = [mk("a1", "a"), mk("a2", "a"), mk("a3", "a")];
+    expect(diversifyByFacet(items, facet).map((i) => i.id)).toEqual(["a1", "a2", "a3"]);
+  });
+
+  it("never intervenes with a lookahead of 1 (bounded movement → pure pass-through)", () => {
+    const items = [mk("a1", "a"), mk("a2", "a"), mk("a3", "a"), mk("b1", "b")];
+    const out = diversifyByFacet(items, facet, { maxRun: 2, lookahead: 1 });
+    expect(out.map((i) => i.id)).toEqual(["a1", "a2", "a3", "b1"]);
+  });
+
+  it("does not mutate the input array", () => {
+    const items = [mk("a1", "a"), mk("a2", "a"), mk("a3", "a"), mk("b1", "b")];
+    const copy = [...items];
+    diversifyByFacet(items, facet, { maxRun: 2 });
+    expect(items).toEqual(copy);
+  });
+});
+
 describe("boostPreferredKinds", () => {
   const items = [
     { kind: "camp" as const, id: "c1" },
@@ -356,9 +498,10 @@ describe("match — sort axes", () => {
 });
 
 describe("match — golden default (blend) ordering", () => {
-  // Fixed student + 5 listings, all passing the hard filters, exercising the blend:
-  // fit desc, then distance asc, then cost asc. A(1.0) > {B,C}(0.8) > D(0.5) > E(none);
-  // within the 0.8 tie, C (distance 0) precedes B (~222 km).
+  // Fixed student + 5 listings, all passing the hard filters and all sharing exactly the single
+  // tag "ai" (so tag overlap/coverage/focus are equal) — this isolates the personality-fit term
+  // of the composite relevance. A(1.0) > {B,C}(0.8) > D(0.5) > E(none). Distance/cost are NOT part
+  // of the default blend, so the 0.8 tie between B and C falls through to the id tiebreak (B<C).
   const profile = mkProfile();
   const listings: MatchListing[] = [
     mkListing({ id: "E", desiredPersonalityVector: null, lat: 40, lng: -74 }),
@@ -370,7 +513,7 @@ describe("match — golden default (blend) ordering", () => {
 
   it("produces the exact expected id order", () => {
     const ids = match(profile, listings).map((r) => r.id);
-    expect(ids).toEqual(["A", "C", "B", "D", "E"]);
+    expect(ids).toEqual(["A", "B", "C", "D", "E"]);
   });
 
   it("projects each survivor to a student-safe MatchResult (matched tags + coarse label)", () => {

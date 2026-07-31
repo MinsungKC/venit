@@ -6,7 +6,14 @@
  */
 import { z } from "zod";
 
-export const LISTING_KINDS = ["program", "company", "opportunity", "camp", "research_lab"] as const;
+export const LISTING_KINDS = [
+  "program",
+  "company",
+  "opportunity",
+  "camp",
+  "research_lab",
+  "volunteer",
+] as const;
 export const COST_TYPES = ["free", "paid", "stipend", "unknown"] as const;
 
 /** An optional URL field that also accepts the empty string (unfilled). */

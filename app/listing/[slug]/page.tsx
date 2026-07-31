@@ -14,6 +14,7 @@ const KIND_LABEL: Record<ListingKind, string> = {
   program: "Program",
   opportunity: "Opportunity",
   camp: "Camp",
+  volunteer: "Volunteering",
 };
 
 const COST_LABEL: Record<string, string> = {
@@ -85,8 +86,25 @@ export default function ListingPage({ params }: { params: { slug: string } }) {
         />
       </header>
 
-      {(l.short_description || l.long_description) && (
-        <p className="detail-desc">{l.long_description ?? l.short_description}</p>
+      {l.short_description && <p className="detail-desc">{l.short_description}</p>}
+
+      {/* ATS job postings store a parsed qualifications snippet in long_description; show it (plus
+          any stated age minimum) as an explicit "what's needed" block rather than a plain paragraph. */}
+      {l.badges.includes("ats") ? (
+        (l.long_description || l.age_min != null) && (
+          <section className="detail-section">
+            <h2 className="section-title">What&apos;s needed to apply</h2>
+            {l.age_min != null && (
+              <p className="detail-desc">
+                <b>Minimum age:</b> {l.age_min}
+              </p>
+            )}
+            {l.long_description && <p className="detail-desc">{l.long_description}</p>}
+          </section>
+        )
+      ) : (
+        l.long_description &&
+        l.long_description !== l.short_description && <p className="detail-desc">{l.long_description}</p>
       )}
 
       <div className="detail-actions">

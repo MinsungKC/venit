@@ -26,7 +26,8 @@ const KIND_OPTIONS: { value: ListingKind; label: string; desc: string; icon: str
   { value: "company", label: "Companies", desc: "Startups & companies to work or intern at", icon: "business" },
   { value: "research_lab", label: "Research Labs", desc: "University & institute research opportunities", icon: "science" },
   { value: "program", label: "Programs", desc: "Multi-week academic or pre-college programs", icon: "school" },
-  { value: "opportunity", label: "Opportunities", desc: "Competitions, scholarships, one-off opportunities", icon: "work" },
+  { value: "opportunity", label: "Opportunities", desc: "Internships, competitions, scholarships, job openings", icon: "work" },
+  { value: "volunteer", label: "Volunteering", desc: "Community service & volunteer opportunities", icon: "volunteer_activism" },
   { value: "camp", label: "Camps", desc: "Summer camps & residential programs", icon: "cabin" },
 ];
 

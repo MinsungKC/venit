@@ -444,6 +444,11 @@ h1 {
   color: var(--hiring);
   border-color: transparent;
 }
+.kind-volunteer {
+  background: color-mix(in srgb, #ec4899 12%, transparent);
+  color: #db2777;
+  border-color: transparent;
+}
 
 .badge {
   flex: none;

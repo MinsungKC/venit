@@ -12,8 +12,21 @@
 
 export type CostType = "free" | "paid" | "stipend" | "unknown";
 export type ListingStatus = "pending" | "approved" | "rejected";
-export type ListingKind = "program" | "company" | "opportunity" | "camp" | "research_lab";
-export type ListingSource = "yc" | "sp500" | "curated" | "openalex";
+export type ListingKind =
+  | "program"
+  | "company"
+  | "opportunity"
+  | "camp"
+  | "research_lab"
+  | "volunteer";
+export type ListingSource =
+  | "yc"
+  | "sp500"
+  | "curated"
+  | "openalex"
+  | "companies"
+  | "volunteering"
+  | "ats";
 
 export interface ListingRecord {
   external_id: string;
@@ -38,6 +51,12 @@ export interface ListingRecord {
   /** ISO date (YYYY-MM-DD) of the application/program deadline, when known — powers the
    *  "Add to Calendar" button (lib/ics.ts). Most sources don't carry this; null is the norm. */
   deadline: string | null;
+  /** Direct application link, when it differs from `url` (e.g. an ATS posting's apply page). */
+  apply_url?: string | null;
+  /** Minimum age eligibility, when a source states one. A hard filter in matching (§0.6). */
+  age_min?: number | null;
+  /** Maximum age eligibility, when a source states one. */
+  age_max?: number | null;
   /** Interest-tag slugs linked to this listing (always ≥ 1 for emitted rows). */
   tag_slugs: string[];
   /** Specific source tags (yc keywords, OpenAlex subfields…) kept for niche free-text matching. */
@@ -96,6 +115,16 @@ export function priceToCost(price?: number | null): CostType {
   return price > 0 ? "paid" : "free";
 }
 
+/** Lowercased registrable host of a URL (drops leading "www."), or null. */
+export function hostOf(url: string | null | undefined): string | null {
+  if (!url) return null;
+  try {
+    return new URL(url).host.toLowerCase().replace(/^www\./, "");
+  } catch {
+    return null;
+  }
+}
+
 /** Dedupe + slug labels, preserving first-seen human label per slug. */
 export function labelsToSlugPairs(labels: string[]): { slug: string; label: string }[] {
   const seen = new Map<string, string>();
@@ -118,6 +147,11 @@ export function buildDataset(items: NormalizedListing[]): Dataset {
   const listings: ListingRecord[] = [];
   const seenExternal = new Set<string>();
   const usedSlugs = new Set<string>();
+  // Cross-source company dedup: the SAME company can arrive from more than one source (a curated
+  // `companies` entry that's also a YC or S&P company). Keyed by website host (else normalized
+  // name), scoped to `company` kind only — research labs legitimately share a university host and
+  // must NOT be collapsed, and a company + its job posting (opportunity) are different kinds.
+  const seenCompany = new Set<string>();
 
   // tag slug -> { label, industry counts }
   const tagStats = new Map<string, { label: string; industries: Map<string, number> }>();
@@ -131,6 +165,14 @@ export function buildDataset(items: NormalizedListing[]): Dataset {
     const externalKey = `${item.source}:${item.external_id}`;
     if (seenExternal.has(externalKey)) continue;
     seenExternal.add(externalKey);
+
+    if (item.kind === "company") {
+      const companyKey = hostOf(item.url) ?? slugify(item.title);
+      if (companyKey) {
+        if (seenCompany.has(companyKey)) continue; // duplicate company from another source
+        seenCompany.add(companyKey);
+      }
+    }
 
     let slug = (item.slug && item.slug.trim()) || slugify(item.title) || item.external_id;
     if (usedSlugs.has(slug)) slug = `${slug}-${item.source}-${slugify(item.external_id)}`;

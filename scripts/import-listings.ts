@@ -41,14 +41,17 @@ async function main() {
 
     await client.query("begin");
     let inserted = 0;
+    let pruned = 0;
     try {
       const idBySrcExt = await upsertListings(client, listings, (n) => (inserted += n));
       await linkTags(client, listings, tagId, idBySrcExt);
+      pruned = await pruneStaleAts(client, listings);
       await client.query("commit");
     } catch (err) {
       await client.query("rollback");
       throw err;
     }
+    if (pruned > 0) console.log(`db:import — pruned ${pruned} closed ATS job posting(s).`);
 
     const bySource = new Map<string, number>();
     for (const l of listings) bySource.set(l.source, (bySource.get(l.source) ?? 0) + 1);
@@ -104,22 +107,26 @@ async function upsertListings(
          external_id, source, kind, title, slug, url,
          short_description, long_description, location_name, is_remote,
          team_size, industry, subindustry, cost_type, is_recruiting,
-         grade_min, grade_max, badges, status, application_deadline
+         grade_min, grade_max, badges, status, application_deadline,
+         apply_url, age_min, age_max
        )
        select external_id, source::listing_source, kind::listing_kind, title, slug, url,
          short_description, long_description, location_name, is_remote,
          team_size, industry, subindustry, cost_type::cost_type, is_recruiting,
-         grade_min, grade_max, badges::jsonb, status::listing_status, application_deadline::date
+         grade_min, grade_max, badges::jsonb, status::listing_status, application_deadline::date,
+         apply_url, age_min, age_max
        from unnest(
          $1::text[], $2::text[], $3::text[], $4::text[], $5::text[], $6::text[],
          $7::text[], $8::text[], $9::text[], $10::boolean[],
          $11::int[], $12::text[], $13::text[], $14::text[], $15::boolean[],
-         $16::int[], $17::int[], $18::text[], $19::text[], $20::text[]
+         $16::int[], $17::int[], $18::text[], $19::text[], $20::text[],
+         $21::text[], $22::int[], $23::int[]
        ) as t(
          external_id, source, kind, title, slug, url,
          short_description, long_description, location_name, is_remote,
          team_size, industry, subindustry, cost_type, is_recruiting,
-         grade_min, grade_max, badges, status, application_deadline
+         grade_min, grade_max, badges, status, application_deadline,
+         apply_url, age_min, age_max
        )
        on conflict (source, external_id) do update set
          kind = excluded.kind, title = excluded.title, url = excluded.url,
@@ -129,7 +136,8 @@ async function upsertListings(
          subindustry = excluded.subindustry, cost_type = excluded.cost_type,
          is_recruiting = excluded.is_recruiting, grade_min = excluded.grade_min,
          grade_max = excluded.grade_max, badges = excluded.badges, status = excluded.status,
-         application_deadline = excluded.application_deadline
+         application_deadline = excluded.application_deadline,
+         apply_url = excluded.apply_url, age_min = excluded.age_min, age_max = excluded.age_max
        returning id, source, external_id, (xmax = 0) as inserted`,
       columnArrays(chunk),
     );
@@ -141,6 +149,25 @@ async function upsertListings(
     onInserted(newRows);
   }
   return idBySrcExt;
+}
+
+/**
+ * Expiry for live ATS job postings: `ats` listings are ephemeral (a role closes and vanishes from
+ * the board), but a plain upsert never deletes, so closed jobs would linger forever. Delete every
+ * `ats` listing whose external_id is NOT in the freshly-built set. FKs to listings are all
+ * `on delete cascade`, so this also removes the closed job's tag links / stars / applications.
+ *
+ * SAFETY: if the current build has zero `ats` listings (e.g. every board fetch failed transiently),
+ * we skip pruning entirely rather than wiping the whole jobs section on a bad run.
+ */
+async function pruneStaleAts(client: Client, listings: ListingRecord[]): Promise<number> {
+  const currentIds = listings.filter((l) => l.source === "ats").map((l) => l.external_id);
+  if (currentIds.length === 0) return 0; // nothing fetched this run — don't wipe existing jobs
+  const res = await client.query(
+    `delete from listings where source::text = 'ats' and external_id <> all($1::text[])`,
+    [currentIds],
+  );
+  return res.rowCount ?? 0;
 }
 
 /** Re-link listing tags: clear existing links for these listings, then bulk-insert the pairs. */
@@ -183,7 +210,7 @@ async function linkTags(
   }
 }
 
-/** The 20 per-column arrays a listings chunk contributes to the `unnest` upsert, in column order. */
+/** The 23 per-column arrays a listings chunk contributes to the `unnest` upsert, in column order. */
 function columnArrays(chunk: ListingRecord[]) {
   return [
     chunk.map((l) => l.external_id),
@@ -206,6 +233,9 @@ function columnArrays(chunk: ListingRecord[]) {
     chunk.map((l) => JSON.stringify(l.badges)),
     chunk.map((l) => l.status),
     chunk.map((l) => l.deadline),
+    chunk.map((l) => l.apply_url ?? null),
+    chunk.map((l) => l.age_min ?? null),
+    chunk.map((l) => l.age_max ?? null),
   ];
 }
 
