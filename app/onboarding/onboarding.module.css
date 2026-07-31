@@ -1,7 +1,52 @@
 /*
- * Onboarding wizard (BUILD_PROMPT §6): a playful, bubble-based flow. Uses the global color tokens
- * for light/dark parity. Broad → specific interests are "hovering bubbles" that pop on tap.
+ * Onboarding wizard (BUILD_PROMPT §6): a playful, bubble-based flow. A glass "Let's build your
+ * profile" card floats over a slowly-spinning world-map globe on a white background.
  */
+
+/* Page shell over the fixed globe. Scrolls normally so the card is never clipped at the bottom.
+ * Forces the light palette — this is an all-white design regardless of the app theme. */
+.page {
+  position: relative;
+  z-index: 1;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 24px 16px 80px;
+  --bg: #f8f9fa;
+  --panel: #ffffff;
+  --panel-2: #f3f4f5;
+  --line: #e5e7eb;
+  --text: #1f2937;
+  --text-2: #464555;
+  --muted: #6b7280;
+  color: var(--text);
+}
+.homeLink {
+  width: 100%;
+  max-width: 820px;
+  margin: 4px auto 14px;
+  color: var(--muted);
+  font-weight: 600;
+  font-size: 14px;
+  text-decoration: none;
+}
+.homeLink:hover {
+  color: var(--text);
+}
+/* The glass card. */
+.card {
+  width: 100%;
+  max-width: 820px;
+  background: rgba(255, 255, 255, 0.72);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  border: 1px solid rgba(255, 255, 255, 0.6);
+  box-shadow: 0 16px 48px rgba(31, 38, 135, 0.16);
+  border-radius: 28px;
+  padding: 30px clamp(18px, 4vw, 36px) 34px;
+}
+
 .wizard {
   max-width: 780px;
   margin: 4px auto 0;
