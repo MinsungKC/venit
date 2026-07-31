@@ -55,7 +55,7 @@ export type ReportInput = z.infer<typeof reportSchema>;
 
 /**
  * Save a student's profile (BUILD_PROMPT §2c/§3). The personality vector is accepted here ONLY to
- * be written to the guarded, non-readable column — it is never echoed back (§0.1). `.length(768)`
+ * be written to the guarded, non-readable column — it is never echoed back (§0.1). `.length(1024)`
  * matches the embedding dimension (lib/embeddings.ts EMBEDDING_DIM) — kept as a literal, not an
  * import, since this file must stay bundlable client-side and lib/embeddings.ts is server-only.
  */
@@ -64,7 +64,7 @@ export const profileSchema = z.object({
   age: z.number().int().min(5).max(100).nullable().optional(),
   region: z.string().trim().max(120).optional().or(z.literal("")),
   tagSlugs: z.array(z.string().min(1)).max(60).default([]),
-  personalityVector: z.array(z.number()).length(768).optional(),
+  personalityVector: z.array(z.number()).length(1024).optional(),
   personalityArchetypes: z.array(z.string().min(1)).max(10).optional(),
 });
 

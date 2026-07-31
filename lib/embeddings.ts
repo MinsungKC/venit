@@ -6,9 +6,9 @@
  * scored highest against "Space Exploration", nowhere near Climate/Environmental Science).
  * bge-small-en-v1.5 fixed that case but still failed on other short/specific queries (e.g.
  * "narwhals" matched no biology/ocean tag anywhere in the top 10, even with sentence-context
- * augmentation) — tested head-to-head, bge-base-en-v1.5 resolves it decisively (top match:
- * Marine & Ocean Science at 0.60) with no prompt tricks needed, so we upgraded to base despite
- * the larger footprint. Dimension went 384 -> 768 (see migration 0005).
+ * augmentation) — tested head-to-head, bge-base-en-v1.5 resolved it. Later re-evaluated against
+ * mxbai-embed-large-v1, which won decisively on the tag-retrieval eval, so we upgraded again.
+ * Dimension went 384 -> 768 (migration 0005) -> 1024 (migration 0007).
  *
  * BGE is trained for ASYMMETRIC retrieval: passages (tag/niche descriptions, archetype anchor
  * text, listing text) are embedded plain via `embed`/`embedBatch`; short ad-hoc queries (a
@@ -21,10 +21,16 @@
  */
 import { pipeline, type FeatureExtractionPipeline } from "@xenova/transformers";
 
-export const EMBEDDING_MODEL = "Xenova/bge-base-en-v1.5";
-export const EMBEDDING_DIM = 768;
+// Upgraded bge-base-en-v1.5 (768-dim) -> mxbai-embed-large-v1 (1024-dim): in a head-to-head over
+// the tag taxonomy with hard short queries (scripts/eval-embedder.ts), mxbai scored top-3 20/20 vs
+// bge's 19/20 and fixed cases bge got wrong ("wildfire" -> Environmental Science, not Geoscience).
+// mxbai is BERT-family (bge-large arch) so it loads on the current @xenova/transformers, and it
+// uses the same retrieval query prompt as BGE. Larger (~335M) — best paired with a dedicated
+// inference endpoint if serverless cold-starts bite. See migration 0007 for the dim bump to 1024.
+export const EMBEDDING_MODEL = "mixedbread-ai/mxbai-embed-large-v1";
+export const EMBEDDING_DIM = 1024;
 
-/** BGE's recommended instruction prefix for retrieval queries (not used on the passage side). */
+/** Recommended instruction prefix for retrieval queries (mxbai/BGE; not used on the passage side). */
 const QUERY_PREFIX = "Represent this sentence for searching relevant passages: ";
 
 let extractor: Promise<FeatureExtractionPipeline> | null = null;

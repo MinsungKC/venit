@@ -59,6 +59,20 @@ async function main() {
     taxonomy.map((t) => `${t.label}. ${t.description}`),
     "tags",
   );
+
+  // TAGS_ONLY: regenerate just tag-vectors.json (e.g. after an embedding-model swap) without the
+  // full 15k-listing re-classification. The existing classification.json (tag SLUGS, dimension-
+  // independent) stays valid; re-run without this flag later to also improve tag assignments.
+  mkdirSync(OUT_DIR, { recursive: true });
+  writeFileSync(
+    join(OUT_DIR, "tag-vectors.json"),
+    JSON.stringify(taxonomy.map((t, i) => ({ ...t, vector: tagVecs[i] }))),
+  );
+  if (process.env.TAGS_ONLY === "1") {
+    console.log(`classify — TAGS_ONLY: wrote ${taxonomy.length} tag vectors (skipped listing pass).`);
+    return;
+  }
+
   const listingVecs = await embedAll(listings.map(listingDoc), "listings");
 
   const classification: Record<string, string[]> = {};
@@ -72,12 +86,7 @@ async function main() {
     classification[`${listings[i].source}:${listings[i].external_id}`] = tags;
   }
 
-  mkdirSync(OUT_DIR, { recursive: true });
   writeFileSync(join(OUT_DIR, "classification.json"), JSON.stringify(classification));
-  writeFileSync(
-    join(OUT_DIR, "tag-vectors.json"),
-    JSON.stringify(taxonomy.map((t, i) => ({ ...t, vector: tagVecs[i] }))),
-  );
 
   const counts = Object.values(classification).map((t) => t.length);
   const avg = (counts.reduce((a, b) => a + b, 0) / counts.length).toFixed(2);
