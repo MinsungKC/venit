@@ -59,6 +59,8 @@ export default function OnboardingWizard({
   const [selected, setSelected] = useState<Set<string>>(new Set());
   const [additional, setAdditional] = useState("");
   const [adjectives, setAdjectives] = useState("");
+  const [grade, setGrade] = useState<number | null>(null);
+  const [age, setAge] = useState<number | null>(null);
   const [resumeText, setResumeText] = useState("");
   const [stripped, setStripped] = useState<StrippedPII[]>([]);
   const [busy, setBusy] = useState(false);
@@ -139,6 +141,8 @@ export default function OnboardingWizard({
           headers: { "content-type": "application/json" },
           body: JSON.stringify({
             tagSlugs: student.interestTagSlugs,
+            grade,
+            age,
             personalityVector: result.personality.vector,
             personalityArchetypes: result.personality.archetypes,
           }),
@@ -169,6 +173,8 @@ export default function OnboardingWizard({
       if (student.interestTagSlugs.length) params.set("tags", student.interestTagSlugs.join(","));
       if (nicheSlugs.length) params.set("niche", nicheSlugs.join(","));
       if (kinds.size) params.set("kinds", [...kinds].join(","));
+      if (grade != null) params.set("grade", String(grade));
+      if (age != null) params.set("age", String(age));
       // Land on the rating deck to fine-tune before showing everything.
       router.push(`/refine?${params.toString()}`);
     } catch {
@@ -176,6 +182,8 @@ export default function OnboardingWizard({
       const params = new URLSearchParams();
       if (selected.size) params.set("tags", [...selected].join(","));
       if (kinds.size) params.set("kinds", [...kinds].join(","));
+      if (grade != null) params.set("grade", String(grade));
+      if (age != null) params.set("age", String(age));
       router.push(`/refine?${params.toString()}`);
     }
   }
@@ -189,7 +197,7 @@ export default function OnboardingWizard({
         : step === 2
           ? selected.size > 0
           : step === 3
-            ? adjList.length >= 3
+            ? adjList.length >= 3 && grade != null && age != null
             : true;
 
   if (busy) {
@@ -329,6 +337,35 @@ export default function OnboardingWizard({
               {adjList.length}/3 — these stay private and help us rank your matches.
             </span>
           </label>
+
+          <div className={styles.formRow}>
+            <label className={styles.formLabel}>
+              Grade <span className={styles.req}>(required)</span>
+              <select
+                className={styles.input}
+                value={grade ?? ""}
+                onChange={(e) => setGrade(e.target.value ? Number(e.target.value) : null)}
+              >
+                <option value="">Select…</option>
+                <option value="9">9th</option>
+                <option value="10">10th</option>
+                <option value="11">11th</option>
+                <option value="12">12th</option>
+              </select>
+            </label>
+            <label className={styles.formLabel}>
+              Age <span className={styles.req}>(required)</span>
+              <input
+                className={styles.input}
+                type="number"
+                min={12}
+                max={20}
+                placeholder="16"
+                value={age ?? ""}
+                onChange={(e) => setAge(e.target.value ? Number(e.target.value) : null)}
+              />
+            </label>
+          </div>
         </div>
       )}
 

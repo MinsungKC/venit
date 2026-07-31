@@ -39,7 +39,10 @@ export const registrationSchema = z.object({
   org_name: z.string().trim().max(160).optional().or(z.literal("")),
   contact_email: z.string().email().max(200).optional().or(z.literal("")),
   tag_slugs: z.array(z.string().min(1)).min(1, "Pick at least one interest tag").max(12),
-  desired_archetypes: z.array(z.string().min(1)).max(10).optional(),
+  desired_archetypes: z
+    .array(z.string().min(1))
+    .min(1, "Pick at least one personality you're seeking")
+    .max(10),
 });
 
 export type RegistrationInput = z.infer<typeof registrationSchema>;

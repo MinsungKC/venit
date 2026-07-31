@@ -69,6 +69,10 @@ export default function RegisterForm({
       setError("Pick at least one interest tag so students can find you.");
       return;
     }
+    if (archs.size === 0) {
+      setError("Pick at least one personality you're seeking (used only for ranking).");
+      return;
+    }
     setStatus("submitting");
     const payload = {
       ...form,
@@ -225,7 +229,7 @@ export default function RegisterForm({
       </fieldset>
 
       <fieldset className={styles.fieldset}>
-        <legend>Personalities you&apos;re seeking <span className={styles.hint}>(optional, helps ranking)</span></legend>
+        <legend>Personalities you&apos;re seeking * <span className={styles.hint}>({archs.size} selected — used only for ranking)</span></legend>
         <div className={styles.chips}>
           {archetypes.map((a) => (
             <button

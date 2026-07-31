@@ -214,6 +214,14 @@
   font-weight: 700;
   margin-bottom: 22px;
 }
+/* Grade + age side by side (each is a .formLabel). */
+.formRow {
+  display: flex;
+  gap: 16px;
+}
+.formRow .formLabel {
+  flex: 1;
+}
 .optional {
   color: var(--muted);
   font-weight: 500;

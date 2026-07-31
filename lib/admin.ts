@@ -53,6 +53,31 @@ export async function getPendingListings(limit = 100): Promise<PendingRow[]> {
   return r.rows.map((x) => ({ ...x, tags: x.tags ?? [] }));
 }
 
+export interface AdminListing {
+  id: number;
+  slug: string;
+  title: string;
+  kind: string;
+  status: string;
+  url: string | null;
+  short_description: string | null;
+}
+
+/** Search ANY listing (any status) by title, for the admin manage/edit/delete surface (§4). */
+export async function searchListings(q: string, limit = 25): Promise<AdminListing[]> {
+  const pool = getPool();
+  if (!pool || !q.trim()) return [];
+  const r = await pool.query<AdminListing>(
+    `select id, slug, title, kind::text as kind, status::text as status, url, short_description
+       from listings
+      where title ilike '%' || $1 || '%'
+      order by (status = 'pending') desc, title
+      limit $2`,
+    [q.trim(), limit],
+  );
+  return r.rows;
+}
+
 export interface SupplyGap {
   slug: string;
   label: string;

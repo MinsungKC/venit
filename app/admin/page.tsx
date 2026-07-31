@@ -1,7 +1,9 @@
 import Link from "next/link";
 import { adminKeyOk, getAdminStats, getPendingListings, getSupplyGaps, isAdmin } from "@/lib/admin";
+import { getTagCatalog } from "@/lib/match-data";
 import { getUser } from "@/lib/supabase/server";
 import AdminClient from "./AdminClient";
+import AdminManage from "./AdminManage";
 import KeyGate from "./KeyGate";
 import styles from "./admin.module.css";
 
@@ -37,6 +39,7 @@ export default async function AdminPage({ searchParams }: { searchParams: { key?
 
   const [pending, gaps, stats] = await Promise.all([getPendingListings(), getSupplyGaps(8), getAdminStats()]);
   const zeroSupply = gaps.filter((g) => g.approved === 0);
+  const allTags = getTagCatalog().flatMap((g) => g.tags.map((t) => ({ slug: t.slug, label: t.label })));
 
   return (
     <main className="container">
@@ -62,6 +65,8 @@ export default async function AdminPage({ searchParams }: { searchParams: { key?
       </section>
 
       <AdminClient pending={pending} adminKey={key} />
+
+      <AdminManage adminKey={key} allTags={allTags} />
 
       {(zeroSupply.length > 0 || stats.pending > 0) && (
         <section>

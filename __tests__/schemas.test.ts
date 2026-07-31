@@ -9,6 +9,7 @@ describe("registrationSchema", () => {
     is_remote: false,
     cost_type: "free",
     tag_slugs: ["robotics"],
+    desired_archetypes: ["builder-maker"],
   };
 
   it("accepts a valid submission", () => {
@@ -17,6 +18,10 @@ describe("registrationSchema", () => {
 
   it("requires at least one interest tag (guardrail §4)", () => {
     expect(registrationSchema.safeParse({ ...valid, tag_slugs: [] }).success).toBe(false);
+  });
+
+  it("requires at least one desired personality (org must pick who they seek)", () => {
+    expect(registrationSchema.safeParse({ ...valid, desired_archetypes: [] }).success).toBe(false);
   });
 
   it("rejects an invalid kind", () => {
