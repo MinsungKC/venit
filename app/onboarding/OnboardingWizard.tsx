@@ -86,8 +86,11 @@ export default function OnboardingWizard({
   const [age, setAge] = useState<number | null>(null);
   const [resumeText, setResumeText] = useState("");
   const [stripped, setStripped] = useState<StrippedPII[]>([]);
+  const [fileName, setFileName] = useState<string | null>(null);
+  const [dragOver, setDragOver] = useState(false);
   const [err, setErr] = useState<string | null>(null);
   const vectorsRef = useRef<{ tags: TagVector[]; archetypes: ArchetypeVector[] } | null>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   const domainColor = useMemo(() => {
     const m = new Map<string, string>();
@@ -131,6 +134,7 @@ export default function OnboardingWizard({
   }
   function onResumeFile(file: File | undefined) {
     if (!file) return;
+    setFileName(file.name);
     const reader = new FileReader();
     reader.onload = () => onResume(String(reader.result ?? ""));
     reader.readAsText(file);
@@ -466,7 +470,52 @@ export default function OnboardingWizard({
             onChange={(e) => onResume(e.target.value)}
             onFocus={() => warmUpEmbedder()}
           />
-          <input className={styles.file} type="file" accept=".txt,text/plain" onChange={(e) => onResumeFile(e.target.files?.[0])} />
+          <div className={styles.orDivider}>
+            <span>or upload a file</span>
+          </div>
+          <div
+            className={`${styles.dropzone} ${dragOver ? styles.dropOver : ""} ${fileName ? styles.dropDone : ""}`}
+            role="button"
+            tabIndex={0}
+            onClick={() => fileInputRef.current?.click()}
+            onKeyDown={(e) => {
+              if (e.key === "Enter" || e.key === " ") fileInputRef.current?.click();
+            }}
+            onDragOver={(e) => {
+              e.preventDefault();
+              setDragOver(true);
+            }}
+            onDragLeave={() => setDragOver(false)}
+            onDrop={(e) => {
+              e.preventDefault();
+              setDragOver(false);
+              onResumeFile(e.dataTransfer.files?.[0]);
+            }}
+          >
+            <span className={`material-symbols-outlined ${styles.dropIcon}`}>
+              {fileName ? "task_alt" : "upload_file"}
+            </span>
+            <div className={styles.dropText}>
+              {fileName ? (
+                <>
+                  <strong>{fileName}</strong>
+                  <span className={styles.dropSub}>Uploaded — click to replace</span>
+                </>
+              ) : (
+                <>
+                  <strong>Click to upload or drag &amp; drop</strong>
+                  <span className={styles.dropSub}>.txt file</span>
+                </>
+              )}
+            </div>
+            <input
+              ref={fileInputRef}
+              className={styles.hiddenFile}
+              type="file"
+              accept=".txt,text/plain"
+              onChange={(e) => onResumeFile(e.target.files?.[0])}
+            />
+          </div>
           {stripped.length > 0 && (
             <div className={styles.stripped}>
               <strong>🔒 Removed before processing:</strong>
