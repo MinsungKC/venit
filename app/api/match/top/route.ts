@@ -55,7 +55,8 @@ export async function POST(req: Request) {
       slug: l.slug,
       title: l.title,
       kind: l.kind,
-      matchedTags: l.matchedTags.slice(0, 3),
+      matchedTags: l.matchedTags.slice(0, 4),
+      tagSlugs: l.tag_slugs, // used by the rating deck to boost highly-rated matches (§6)
       short_description: l.short_description,
       location: l.is_remote ? "Remote" : l.location_name,
       cost_type: l.cost_type,

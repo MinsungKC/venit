@@ -10,6 +10,7 @@ import { classifyUser } from "@/lib/user-classifier";
 import { embedText, warmUpEmbedder } from "@/lib/embed-client";
 import { scrubPII, type StrippedPII } from "@/lib/pii";
 import { FINISH_EVENT } from "./OnboardingGlobe";
+import RateDeck from "../refine/RateDeck";
 import styles from "./onboarding.module.css";
 
 /** One of the student's top matches, as returned by /api/match/top (student-safe fields only). */
@@ -18,21 +19,13 @@ interface TopMatch {
   title: string;
   kind: ListingKind;
   matchedTags: string[];
+  tagSlugs: string[];
   short_description: string | null;
   location: string | null;
   cost_type: string;
   url: string | null;
   fitLabel: string | null;
 }
-const KIND_LABEL: Record<ListingKind, string> = {
-  company: "Company",
-  research_lab: "Research Lab",
-  program: "Program",
-  opportunity: "Opportunity",
-  camp: "Camp",
-  volunteer: "Volunteering",
-};
-
 /**
  * Onboarding wizard (BUILD_PROMPT §6). Five playful steps with a progress bar:
  *  1. Looking for — which listing kinds to prioritize (optional; never a hard filter, §0.4).
@@ -268,51 +261,11 @@ export default function OnboardingWizard({
     return <div className={styles.finishing} aria-hidden />;
   }
 
-  // Results: the top 5, revealed right here in a glass card over the (now gently-spinning) globe.
+  // Results: the "rate your top 5" flashcard deck, right here over the (now gently-spinning) globe.
   if (mode === "results") {
-    return (
-      <div className={`${styles.card} ${styles.cardIn}`}>
-        {results.length > 0 ? (
-          <div className={styles.results}>
-            <h1 className={styles.resultsTitle}>Your top matches ✨</h1>
-            <p className={styles.resultsSub}>
-              The best fits from what you told us — here are your top {results.length}.
-            </p>
-            <ul className={styles.resultList}>
-              {results.map((r, i) => (
-                <li key={r.slug} className={styles.resultItem} style={{ animationDelay: `${i * 75}ms` }}>
-                  <Link href={`/listing/${r.slug}`} className={styles.resultRow}>
-                    <div className={styles.resultMain}>
-                      <span className={styles.resultName}>{r.title}</span>
-                      <span className={styles.resultMeta}>
-                        {KIND_LABEL[r.kind]}
-                        {r.location ? ` · ${r.location}` : ""}
-                        {r.fitLabel ? ` · ${r.fitLabel}` : ""}
-                      </span>
-                    </div>
-                    {r.matchedTags.length > 0 && (
-                      <div className={styles.resultTags}>
-                        {r.matchedTags.map((t) => (
-                          <span key={t} className={styles.resultTag}>
-                            {t}
-                          </span>
-                        ))}
-                      </div>
-                    )}
-                  </Link>
-                </li>
-              ))}
-            </ul>
-            <div className={styles.resultsActions}>
-              <Link className={styles.primary} href={`/match?${allParams}`}>
-                See all my matches →
-              </Link>
-              <Link className={styles.refineLink} href={`/refine?${allParams}`}>
-                Rate these to fine-tune
-              </Link>
-            </div>
-          </div>
-        ) : (
+    if (results.length === 0) {
+      return (
+        <div className={`${styles.card} ${styles.cardIn}`}>
           <div className={styles.results}>
             <h1 className={styles.resultsTitle}>Let&apos;s explore</h1>
             <p className={styles.resultsSub}>
@@ -324,7 +277,23 @@ export default function OnboardingWizard({
               </Link>
             </div>
           </div>
-        )}
+        </div>
+      );
+    }
+    const opps = results.map((r) => ({
+      slug: r.slug,
+      title: r.title,
+      kind: r.kind,
+      tags: r.matchedTags,
+      tagSlugs: r.tagSlugs,
+      description: r.short_description,
+      url: r.url,
+      location: r.location ?? "—",
+      cost: r.cost_type,
+    }));
+    return (
+      <div className={styles.cardIn}>
+        <RateDeck opps={opps} carry={allParams} />
       </div>
     );
   }
