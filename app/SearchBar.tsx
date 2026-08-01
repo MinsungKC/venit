@@ -18,12 +18,11 @@ import type { TagVector } from "@/lib/match-types";
  *    (e.g. "marine biology research" -> Marine & Ocean Science).
  * Landing on /match with either merges identically into the existing tags+niche matching/ranking.
  *
- * Search FOCUSES the feed on the query (lands on `/match?tags=<found>`), so results visibly reflect
- * what was typed instead of burying it inside an already-large interest set. The student's SAVED
- * interests aren't touched, so their full feed is one click away (Matches nav / cleared search).
- * Adaptivity is preserved separately: for a signed-in student, genuinely new tags are saved
- * additively to their profile (`POST /api/profile/tags`) so future visits already reflect what they
- * searched. Best-effort, fire-and-forget: this never blocks or fails the navigation.
+ * A search is a LIGHTWEIGHT, non-destructive lookup — it must not overhaul the student's algorithm.
+ * It keeps their existing interests and just marks the found tags as the "focus" so matching
+ * listings LEAD the feed, with the rest of their normal, personalized feed still below. It does not
+ * replace the feed and does not touch their SAVED profile (no permanent change) — clearing the
+ * search / clicking Matches returns to their full feed exactly as it was.
  */
 let tagVectorsPromise: Promise<TagVector[]> | null = null;
 function loadTagVectors(): Promise<TagVector[]> {
@@ -43,7 +42,7 @@ interface SearchBarProps {
   signedIn?: boolean;
 }
 
-export default function SearchBar({ existingTags = [], basePath = "/match?", signedIn = false }: SearchBarProps) {
+export default function SearchBar({ existingTags = [], basePath = "/match?" }: SearchBarProps) {
   const router = useRouter();
   const [query, setQuery] = useState("");
   const [aiMode, setAiMode] = useState(false);
@@ -110,23 +109,14 @@ export default function SearchBar({ existingTags = [], basePath = "/match?", sig
         return;
       }
 
-      // A search FOCUSES the feed on what was searched — the results should visibly reflect the
-      // query, not get buried by unioning one new tag into an already-large interest set (which
-      // reads as "search does nothing"). The student's saved interests are untouched, so their full
-      // feed is one click away (the Matches nav / a cleared search); only THIS view is focused.
-      const sep = basePath.endsWith("?") ? "" : "&";
-      router.push(`${basePath}${sep}tags=${found.join(",")}`);
-
-      // Adaptive profile: newly-discovered tags are still saved additively so future visits reflect
-      // them without a repeat search. Best-effort — a failure here shouldn't disrupt the search.
-      const newTags = found.filter((t) => !existingTags.includes(t));
-      if (signedIn && newTags.length > 0) {
-        fetch("/api/profile/tags", {
-          method: "POST",
-          headers: { "content-type": "application/json" },
-          body: JSON.stringify({ tagSlugs: newTags }),
-        }).catch(() => {});
-      }
+      // Minimal, non-destructive: union the found tags into the current interests and mark them as
+      // the "focus" so matching listings LEAD the feed — the student's normal feed still shows below,
+      // and nothing about their saved profile/algorithm changes. Clearing the search restores it.
+      const merged = [...new Set([...existingTags, ...found])];
+      const url = new URL(basePath, window.location.origin);
+      url.searchParams.set("tags", merged.join(","));
+      url.searchParams.set("focus", found.join(","));
+      router.push(`${url.pathname}?${url.searchParams.toString()}`);
     } catch {
       setErr("Search couldn't run right now — try Get Started instead.");
     } finally {

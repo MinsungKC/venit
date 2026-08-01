@@ -136,6 +136,7 @@ export default async function MatchPage({
     boost?: string;
     niche?: string;
     kinds?: string;
+    focus?: string;
   };
 }) {
   const catalog = getTagCatalog();
@@ -236,9 +237,24 @@ export default async function MatchPage({
   // like the ~9.7k OpenAlex labs from swamping the feed; see MatchedListing.tier in match-data.ts).
   const primaryAll = all.filter((l) => l.tier === "primary");
   const broaderAll = all.filter((l) => l.tier === "broader");
-  const pool = q.showBroader ? all : primaryAll;
+  // Search focus (from the SearchBar): a lightweight, non-destructive lead — matching listings move
+  // to the FRONT while the student's normal feed follows below unchanged. Nothing about the saved
+  // algorithm changes. `isFocus` = the listing carries one of the searched tags.
+  const focusTags = new Set((searchParams.focus ?? "").split(",").map((s) => s.trim()).filter(Boolean));
+  const isFocus = (l: MatchedListing) =>
+    focusTags.size > 0 &&
+    (l.tag_slugs.some((s) => focusTags.has(s)) || (l.niche_slugs ?? []).some((s) => focusTags.has(s)));
+
+  let pool = q.showBroader ? all : primaryAll;
+  // While searching, also surface "broader"-tier listings that match the search, so results still
+  // show even if they only loosely overlap the student's (large) interest set — without pulling the
+  // whole broader catalog into the default feed.
+  if (focusTags.size && !q.showBroader) pool = [...pool, ...broaderAll.filter(isFocus)];
+
   const counts = kindCounts(pool);
-  const results = q.kind ? pool.filter((l) => l.kind === q.kind) : pool;
+  let results = q.kind ? pool.filter((l) => l.kind === q.kind) : pool;
+  if (focusTags.size) results = [...results].sort((a, b) => Number(isFocus(b)) - Number(isFocus(a)));
+
   const broaderCount = q.kind ? broaderAll.filter((l) => l.kind === q.kind).length : broaderAll.length;
   const shown = (q.showAll ? results.slice(0, MAX_RENDERED) : results.slice(0, DISPLAY_LIMIT));
   const topTags = q.tagSlugs.slice(0, 2).map((s) => labelBySlug.get(s) ?? s);
