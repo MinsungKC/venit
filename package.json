@@ -14,6 +14,7 @@
     "data:enrich": "tsx scripts/enrich-sp500.ts",
     "data:gen": "tsx scripts/generate-university-labs.ts",
     "data:jobs": "tsx scripts/generate-ats-jobs.ts",
+    "data:osm": "tsx scripts/generate-osm-volunteering.ts",
     "data:classify": "tsx scripts/classify.ts",
     "data:personality": "tsx scripts/embed-archetypes.ts",
     "db:start": "supabase start",

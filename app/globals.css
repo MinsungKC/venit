@@ -458,6 +458,15 @@ h1 {
   pointer-events: none;
   background: #ffffff; /* the "all white" backdrop; the globe canvas itself is transparent */
 }
+/* Matches feed: same globe, but a faint fixed backdrop behind the feed (canvas transparent, so the
+ * page background shows through and the globe reads as a subtle watermark). */
+.match-globe {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  opacity: 0.9;
+}
 .gg-pin {
   pointer-events: none;
 }

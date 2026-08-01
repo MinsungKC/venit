@@ -5,6 +5,7 @@ import { loadCuratedListings } from "./curated";
 import { loadUniversityLabListings } from "./universityLabs";
 import { loadCompanyListings } from "./companies";
 import { loadVolunteerListings } from "./volunteering";
+import { loadOsmVolunteerListings } from "./osmVolunteering";
 import { loadAtsJobListings } from "./atsJobs";
 
 /**
@@ -22,6 +23,7 @@ export function loadAllListings(): NormalizedListing[] {
     ...loadYcListings(),
     ...loadCompanyListings(),
     ...loadVolunteerListings(),
+    ...loadOsmVolunteerListings(),
     ...loadAtsJobListings(),
   ];
 }

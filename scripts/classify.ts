@@ -23,6 +23,13 @@ const TAXONOMY = join(process.cwd(), "supabase", "seed", "taxonomy.json");
 
 const TOP_K = 6;
 const THRESHOLD = 0.28;
+// Relative cutoff: a tag is only kept if it scores within MARGIN of the listing's BEST tag. The
+// absolute THRESHOLD alone let a weak trailing tag (~0.29) ride along on listings whose real tags
+// score much higher (~0.5) — e.g. a fashion or plant-science program picking up `aerospace-
+// engineering` as a noisy 6th tag, which then surfaced it under an unrelated interest filter (§4).
+// Keeping only tags near the listing's own peak means each listing matches on what it's actually
+// about. The top tag is always kept (a listing gets ≥1 tag; a 0-tag listing is dropped upstream).
+const MARGIN = 0.08;
 const BATCH = 64;
 
 interface TaxonomyTag {
@@ -81,7 +88,10 @@ async function main() {
     const scored = tagVecs
       .map((tv, ti) => ({ slug: taxonomy[ti].slug, score: cosine(v, tv) }))
       .sort((a, b) => b.score - a.score);
-    const picked = scored.filter((s) => s.score >= THRESHOLD).slice(0, TOP_K);
+    const top = scored[0]?.score ?? 0;
+    const picked = scored
+      .filter((s) => s.score >= THRESHOLD && s.score >= top - MARGIN)
+      .slice(0, TOP_K);
     const tags = (picked.length ? picked : scored.slice(0, 1)).map((s) => s.slug);
     classification[`${listings[i].source}:${listings[i].external_id}`] = tags;
   }

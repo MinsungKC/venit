@@ -209,6 +209,8 @@ export interface MatchParams {
   remoteOnly?: boolean;
   /** SECRET personality vector of the signed-in student — enables fit ranking (§0.1). */
   personalityVector?: number[] | null;
+  /** Per-tag engagement weights (slug → multiplier) from lib/adaptive; absent tags default to 1. */
+  tagWeights?: Record<string, number>;
   /** slug → listing desired-personality vector, for computing the fit label. */
   desiredBySlug?: Map<string, number[]>;
   /** Interest-tag slugs the student favored in the rating deck — nudges those listings up. */
@@ -255,6 +257,7 @@ export function runMatch(params: MatchParams): MatchedListing[] {
     lng: userGeo?.lng ?? null,
     // The student's canonical interests + any niche tags matched from their free text.
     interestTagSlugs: nicheSlugs.length ? [...params.tagSlugs, ...nicheSlugs] : params.tagSlugs,
+    tagWeights: params.tagWeights,
     personalityVector: params.personalityVector ?? null,
   };
   const nicheLabels = nicheSlugs.length ? nicheLabelMap() : null;
@@ -314,16 +317,29 @@ export function runMatch(params: MatchParams): MatchedListing[] {
   if (params.freeOnly) out = out.filter((l) => l.cost_type === "free");
   if (params.remoteOnly) out = out.filter((l) => l.is_remote);
 
-  // Rating-deck curation + niche free-text interests nudge matching listings up (override order).
-  // Otherwise the engine's composite-relevance order (overlap × coverage × focus + fit) already
-  // ranks the feed — no coarse re-sort here; that's what used to make results feel arbitrary.
-  const boostAll = [...(params.boostSlugs ?? []), ...nicheSlugs];
-  if (!params.sort && boostAll.length) {
-    const boost = new Set(boostAll);
-    const score = (l: MatchedListing) =>
-      l.matchedTags.length +
-      3 * [...l.tag_slugs, ...(l.niche_slugs ?? [])].filter((s) => boost.has(s)).length;
-    out = [...out].sort((a, b) => score(b) - score(a));
+  // Rating-deck favorites + niche free-text interests NUDGE matching listings up — but only within
+  // bounds, so the student's PRIMARY interests still lead. The engine's composite-relevance order
+  // (overlap × coverage × focus + fit) is the dominant signal; a boost/niche hit just lifts a
+  // listing a bounded number of positions, so "other interests" supplement the main interests
+  // instead of taking over the feed (a debate hit can't leapfrog a much-stronger engineering match).
+  // Explicit rating-deck favorites (boostSlugs) lift more than auto-snapped free-text niches, which
+  // are a softer, lower-confidence signal.
+  const favSet = new Set(params.boostSlugs ?? []);
+  const nicheSet = new Set(nicheSlugs);
+  if (!params.sort && (favSet.size || nicheSet.size)) {
+    const FAVORITE_LIFT = 10; // max positions an explicit rating-deck favorite raises a listing
+    const NICHE_LIFT = 3; // softer lift for an auto-matched free-text "other interest"
+    const lift = (l: MatchedListing) => {
+      const slugs = [...l.tag_slugs, ...(l.niche_slugs ?? [])];
+      const fav = slugs.filter((s) => favSet.has(s)).length;
+      const niche = slugs.filter((s) => nicheSet.has(s) && !favSet.has(s)).length;
+      return fav * FAVORITE_LIFT + niche * NICHE_LIFT;
+    };
+    // Rank primarily by the engine's existing order (index), lifted by a bounded boost bonus.
+    out = out
+      .map((l, i) => ({ l, key: i - lift(l) }))
+      .sort((a, b) => a.key - b.key)
+      .map((x) => x.l);
   }
 
   // Diversity: for the default "best fit" view, break up long runs of same-facet cards so the top
@@ -363,6 +379,18 @@ export function toGlobePoints(listings: MatchedListing[], cap = 600): GlobePoint
     if (points.length >= cap) break;
   }
   return points;
+}
+
+/**
+ * Resolve display coordinates for a listing's location (city-level from geocode.json where known,
+ * else the state centroid) — used to point the background globe at a match on hover. Returns null
+ * for remote/unknown locations. No precise/user location is involved.
+ */
+export function listingCoords(locationName: string | null): { lat: number; lng: number } | null {
+  if (!locationName) return null;
+  const city = geocodeMap()[locationName.trim()];
+  const geo = city ?? regionToLatLng(locationName);
+  return geo ? { lat: geo.lat, lng: geo.lng } : null;
 }
 
 /** The distinct kinds present in the match results, for the filter bar (with counts). */

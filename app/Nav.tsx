@@ -12,10 +12,8 @@ export default async function Nav() {
           OppMatch
         </Link>
         <div className="topnav-links">
-          <Link href="/match">Discover</Link>
-          <Link href="/listings">Browse</Link>
-          <Link href="/shortlist">Saved</Link>
-          <Link href="/tracker">Applications</Link>
+          {user && <Link href="/match">Matches</Link>}
+          {user && <Link href="/settings">Settings</Link>}
         </div>
       </div>
       <div className="nav-right">

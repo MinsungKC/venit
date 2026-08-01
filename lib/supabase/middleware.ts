@@ -7,7 +7,7 @@ import { NextResponse, type NextRequest } from "next/server";
  * stay public by design (discoverability / shareability). A path is protected if it equals one of
  * these or is nested under it.
  */
-const PROTECTED_PREFIXES = ["/match", "/onboarding", "/refine", "/shortlist", "/tracker", "/globe"];
+const PROTECTED_PREFIXES = ["/match", "/onboarding", "/refine", "/shortlist", "/tracker", "/globe", "/settings"];
 
 function isProtectedPath(pathname: string): boolean {
   return PROTECTED_PREFIXES.some((p) => pathname === p || pathname.startsWith(`${p}/`));

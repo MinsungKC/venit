@@ -18,12 +18,12 @@ import type { TagVector } from "@/lib/match-types";
  *    (e.g. "marine biology research" -> Marine & Ocean Science).
  * Landing on /match with either merges identically into the existing tags+niche matching/ranking.
  *
- * Adaptive profile (BUILD_PROMPT §6): a search doesn't replace the student's existing interests —
- * newly discovered tags are UNIONED with `existingTags` (whatever /match was already filtered on),
- * so the feed keeps getting richer rather than resetting each time. For a signed-in student, any
- * genuinely new tags are also saved additively to their profile (`POST /api/profile/tags`) so
- * future visits already reflect what they searched, without a repeat search — the system tunes
- * itself. Best-effort, fire-and-forget: this never blocks or fails the navigation.
+ * Search FOCUSES the feed on the query (lands on `/match?tags=<found>`), so results visibly reflect
+ * what was typed instead of burying it inside an already-large interest set. The student's SAVED
+ * interests aren't touched, so their full feed is one click away (Matches nav / cleared search).
+ * Adaptivity is preserved separately: for a signed-in student, genuinely new tags are saved
+ * additively to their profile (`POST /api/profile/tags`) so future visits already reflect what they
+ * searched. Best-effort, fire-and-forget: this never blocks or fails the navigation.
  */
 let tagVectorsPromise: Promise<TagVector[]> | null = null;
 function loadTagVectors(): Promise<TagVector[]> {
@@ -110,13 +110,15 @@ export default function SearchBar({ existingTags = [], basePath = "/match?", sig
         return;
       }
 
-      // Build on what the student already has, don't replace it (§6 "relates to their interests").
-      const merged = [...new Set([...existingTags, ...found])];
+      // A search FOCUSES the feed on what was searched — the results should visibly reflect the
+      // query, not get buried by unioning one new tag into an already-large interest set (which
+      // reads as "search does nothing"). The student's saved interests are untouched, so their full
+      // feed is one click away (the Matches nav / a cleared search); only THIS view is focused.
       const sep = basePath.endsWith("?") ? "" : "&";
-      router.push(`${basePath}${sep}tags=${merged.join(",")}`);
+      router.push(`${basePath}${sep}tags=${found.join(",")}`);
 
-      // Adaptive profile: newly-discovered tags get saved so future visits already reflect them,
-      // even without a repeat search. Best-effort — a failure here shouldn't disrupt the search.
+      // Adaptive profile: newly-discovered tags are still saved additively so future visits reflect
+      // them without a repeat search. Best-effort — a failure here shouldn't disrupt the search.
       const newTags = found.filter((t) => !existingTags.includes(t));
       if (signedIn && newTags.length > 0) {
         fetch("/api/profile/tags", {

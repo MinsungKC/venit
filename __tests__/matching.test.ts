@@ -234,6 +234,33 @@ describe("tagOverlapScore", () => {
     );
     expect(withDupe).toBe(deduped);
   });
+
+  it("scales a shared tag's contribution by its engagement weight (default 1 = unchanged)", () => {
+    const docFreq = new Map([["ai", 5]]);
+    const listing = mkListing({ tagSlugs: ["ai"] });
+    const neutral = tagOverlapScore(profile, listing, docFreq, 10);
+    const weighted = tagOverlapScore(
+      mkProfile({ interestTagSlugs: ["ai", "biology", "robotics"], tagWeights: { ai: 3 } }),
+      listing,
+      docFreq,
+      10,
+    );
+    expect(weighted).toBeCloseTo(neutral * 3);
+  });
+
+  it("ranks a listing on a high-affinity interest above one on a neutral interest (equal rarity)", () => {
+    const docFreq = new Map([
+      ["ai", 5],
+      ["biology", 5],
+    ]);
+    const engaged = mkProfile({
+      interestTagSlugs: ["ai", "biology"],
+      tagWeights: { ai: 3 }, // student engages with AI far more than biology
+    });
+    const aiListing = tagOverlapScore(engaged, mkListing({ tagSlugs: ["ai"] }), docFreq, 10);
+    const bioListing = tagOverlapScore(engaged, mkListing({ tagSlugs: ["biology"] }), docFreq, 10);
+    expect(aiListing).toBeGreaterThan(bioListing);
+  });
 });
 
 describe("coverageScore", () => {

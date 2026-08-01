@@ -93,6 +93,8 @@ export async function POST(req: Request) {
          on conflict (user_id, listing_id) do nothing`,
         [user.id, lid],
       );
+      // No write-time profile mutation: adaptation is derived at read time from `stars` (with
+      // decay) in lib/adaptive.ts, so saves stay cheap and the model forgets as engagement ages.
       break;
     case "unstar":
       await pool.query(`delete from stars where user_id = $1 and listing_id = $2`, [user.id, lid]);

@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import Link from "next/link";
 import type { CSSProperties } from "react";
 import type { MatchTag } from "@/lib/match-data";
@@ -36,6 +36,22 @@ interface TopMatch {
  * On finish we classify on-device, save the profile if signed in, and land on /match.
  */
 const STEPS = ["Looking for", "Interests", "Specifics", "About you", "Resume"] as const;
+
+// Persist in-progress onboarding to the device so a refresh (or coming back later) resumes where
+// the student left off instead of resetting to step 0. Works for signed-in AND anonymous users.
+// NB: the resume text/file is DELIBERATELY excluded here — guardrail §0.2 ("resumes are never
+// persisted"): only the lightweight selections are stored, never the raw resume.
+const STORAGE_KEY = "oppmatch:onboarding";
+interface SavedOnboarding {
+  step: number;
+  kinds: string[];
+  broad: string[];
+  selected: string[];
+  additional: string;
+  adjectives: string;
+  grade: number | null;
+  age: number | null;
+}
 
 // Step-transition choreography (ms): the whole card flies off-screen (EXIT), the globe is shown
 // alone while fresh waypoints drop (HOLD), then the next card glides back in.
@@ -91,6 +107,51 @@ export default function OnboardingWizard({
   const [err, setErr] = useState<string | null>(null);
   const vectorsRef = useRef<{ tags: TagVector[]; archetypes: ArchetypeVector[] } | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
+  // `loaded` gates saving until AFTER the one-time restore below, so the empty initial state can't
+  // clobber previously-saved progress on mount.
+  const [loaded, setLoaded] = useState(false);
+
+  // Restore saved progress once, on mount (in an effect, not a lazy initializer, so server and
+  // client render the same empty form first and hydration stays consistent).
+  useEffect(() => {
+    try {
+      const raw = localStorage.getItem(STORAGE_KEY);
+      if (raw) {
+        const s = JSON.parse(raw) as Partial<SavedOnboarding>;
+        if (typeof s.step === "number") setStep(Math.min(Math.max(s.step, 0), STEPS.length - 1));
+        if (Array.isArray(s.kinds)) setKinds(new Set(s.kinds as ListingKind[]));
+        if (Array.isArray(s.broad)) setBroad(new Set(s.broad));
+        if (Array.isArray(s.selected)) setSelected(new Set(s.selected));
+        if (typeof s.additional === "string") setAdditional(s.additional);
+        if (typeof s.adjectives === "string") setAdjectives(s.adjectives);
+        if (typeof s.grade === "number" || s.grade === null) setGrade(s.grade ?? null);
+        if (typeof s.age === "number" || s.age === null) setAge(s.age ?? null);
+      }
+    } catch {
+      /* corrupt/unavailable storage — just start fresh */
+    }
+    setLoaded(true);
+  }, []);
+
+  // Persist selections on every change (once restored). Resume text is never included (§0.2).
+  useEffect(() => {
+    if (!loaded) return;
+    try {
+      const snapshot: SavedOnboarding = {
+        step,
+        kinds: [...kinds],
+        broad: [...broad],
+        selected: [...selected],
+        additional,
+        adjectives,
+        grade,
+        age,
+      };
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(snapshot));
+    } catch {
+      /* storage full/blocked — non-fatal, just no resume-on-refresh */
+    }
+  }, [loaded, step, kinds, broad, selected, additional, adjectives, grade, age]);
 
   const domainColor = useMemo(() => {
     const m = new Map<string, string>();
@@ -152,6 +213,10 @@ export default function OnboardingWizard({
 
     let finalTags: string[] = [...selected];
     let nicheSlugs: string[] = [];
+    // Whether the search got saved to the student's account — if so, the "see my matches" links can
+    // stay clean (`/match` reads interests/grade/age from the account); if not (signed out / error),
+    // we fall back to carrying the search in the URL so the feed still renders.
+    let profileSaved = false;
     try {
       const { tags, archetypes } = await ensureVectors();
       const { student, result } = await classifyUser(
@@ -166,7 +231,7 @@ export default function OnboardingWizard({
       finalTags = student.interestTagSlugs;
       // Persist to profile if signed in (the personality vector is written to the guarded column).
       try {
-        await fetch("/api/profile", {
+        const saveRes = await fetch("/api/profile", {
           method: "POST",
           headers: { "content-type": "application/json" },
           body: JSON.stringify({
@@ -177,6 +242,7 @@ export default function OnboardingWizard({
             personalityArchetypes: result.personality.archetypes,
           }),
         });
+        profileSaved = saveRes.ok;
       } catch {
         /* not signed in — fine */
       }
@@ -198,13 +264,17 @@ export default function OnboardingWizard({
       /* model failed to load — fall back to the explicit interest picks */
     }
 
-    // Params for the "see all matches" links.
+    // Params for the "see all matches" links. When the search saved to the account, only this
+    // session's refinements (free-text niche, preferred kinds) ride in the URL — the interests and
+    // grade/age come from the account, so the link stays clean. Otherwise carry the full search.
     const params = new URLSearchParams();
-    if (finalTags.length) params.set("tags", finalTags.join(","));
     if (nicheSlugs.length) params.set("niche", nicheSlugs.join(","));
     if (kinds.size) params.set("kinds", [...kinds].join(","));
-    if (grade != null) params.set("grade", String(grade));
-    if (age != null) params.set("age", String(age));
+    if (!profileSaved) {
+      if (finalTags.length) params.set("tags", finalTags.join(","));
+      if (grade != null) params.set("grade", String(grade));
+      if (age != null) params.set("age", String(age));
+    }
     setAllParams(params.toString());
 
     // The top 5, ranked server-side (personality fit included from the just-saved vector).
@@ -276,7 +346,7 @@ export default function OnboardingWizard({
               We couldn&apos;t pull a top 5 right now — browse everything that matches your interests.
             </p>
             <div className={styles.resultsActions}>
-              <Link className={styles.primary} href={`/match?${allParams}`}>
+              <Link className={styles.primary} href={allParams ? `/match?${allParams}` : "/match"}>
                 See my matches →
               </Link>
             </div>

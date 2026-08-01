@@ -25,6 +25,77 @@ export async function addUserInterestTags(userId: string, tagSlugs: string[]): P
 }
 
 /**
+ * Wipe a signed-in student's saved search — interest tags + grade/age/region + the SECRET
+ * personality vector/archetypes — so "Reset form" in Settings sends them cleanly back through
+ * onboarding. Keeps the profiles row itself (created at auth) but blanks its fields.
+ */
+export async function clearProfile(userId: string): Promise<void> {
+  const pool = getPool();
+  if (!pool) throw new Error("No database configured.");
+
+  const client = await pool.connect();
+  try {
+    await client.query("begin");
+    await client.query(`delete from user_interest_tags where user_id = $1`, [userId]);
+    await client.query(
+      `update profiles
+          set grade = null, age = null, region = null,
+              personality_vector = null, personality_archetypes = null, updated_at = now()
+        where id = $1`,
+      [userId],
+    );
+    await client.query("commit");
+  } catch (err) {
+    await client.query("rollback");
+    throw err;
+  } finally {
+    client.release();
+  }
+}
+
+export interface SavedProfile {
+  tagSlugs: string[];
+  grade: number | null;
+  age: number | null;
+  region: string | null;
+}
+
+/**
+ * Read a signed-in student's saved search profile — their interest tags + grade/age/region — so
+ * pages like `/match` can render straight from the account instead of requiring everything in the
+ * URL (BUILD_PROMPT §6). GUARDRAIL §0.1: this NEVER reads the personality columns; only the public
+ * interest tags + eligibility fields, which are safe to surface. Returns null-ish empties when the
+ * DB is unavailable or the student hasn't onboarded yet.
+ */
+export async function getUserProfile(userId: string): Promise<SavedProfile> {
+  const pool = getPool();
+  if (!pool) return { tagSlugs: [], grade: null, age: null, region: null };
+
+  const [prof, tags] = await Promise.all([
+    pool.query<{ grade: number | null; age: number | null; region: string | null }>(
+      `select grade, age, region from profiles where id = $1`,
+      [userId],
+    ),
+    pool.query<{ slug: string }>(
+      `select t.slug
+         from user_interest_tags ut
+         join interest_tags t on t.id = ut.tag_id
+        where ut.user_id = $1
+        order by t.slug`,
+      [userId],
+    ),
+  ]);
+
+  const row = prof.rows[0];
+  return {
+    tagSlugs: tags.rows.map((r) => r.slug),
+    grade: row?.grade ?? null,
+    age: row?.age ?? null,
+    region: row?.region ?? null,
+  };
+}
+
+/**
  * Server-side profile persistence (BUILD_PROMPT §2c/§3). Writes grade/age/region + interest tags +
  * the SECRET personality vector/archetypes for a signed-in student. Uses the pg pool (privileged
  * connection). GUARDRAIL §0.1: the personality columns are WRITE-only for clients (the column

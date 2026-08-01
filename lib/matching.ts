@@ -87,7 +87,11 @@ export function tagOverlapScore(
   let score = 0;
   for (const slug of new Set(sharedTags(profile, listing))) {
     const df = docFreq.get(slug) ?? 1;
-    score += Math.log(1 + totalListings / df);
+    const idf = Math.log(1 + totalListings / df);
+    // Engagement affinity (lib/adaptive): a tag the student engages with more counts for more.
+    // Absent → 1.0 (neutral), so this is a no-op for callers that don't pass weights.
+    const weight = profile.tagWeights?.[slug] ?? 1;
+    score += idf * weight;
   }
   return score;
 }

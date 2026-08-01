@@ -1,10 +1,13 @@
 import Link from "next/link";
-import { getTagCatalog, kindCounts, runMatch, type LocMode, type MatchedListing } from "@/lib/match-data";
-import { getDesiredVectors, getUserPersonalityVector } from "@/lib/personality-data";
+import { getTagCatalog, kindCounts, listingCoords, runMatch, type LocMode, type MatchedListing } from "@/lib/match-data";
+import { getDesiredVectors } from "@/lib/personality-data";
+import { getUserProfile } from "@/lib/profile";
+import { getEngagementProfile } from "@/lib/adaptive";
 import { getUser } from "@/lib/supabase/server";
 import type { ListingKind } from "@/lib/mapping";
 import type { SortAxis } from "@/lib/match-types";
 import StarButton from "./StarButton";
+import MatchGlobe from "./MatchGlobe";
 import SearchBar from "@/app/SearchBar";
 import styles from "./match.module.css";
 
@@ -165,9 +168,33 @@ export default async function MatchPage({
       .filter((s): s is ListingKind => KIND_ORDER.includes(s as ListingKind)),
   };
 
+  // Whose feed is this? Load the signed-in student once — used to default the search from their
+  // SAVED profile (so the interests live on the account, not the URL), for the engagement overlay
+  // (adaptive weights + discovered interests + drifted personality), and for fit ranking.
+  const user = await getUser();
+  const engagement = user ? await getEngagementProfile(user.id) : null;
+  let tagWeights: Record<string, number> | undefined;
+
+  // If the URL carries no interests, render the student's OWN feed from their account (BUILD_PROMPT
+  // §6): their stated interests PLUS interests discovered from what they engage with, ranked by
+  // engagement affinity. An explicit `?tags=…` link still overrides (shareable/tweakable) and, being
+  // someone's chosen link, isn't reweighted by the viewer's engagement — but the viewer's own
+  // (drifted) personality still informs fit. Any grade/age/region the URL omits comes from the account.
+  if (q.tagSlugs.length === 0 && user) {
+    const saved = await getUserProfile(user.id);
+    const merged = [...new Set([...saved.tagSlugs, ...(engagement?.discoveredSlugs ?? [])])];
+    if (merged.length) {
+      q.tagSlugs = merged;
+      q.grade = q.grade ?? saved.grade;
+      q.age = q.age ?? saved.age;
+      q.region = q.region ?? saved.region;
+      tagWeights = engagement?.tagWeights;
+    }
+  }
+
   const hasQuery = q.tagSlugs.length > 0;
 
-  // Onboarding-less entry: prompt to pick interests.
+  // Onboarding-less entry: nothing in the URL and nothing saved yet.
   if (!hasQuery) {
     return (
       <main className="container">
@@ -181,8 +208,8 @@ export default async function MatchPage({
   }
 
   // Personality fit for signed-in students: SECRET vector read server-side, never sent to client.
-  const user = await getUser();
-  const personalityVector = user ? await getUserPersonalityVector(user.id) : null;
+  // Uses the engagement-drifted vector (bounded), falling back to the onboarding anchor.
+  const personalityVector = engagement?.personalityVector ?? null;
   const desiredBySlug = personalityVector ? await getDesiredVectors() : undefined;
 
   const all = runMatch({
@@ -198,6 +225,7 @@ export default async function MatchPage({
     freeOnly: q.freeOnly,
     remoteOnly: q.remoteOnly,
     personalityVector,
+    tagWeights,
     desiredBySlug,
     boostSlugs: q.boost,
     nicheSlugs: q.niche,
@@ -216,148 +244,120 @@ export default async function MatchPage({
   const topTags = q.tagSlugs.slice(0, 2).map((s) => labelBySlug.get(s) ?? s);
 
   return (
-    <div className={styles.shell}>
-      <aside className={styles.sidebar}>
-        <div className={styles.sideHead}>
-          <h2 className={styles.sideTitle}>Filters</h2>
-          <Link className={styles.reset} href={`/match?tags=${q.tagSlugs.join(",")}`}>
-            Reset all
-          </Link>
+    <>
+      <MatchGlobe />
+      <div className={styles.page}>
+      <header className={styles.header}>
+        <div className={styles.headBlock}>
+          <h1 className={styles.h1}>Curated for you</h1>
+          <p className={styles.sub}>
+            <b>{results.length.toLocaleString()}</b> matches for <span className={styles.hl}>{topTags[0]}</span>
+            {topTags[1] ? (
+              <>
+                {" "}&amp; <span className={styles.hl}>{topTags[1]}</span>
+              </>
+            ) : null}
+          </p>
         </div>
-        <p className={styles.sideSub}>Refine your feed</p>
-
-        <div className={styles.group}>
-          <span className={styles.groupLabel}>Sort</span>
-          <Link className={`${styles.item} ${!q.sort ? styles.active : ""}`} href={href(q, { sort: undefined })}>
-            <span className="material-symbols-outlined">verified</span> Best fit
-          </Link>
-          <Link className={`${styles.item} ${q.sort === "cost" ? styles.active : ""}`} href={href(q, { sort: "cost" })}>
-            <span className="material-symbols-outlined">payments</span> Lowest cost
-          </Link>
-        </div>
-
-        <div className={styles.group}>
-          <span className={styles.groupLabel}>Type</span>
-          <Link className={`${styles.item} ${!q.kind ? styles.active : ""}`} href={href(q, { kind: undefined })}>
-            <span className="material-symbols-outlined">apps</span> All
-            <span style={{ marginLeft: "auto", opacity: 0.7 }}>{pool.length.toLocaleString()}</span>
-          </Link>
-          {KIND_ORDER.filter((k) => counts[k]).map((k) => (
-            <Link key={k} className={`${styles.item} ${q.kind === k ? styles.active : ""}`} href={href(q, { kind: k })}>
-              <span className="material-symbols-outlined">{KIND_ICON[k]}</span> {KIND_PLURAL[k]}
-              <span style={{ marginLeft: "auto", opacity: 0.7 }}>{counts[k].toLocaleString()}</span>
-            </Link>
-          ))}
-        </div>
-
-        <div className={styles.group}>
-          <span className={styles.groupLabel}>Cost</span>
-          <Link className={`${styles.item} ${q.freeOnly ? styles.active : ""}`} href={href(q, { freeOnly: !q.freeOnly })}>
-            <span className="material-symbols-outlined">savings</span> Free only
-          </Link>
-          <Link className={`${styles.item} ${q.remoteOnly ? styles.active : ""}`} href={href(q, { remoteOnly: !q.remoteOnly })}>
-            <span className="material-symbols-outlined">public</span> Remote only
-          </Link>
-        </div>
-
-        {broaderCount > 0 && (
-          <div className={styles.group}>
-            <span className={styles.groupLabel}>Match strength</span>
-            <Link
-              className={`${styles.item} ${q.showBroader ? styles.active : ""}`}
-              href={href(q, { showBroader: !q.showBroader })}
-            >
-              <span className="material-symbols-outlined">{q.showBroader ? "filter_alt" : "filter_alt_off"}</span>
-              {q.showBroader ? "Hide broader matches" : `Show ${broaderCount.toLocaleString()} broader matches`}
-            </Link>
-          </div>
-        )}
-
-        <div className={styles.spacer}>
-          <Link className={styles.item} href={href(q, {}).replace("/match", "/globe")}>
-            <span className="material-symbols-outlined">public</span> Map view
-          </Link>
-          <Link className={styles.item} href="/onboarding">
+        <div className={styles.headActions}>
+          <Link className={styles.ghost} href="/onboarding?edit=1">
             <span className="material-symbols-outlined">tune</span> Edit interests
           </Link>
-          <Link className={styles.item} href="/shortlist">
-            <span className="material-symbols-outlined">bookmark</span> Shortlist
+          <Link className={styles.ghost} href="/settings">
+            <span className="material-symbols-outlined">settings</span> Settings
           </Link>
         </div>
-      </aside>
+      </header>
 
-      <main className={styles.main}>
-        <SearchBar existingTags={q.tagSlugs} basePath={href(q, { tagSlugs: [] })} signedIn={!!user} />
+      <SearchBar existingTags={q.tagSlugs} basePath={href(q, { tagSlugs: [] })} signedIn={!!user} />
 
-        <div className={styles.feedHead}>
-          <div>
-            <h1 className={styles.feedTitle}>Curated for you</h1>
-            <p className={styles.feedSub}>
-              {results.length.toLocaleString()} matches based on your interest in <b>{topTags[0]}</b>
-              {topTags[1] ? (
-                <>
-                  {" "}and <b>{topTags[1]}</b>
-                </>
-              ) : null}
-              .
-            </p>
-          </div>
-          <div className={styles.sortWrap}>
-            <span className={styles.sortLabel}>Sort by</span>
-            <Link className={`${styles.sortLink} ${!q.sort ? styles.on : ""}`} href={href(q, { sort: undefined })}>
-              Best fit
+      {/* Type tabs — horizontal, scannable, with counts */}
+      <nav className={styles.tabs} aria-label="Filter by type">
+        <Link className={`${styles.tab} ${!q.kind ? styles.tabOn : ""}`} href={href(q, { kind: undefined })}>
+          <span className="material-symbols-outlined">apps</span> All
+          <span className={styles.count}>{pool.length.toLocaleString()}</span>
+        </Link>
+        {KIND_ORDER.filter((k) => counts[k]).map((k) => (
+          <Link key={k} className={`${styles.tab} ${q.kind === k ? styles.tabOn : ""}`} href={href(q, { kind: k })}>
+            <span className="material-symbols-outlined">{KIND_ICON[k]}</span> {KIND_PLURAL[k]}
+            <span className={styles.count}>{counts[k].toLocaleString()}</span>
+          </Link>
+        ))}
+      </nav>
+
+      {/* Compact controls — quick toggles on the left, sort on the right */}
+      <div className={styles.controls}>
+        <div className={styles.chips}>
+          <Link className={`${styles.chip} ${q.freeOnly ? styles.chipOn : ""}`} href={href(q, { freeOnly: !q.freeOnly })}>
+            <span className="material-symbols-outlined">savings</span> Free
+          </Link>
+          <Link className={`${styles.chip} ${q.remoteOnly ? styles.chipOn : ""}`} href={href(q, { remoteOnly: !q.remoteOnly })}>
+            <span className="material-symbols-outlined">public</span> Remote
+          </Link>
+          {broaderCount > 0 && (
+            <Link className={`${styles.chip} ${q.showBroader ? styles.chipOn : ""}`} href={href(q, { showBroader: !q.showBroader })}>
+              <span className="material-symbols-outlined">{q.showBroader ? "filter_alt" : "filter_alt_off"}</span>
+              {q.showBroader ? "Broader on" : `+${broaderCount.toLocaleString()} broader`}
             </Link>
-            <Link className={`${styles.sortLink} ${q.sort === "cost" ? styles.on : ""}`} href={href(q, { sort: "cost" })}>
-              Cost
-            </Link>
-          </div>
+          )}
         </div>
+        <div className={styles.segment}>
+          <Link className={`${styles.seg} ${!q.sort ? styles.segOn : ""}`} href={href(q, { sort: undefined })}>
+            Best fit
+          </Link>
+          <Link className={`${styles.seg} ${q.sort === "cost" ? styles.segOn : ""}`} href={href(q, { sort: "cost" })}>
+            Cost
+          </Link>
+        </div>
+      </div>
 
-        {results.length === 0 ? (
-          <p className={styles.empty}>
-            No matches with these filters.{" "}
-            {!q.showBroader && broaderCount > 0 ? (
-              <>
-                <Link href={href(q, { showBroader: true })}>Show {broaderCount.toLocaleString()} broader matches</Link>,
-                or try clearing a filter, or <Link href="/onboarding">edit your interests</Link>.
-              </>
-            ) : (
-              <>
-                Try clearing one, or <Link href="/onboarding">edit your interests</Link>.
-              </>
-            )}
-          </p>
-        ) : (
-          <div className={styles.cards}>
-            {shown.map((l) => (
-              <OppCard key={l.slug} l={l} />
-            ))}
-          </div>
-        )}
+      {results.length === 0 ? (
+        <p className={styles.empty}>
+          No matches with these filters.{" "}
+          {!q.showBroader && broaderCount > 0 ? (
+            <>
+              <Link href={href(q, { showBroader: true })}>Show {broaderCount.toLocaleString()} broader matches</Link>, or
+              clear a filter, or <Link href="/onboarding?edit=1">edit your interests</Link>.
+            </>
+          ) : (
+            <>
+              Try clearing one, or <Link href="/onboarding?edit=1">edit your interests</Link>.
+            </>
+          )}
+        </p>
+      ) : (
+        <div className={styles.cards}>
+          {shown.map((l) => (
+            <OppCard key={l.slug} l={l} />
+          ))}
+        </div>
+      )}
 
-        {!q.showAll && results.length > DISPLAY_LIMIT && (
-          <div className={styles.explore}>
-            <Link className={styles.exploreBtn} href={href(q, { showAll: true })}>
-              Explore more opportunities <span className="material-symbols-outlined">arrow_forward</span>
-            </Link>
-          </div>
-        )}
+      {!q.showAll && results.length > DISPLAY_LIMIT && (
+        <div className={styles.explore}>
+          <Link className={styles.exploreBtn} href={href(q, { showAll: true })}>
+            Show more <span className="material-symbols-outlined">arrow_forward</span>
+          </Link>
+        </div>
+      )}
 
-        {q.showAll && results.length > MAX_RENDERED && (
-          <p className={styles.empty}>
-            Showing the top {MAX_RENDERED.toLocaleString()} of {results.length.toLocaleString()} — narrow your
-            interests or filters to zero in on the best fits.
-          </p>
-        )}
-      </main>
-    </div>
+      {q.showAll && results.length > MAX_RENDERED && (
+        <p className={styles.empty}>
+          Showing the top {MAX_RENDERED.toLocaleString()} of {results.length.toLocaleString()} — narrow your interests
+          or filters to zero in on the best fits.
+        </p>
+      )}
+      </div>
+    </>
   );
 }
 
 function OppCard({ l }: { l: MatchedListing }) {
   const fav = faviconFor(l.url);
+  // Coords for the background globe to fly to on hover (located, non-remote listings only).
+  const coords = l.is_remote ? null : listingCoords(l.location_name);
   return (
-    <article className={styles.card}>
+    <article className={styles.card} data-lat={coords?.lat} data-lng={coords?.lng}>
       {l.fitLabel === "Great fit" ? (
         <span className={styles.badge}>
           <span className="material-symbols-outlined">auto_awesome</span> AI-MATCHED

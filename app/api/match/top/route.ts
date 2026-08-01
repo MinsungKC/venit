@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { runMatch } from "@/lib/match-data";
-import { getDesiredVectors, getUserPersonalityVector } from "@/lib/personality-data";
+import { getDesiredVectors } from "@/lib/personality-data";
+import { getEngagementProfile } from "@/lib/adaptive";
 import { getUser } from "@/lib/supabase/server";
 import type { ListingKind } from "@/lib/mapping";
 
@@ -32,9 +33,10 @@ export async function POST(req: Request) {
   const grade = typeof body.grade === "number" ? body.grade : null;
   const age = typeof body.age === "number" ? body.age : null;
 
-  // Personality-fit ranking from the student's stored secret vector (service-side only, §0.1).
+  // Personality-fit ranking + engagement overlay from the student's account (service-side, §0.1).
   const user = await getUser();
-  const personalityVector = user ? await getUserPersonalityVector(user.id) : null;
+  const engagement = user ? await getEngagementProfile(user.id) : null;
+  const personalityVector = engagement?.personalityVector ?? null;
   const desiredBySlug = personalityVector ? await getDesiredVectors() : undefined;
 
   const all = runMatch({
@@ -44,6 +46,7 @@ export async function POST(req: Request) {
     age,
     preferredKinds: kinds,
     personalityVector,
+    tagWeights: engagement?.tagWeights,
     desiredBySlug,
   });
 

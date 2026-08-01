@@ -52,7 +52,8 @@ export default function RateDeck({ opps, carry }: { opps: Opp[]; carry: string }
     for (const opp of opps) if ((ratings[opp.slug] ?? 0) >= 60) opp.tagSlugs.forEach((s) => boost.add(s));
     const params = new URLSearchParams(carry);
     if (boost.size) params.set("boost", [...boost].join(","));
-    router.push(`/match?${params.toString()}`);
+    const qs = params.toString();
+    router.push(qs ? `/match?${qs}` : "/match");
   }
 
   return (
@@ -144,7 +145,7 @@ export default function RateDeck({ opps, carry }: { opps: Opp[]; carry: string }
         <button className={styles.primary} onClick={showMatches}>
           Show all my matches →
         </button>
-        <Link className={styles.skip} href={`/match?${carry}`}>
+        <Link className={styles.skip} href={carry ? `/match?${carry}` : "/match"}>
           Skip
         </Link>
       </div>

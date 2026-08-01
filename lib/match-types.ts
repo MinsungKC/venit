@@ -55,6 +55,12 @@ export interface MatchProfile {
   lat: number | null;
   lng: number | null;
   interestTagSlugs: string[];
+  /**
+   * Optional per-tag ranking weights (slug → multiplier), from engagement affinity (lib/adaptive).
+   * A tag absent here defaults to 1.0 (neutral), so unweighted matching is unchanged. Higher weight
+   * = the student engages with this interest more, so shared-tag mass counts for more in ranking.
+   */
+  tagWeights?: Record<string, number>;
   /** SECRET — used only for ranking, never leaves the server. */
   personalityVector: number[] | null;
 }
