@@ -43,7 +43,7 @@ export default function AdminManage({
   const [showAdd, setShowAdd] = useState(false);
   const [add, setAdd] = useState({
     title: "",
-    kind: "program",
+    kind: "opportunity",
     short_description: "",
     url: "",
     apply_url: "",
@@ -108,11 +108,23 @@ export default function AdminManage({
     const d = await res.json();
     setBusy(false);
     if (res.ok) {
+      const createdRow: Row = {
+        id: typeof d.id === "number" ? d.id : Number(d.id ?? 0),
+        slug: d.slug ?? add.title.toLowerCase().replace(/\s+/g, "-"),
+        title: add.title,
+        kind: add.kind,
+        status: "approved",
+        url: add.url || null,
+        short_description: add.short_description,
+      };
+      setRows((rs) => [createdRow, ...rs]);
       setMsg(`Added “${add.title}”.`);
       setShowAdd(false);
-      setAdd({ title: "", kind: "program", short_description: "", url: "", apply_url: "", location_name: "", is_remote: false, cost_type: "unknown" });
+      setAdd({ title: "", kind: "opportunity", short_description: "", url: "", apply_url: "", location_name: "", is_remote: false, cost_type: "unknown" });
       setAddTags([]);
-    } else setMsg(d.error ?? "Add failed.");
+    } else {
+      setMsg(d.message ?? d.error ?? "Add failed.");
+    }
   }
 
   return (
@@ -133,7 +145,7 @@ export default function AdminManage({
             Search
           </button>
           <button className={`${styles.seg} ${styles.on}`} onClick={() => setShowAdd((s) => !s)}>
-            {showAdd ? "Cancel add" : "+ Add listing"}
+            {showAdd ? "Cancel add" : "+ Add opportunity"}
           </button>
         </div>
       </div>
@@ -151,6 +163,9 @@ export default function AdminManage({
               {COST_TYPES.map((c) => <option key={c} value={c}>{c}</option>)}
             </select>
           </div>
+          <p style={{ margin: 0, color: "var(--muted)", fontSize: 13 }}>
+            This creates an approved venit opportunity that will appear on the venit opportunities page.
+          </p>
           <textarea style={{ ...box, resize: "vertical" }} rows={2} placeholder="Short description * (≥10 chars)" required value={add.short_description} onChange={(e) => setAdd({ ...add, short_description: e.target.value })} />
           <div style={{ display: "flex", gap: 10, flexWrap: "wrap" }}>
             <input style={{ ...box, flex: 1, minWidth: 160 }} placeholder="Website URL" value={add.url} onChange={(e) => setAdd({ ...add, url: e.target.value })} />

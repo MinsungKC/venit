@@ -26,7 +26,7 @@ export default async function LoginPage({
   return (
     <main className="container">
       <Link href="/" className="back">
-        ← OppMatch
+        ← venit
       </Link>
       <h1>Sign in</h1>
       <p className="lede">

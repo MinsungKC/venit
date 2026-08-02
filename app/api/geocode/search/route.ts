@@ -30,7 +30,7 @@ export async function GET(req: Request) {
     `&format=json&limit=5&addressdetails=0&countrycodes=us`;
   try {
     const res = await fetch(url, {
-      headers: { "User-Agent": `OppMatch/0.1 (${MAILTO})` },
+      headers: { "User-Agent": `venit/0.1 (${MAILTO})` },
       signal: AbortSignal.timeout(8000),
     });
     const j = (await res.json()) as { lat: string; lon: string; display_name: string }[];

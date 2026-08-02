@@ -27,8 +27,8 @@ export interface StarRecord extends StarSnapshot {
   starredAt: number;
 }
 
-const KEY = "oppmatch:stars:v1";
-const EVENT = "oppmatch:stars-changed";
+const KEY = "venit:stars:v1";
+const EVENT = "venit:stars-changed";
 
 /**
  * Optional server-sync sink (BUILD_PROMPT §7 ★, account sync). Local-first stays the source of

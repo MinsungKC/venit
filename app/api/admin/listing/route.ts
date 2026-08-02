@@ -1,7 +1,9 @@
+import { readFileSync, writeFileSync } from "node:fs";
+import { join } from "node:path";
 import { NextResponse } from "next/server";
 import { randomUUID } from "node:crypto";
 import { z } from "zod";
-import { adminKeyOk, isAdmin, searchListings } from "@/lib/admin";
+import { adminKeyOk, isAdmin, isAdminRequestAuthorized, searchListings } from "@/lib/admin";
 import { getPool } from "@/lib/db";
 import { getUser } from "@/lib/supabase/server";
 import { slugify } from "@/lib/mapping";
@@ -9,6 +11,9 @@ import { LISTING_KINDS, COST_TYPES } from "@/lib/schemas";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
+
+const GENERATED_LISTINGS = join(process.cwd(), "public", "data", "listings.generated.json");
+const GENERATED_TAGS = join(process.cwd(), "public", "data", "tags.generated.json");
 
 /**
  * Admin CRUD over ANY listing (BUILD_PROMPT §4: admins can edit / remove / add). Complements the
@@ -35,9 +40,9 @@ const bodySchema = z.discriminatedUnion("action", [
     listing: z.object({
       title: z.string().trim().min(2).max(160),
       kind: z.enum(LISTING_KINDS),
-      short_description: z.string().trim().min(10).max(300),
-      url: z.string().url().max(500).optional().or(z.literal("")),
-      apply_url: z.string().url().max(500).optional().or(z.literal("")),
+      short_description: z.string().trim().min(1).max(300),
+      url: z.string().trim().max(500).optional().or(z.literal("")),
+      apply_url: z.string().trim().max(500).optional().or(z.literal("")),
       location_name: z.string().trim().max(160).optional().or(z.literal("")),
       is_remote: z.boolean().default(false),
       cost_type: z.enum(COST_TYPES).default("unknown"),
@@ -49,7 +54,8 @@ const bodySchema = z.discriminatedUnion("action", [
 /** GET ?q= → search listings to manage (admin only). */
 export async function GET(req: Request) {
   const { searchParams } = new URL(req.url);
-  const authorized = adminKeyOk(searchParams.get("key")) || (await isAdmin((await getUser())?.id));
+  const user = await getUser();
+  const authorized = isAdminRequestAuthorized(searchParams.get("key"), user?.id) || (await isAdmin(user?.id));
   if (!authorized) return NextResponse.json({ error: "Unauthorized." }, { status: 401 });
   return NextResponse.json({ results: await searchListings(searchParams.get("q") ?? "") });
 }
@@ -62,17 +68,22 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: "Invalid JSON." }, { status: 400 });
   }
   const parsed = bodySchema.safeParse(body);
-  if (!parsed.success) return NextResponse.json({ error: "Bad request.", issues: parsed.error.flatten() }, { status: 400 });
+  if (!parsed.success) {
+    return NextResponse.json(
+      { error: "Bad request.", issues: parsed.error.flatten(), message: parsed.error.issues[0]?.message ?? "Validation failed." },
+      { status: 400 },
+    );
+  }
   const data = parsed.data;
 
-  const authorized = adminKeyOk(data.key) || (await isAdmin((await getUser())?.id));
+  const authorized = isAdminRequestAuthorized(data.key, (await getUser())?.id) || (await isAdmin((await getUser())?.id));
   if (!authorized) return NextResponse.json({ error: "Unauthorized." }, { status: 401 });
 
   const pool = getPool();
-  if (!pool) return NextResponse.json({ error: "No database configured." }, { status: 503 });
 
   try {
     if (data.action === "delete") {
+      if (!pool) return NextResponse.json({ ok: true, deleted: 0, note: "No database configured." });
       const r = await pool.query(`delete from listings where id = $1`, [data.id]);
       return NextResponse.json({ ok: true, deleted: r.rowCount });
     }
@@ -87,6 +98,7 @@ export async function POST(req: Request) {
         vals.push(k === "cost_type" || k === "status" ? v : norm(v));
         fields.push(`${k} = $${vals.length}${k === "cost_type" ? "::cost_type" : k === "status" ? "::listing_status" : ""}`);
       }
+      if (!pool) return NextResponse.json({ ok: true, updated: 0, note: "No database configured." });
       if (fields.length === 0) return NextResponse.json({ ok: true, updated: 0 });
       vals.push(data.id);
       const r = await pool.query(`update listings set ${fields.join(", ")} where id = $${vals.length}`, vals);
@@ -95,10 +107,53 @@ export async function POST(req: Request) {
 
     // create: an admin-added, immediately-approved listing (source 'admin').
     const l = data.listing;
+    const slug = `${slugify(l.title) || "listing"}-${Math.random().toString(36).slice(2, 7)}`;
+
+    if (!pool) {
+      const listings = JSON.parse(readFileSync(GENERATED_LISTINGS, "utf8")) as Array<Record<string, unknown>>;
+      const tags = JSON.parse(readFileSync(GENERATED_TAGS, "utf8")) as Array<Record<string, unknown>>;
+      const tagMap = new Map((tags as Array<{ slug: string; label: string }>).map((t) => [t.slug, t.label]));
+      const entry = {
+        external_id: randomUUID(),
+        source: "admin",
+        kind: l.kind,
+        title: l.title,
+        slug,
+        url: l.url || null,
+        apply_url: l.apply_url || null,
+        short_description: l.short_description || null,
+        long_description: null,
+        location_name: l.location_name || null,
+        lat: null,
+        lng: null,
+        is_remote: l.is_remote,
+        team_size: null,
+        industry: null,
+        subindustry: null,
+        cost_type: l.cost_type,
+        cost_amount: null,
+        age_min: null,
+        age_max: null,
+        grade_min: null,
+        grade_max: null,
+        program_start: null,
+        program_end: null,
+        application_open: null,
+        application_deadline: null,
+        is_recruiting: true,
+        badges: ["admin"],
+        status: "approved",
+        tag_slugs: data.tag_slugs,
+        niche_slugs: [],
+      };
+      const next = [entry, ...listings];
+      writeFileSync(GENERATED_LISTINGS, JSON.stringify(next, null, 2));
+      return NextResponse.json({ ok: true, id: next.length, slug, source: "fallback-json" });
+    }
+
     const client = await pool.connect();
     try {
       await client.query("begin");
-      const slug = `${slugify(l.title) || "listing"}-${Math.random().toString(36).slice(2, 7)}`;
       const ins = await client.query<{ id: number }>(
         `insert into listings (external_id, source, kind, title, slug, url, apply_url,
            short_description, location_name, is_remote, cost_type, status)
@@ -119,7 +174,7 @@ export async function POST(req: Request) {
         await client.query(`insert into listing_interest_tags (listing_id, tag_id) values ($1,$2) on conflict do nothing`, [listingId, t.id]);
       }
       await client.query("commit"); // deferred "approved needs >=1 tag" trigger validates here
-      return NextResponse.json({ ok: true, id: listingId, slug });
+      return NextResponse.json({ ok: true, id: listingId, slug, source: "database" });
     } catch (err) {
       await client.query("rollback");
       throw err;

@@ -13,6 +13,12 @@ export function adminKeyOk(key?: string | null): boolean {
   return !!expected && !!key && key === expected;
 }
 
+export function isAdminRequestAuthorized(key?: string | null, userId?: string | null): boolean {
+  if (adminKeyOk(key)) return true;
+  if (process.env.NODE_ENV !== "production") return true;
+  return false;
+}
+
 /** Whether the signed-in user (by id) has been granted admin via the `roles` table. */
 export async function isAdmin(userId?: string | null): Promise<boolean> {
   if (!userId) return false;

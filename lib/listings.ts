@@ -67,14 +67,16 @@ export async function getListings(q: ListingQuery = {}): Promise<ListingsResult>
     tags: l.tag_slugs.map((s) => tagLabel.get(s) ?? s),
   }));
 
-  // Merge approved org self-submissions (DB-only content). Fresh submissions lead the catalog.
-  const orgSubmissions = await loadApprovedOrgSubmissions();
-  const catalog = [...orgSubmissions, ...seedView];
+  // Merge approved DB-backed content (admin-created and self-registered listings) on top of the
+  // generated catalog so new items appear everywhere without needing a rebuild.
+  const dbListings = await loadApprovedDbListings();
+  const catalog = [...dbListings, ...seedView];
+  const dedupedCatalog = Array.from(new Map(catalog.map((l) => [l.slug, l])).values()).filter((l) => l.kind === "opportunity" || l.kind === "program" || l.kind === "company" || l.kind === "camp" || l.kind === "research_lab" || l.kind === "volunteer");
 
   const counts: Record<string, number> = {};
-  for (const l of catalog) counts[l.kind] = (counts[l.kind] ?? 0) + 1;
+  for (const l of dedupedCatalog) counts[l.kind] = (counts[l.kind] ?? 0) + 1;
 
-  const filtered = kind ? catalog.filter((l) => l.kind === kind) : catalog;
+  const filtered = kind ? dedupedCatalog.filter((l) => l.kind === kind) : dedupedCatalog;
   const prominent = (l: ListingView) =>
     l.badges.includes("top_company") || l.badges.includes("large_company") ? 1 : 0;
   const sorted = [...filtered].sort(
@@ -89,20 +91,32 @@ export async function getListings(q: ListingQuery = {}): Promise<ListingsResult>
     listings: sorted.slice(offset, offset + limit),
     total: filtered.length,
     counts,
-    source: orgSubmissions.length > 0 ? "database" : "static",
+    source: dbListings.length > 0 ? "database" : "static",
   };
 }
 
 /**
- * The only content that lives in the DB but not the generated JSON: org self-registrations an admin
- * has approved (source='self_registered'). Returns [] when there's no DB. Small result set — this
- * is NOT the bulk catalog (that comes from the JSON), so browse and match stay in sync.
+ * Approved listings that live in the DB and should be merged into the public catalog: admin-created
+ * entries and self-registered org submissions. Returns [] when there's no DB.
  */
-async function loadApprovedOrgSubmissions(): Promise<ListingView[]> {
+async function loadApprovedDbListings(): Promise<ListingView[]> {
   const pool = getPool();
   if (!pool) return [];
   try {
-    const res = await pool.query<ListingView>(
+    const res = await pool.query<{
+      title: string;
+      slug: string;
+      kind: ListingKind;
+      url: string | null;
+      short_description: string | null;
+      location_name: string | null;
+      is_remote: boolean;
+      team_size: number | null;
+      industry: string | null;
+      is_recruiting: boolean;
+      badges: string[] | null;
+      tags: string[] | null;
+    }>(
       `select l.title, l.slug, l.kind, l.url, l.short_description, l.location_name,
               l.is_remote, l.team_size, l.industry, l.is_recruiting, l.badges,
               coalesce(array_agg(t.label order by t.label)
@@ -110,11 +124,25 @@ async function loadApprovedOrgSubmissions(): Promise<ListingView[]> {
          from listings l
          left join listing_interest_tags lit on lit.listing_id = l.id
          left join interest_tags t on t.id = lit.tag_id
-        where l.status = 'approved' and l.source::text = 'self_registered'
+        where l.status = 'approved' and l.source::text in ('self_registered', 'admin')
         group by l.id
         order by l.id desc`,
     );
-    return res.rows.map((r) => ({ ...r, badges: r.badges ?? [] }));
+    const rows = res.rows.map((r) => ({
+      title: r.title,
+      slug: r.slug,
+      kind: r.kind,
+      url: r.url,
+      short_description: r.short_description,
+      location_name: r.location_name,
+      is_remote: r.is_remote,
+      team_size: r.team_size,
+      industry: r.industry,
+      is_recruiting: r.is_recruiting,
+      badges: Array.isArray(r.badges) ? r.badges : [],
+      tags: Array.isArray(r.tags) ? r.tags : [],
+    }));
+    return rows;
   } catch {
     return []; // never let a DB hiccup take down browse — the JSON catalog still renders
   }

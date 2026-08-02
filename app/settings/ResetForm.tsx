@@ -19,7 +19,7 @@ export default function ResetForm() {
       const res = await fetch("/api/profile/reset", { method: "POST" });
       if (!res.ok) throw new Error();
       try {
-        localStorage.removeItem("oppmatch:onboarding"); // drop the on-device draft too
+        localStorage.removeItem("venit:onboarding"); // drop the on-device draft too
       } catch {
         /* ignore */
       }

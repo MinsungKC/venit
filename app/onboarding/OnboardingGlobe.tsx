@@ -11,10 +11,10 @@ import { useEffect, useRef } from "react";
  */
 const COUNTRIES = "https://unpkg.com/three-globe/example/country-polygons/ne_110m_admin_0_countries.geojson";
 /** The wizard dispatches this on each step advance; we drop a burst of new pins in response. */
-export const STEP_EVENT = "oppmatch:onboarding-step";
+export const STEP_EVENT = "venit:onboarding-step";
 /** Dispatched when the form is submitted: the globe spins up fast and floods with pins as it
  *  "searches", climaxing while the top matches are computed. */
-export const FINISH_EVENT = "oppmatch:onboarding-finish";
+export const FINISH_EVENT = "venit:onboarding-finish";
 
 // City / interior coordinates — all firmly on land, so waypoints never drop in the ocean.
 const LAND_SPOTS: [number, number][] = [

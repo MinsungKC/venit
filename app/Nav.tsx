@@ -9,7 +9,7 @@ export default async function Nav() {
     <nav className="topnav" aria-label="Primary">
       <div className="nav-left">
         <Link href="/" className="brand">
-          OppMatch
+          venit
         </Link>
         <div className="topnav-links">
           {user && <Link href="/match">Matches</Link>}

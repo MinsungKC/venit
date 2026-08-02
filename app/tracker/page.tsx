@@ -55,7 +55,7 @@ export default function TrackerPage() {
       <header className="page-head">
         <div>
           <Link href="/" className="back">
-            ← OppMatch
+            ← venit
           </Link>
           <h1>Application tracker</h1>
         </div>

@@ -41,7 +41,7 @@ const STEPS = ["Looking for", "Interests", "Specifics", "About you", "Resume"] a
 // the student left off instead of resetting to step 0. Works for signed-in AND anonymous users.
 // NB: the resume text/file is DELIBERATELY excluded here — guardrail §0.2 ("resumes are never
 // persisted"): only the lightweight selections are stored, never the raw resume.
-const STORAGE_KEY = "oppmatch:onboarding";
+const STORAGE_KEY = "venit:onboarding";
 interface SavedOnboarding {
   step: number;
   kinds: string[];
@@ -312,7 +312,7 @@ export default function OnboardingWizard({
   const cardClass = `${styles.card} ${phase === "out" ? styles.cardOut : styles.cardIn}`;
   const stageClass = styles.stage;
   const fireWaypoints = () => {
-    if (typeof window !== "undefined") window.dispatchEvent(new Event("oppmatch:onboarding-step"));
+    if (typeof window !== "undefined") window.dispatchEvent(new Event("venit:onboarding-step"));
   };
   function advance(dir: "next" | "back") {
     if (phase === "out") return; // already mid-transition

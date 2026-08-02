@@ -1,4 +1,4 @@
-# venitor
+# venit
 
 A free platform matching high-school students to **companies, research labs, programs,
 and opportunities** by shared interest tags. This pass ships the **listings database**:
@@ -25,4 +25,4 @@ Company **logos** are shown as favicons derived from each listing's website host
 
 ## Usage
 
-Free to use will be hosted at venitor.org in the future. Personal identifying information is NEVER stored or shared. 
+Free to use will be hosted at venit.org in the future. Personal identifying information is NEVER stored or shared. 

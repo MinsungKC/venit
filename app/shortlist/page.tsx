@@ -43,7 +43,7 @@ export default function ShortlistPage() {
       <header className="page-head">
         <div>
           <Link href="/" className="back">
-            ← OppMatch
+            ← venit
           </Link>
           <h1>Your shortlist</h1>
         </div>

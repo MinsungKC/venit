@@ -66,7 +66,15 @@ export default async function AdminPage({ searchParams }: { searchParams: { key?
 
       <AdminClient pending={pending} adminKey={key} />
 
-      <AdminManage adminKey={key} allTags={allTags} />
+      <section className={styles.panel} style={{ marginTop: 24 }}>
+        <div className={styles.panelHead}>
+          <div>
+            <h2 className={styles.panelTitle}>venit opportunities</h2>
+            <p className={styles.panelSub}>Add and manage opportunities that should appear on the venit opportunities page.</p>
+          </div>
+        </div>
+        <AdminManage adminKey={key} allTags={allTags} />
+      </section>
 
       {(zeroSupply.length > 0 || stats.pending > 0) && (
         <section>

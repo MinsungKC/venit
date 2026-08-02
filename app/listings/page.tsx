@@ -64,7 +64,7 @@ export default async function ListingsPage({
       <header className="page-head">
         <div>
           <Link href="/" className="back">
-            ← OppMatch
+            ← venit
           </Link>
           <h1>Opportunities</h1>
         </div>

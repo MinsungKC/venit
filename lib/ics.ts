@@ -53,7 +53,7 @@ function nextDay(d: Date): Date {
 /** A stable-ish UID for the event (host + start), so re-imports update rather than duplicate. */
 function uid(e: CalendarEvent): string {
   const slug = e.title.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "");
-  return `${formatDate(e.start)}-${slug || "event"}@oppmatch`;
+  return `${formatDate(e.start)}-${slug || "event"}@venit`;
 }
 
 /** Serialize an event to a single-event `.ics` document (with CRLF line endings per spec). */
@@ -61,7 +61,7 @@ export function toICS(e: CalendarEvent, now: Date = new Date()): string {
   const lines = [
     "BEGIN:VCALENDAR",
     "VERSION:2.0",
-    "PRODID:-//OppMatch//EN",
+    "PRODID:-//venit//EN",
     "BEGIN:VEVENT",
     `UID:${uid(e)}`,
     `DTSTAMP:${formatUTC(now)}`,

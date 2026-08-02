@@ -108,6 +108,29 @@ textarea,
   }
 }
 
+/* ---------- Development banner ---------- */
+.dev-banner {
+  background: #fef3c7;
+  color: #92400e;
+  border-bottom: 1px solid #fcd34d;
+  padding: 10px 24px;
+  text-align: center;
+  font-size: 13px;
+  font-weight: 600;
+  line-height: 1.4;
+}
+
+.dev-banner-link {
+  color: #92400e;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+  font-weight: 700;
+}
+
+.dev-banner-link:hover {
+  color: #78350f;
+}
+
 /* ---------- Top nav ---------- */
 .topnav {
   display: flex;

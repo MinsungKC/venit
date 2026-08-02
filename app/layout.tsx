@@ -4,8 +4,11 @@ import Nav from "./Nav";
 import StarSync from "./StarSync";
 
 export const metadata: Metadata = {
-  title: "OppMatch",
+  title: "venit",
   description: "Find companies, programs, and opportunities that fit you.",
+  icons: {
+    icon: "/logo.png",
+  },
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
@@ -24,6 +27,12 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         />
       </head>
       <body>
+        <div className="dev-banner" role="status">
+          This page is currently in development and incorrect information may be shown.{' '}
+          <a href="/opportunities" className="dev-banner-link">
+            (help us)
+          </a>
+        </div>
         <Nav />
         {children}
         <StarSync />

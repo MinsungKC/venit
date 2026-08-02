@@ -12,7 +12,7 @@ export default function RegisterPage() {
   return (
     <main className="container">
       <Link href="/" className="back">
-        ← OppMatch
+        ← venit
       </Link>
       <h1>List your program or company</h1>
       <p className="lede">

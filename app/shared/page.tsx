@@ -43,7 +43,7 @@ export default function SharedPage({ searchParams }: { searchParams: { ids?: str
       <header className="page-head">
         <div>
           <Link href="/" className="back">
-            ← OppMatch
+            ← venit
           </Link>
           <h1>A shared shortlist</h1>
         </div>
