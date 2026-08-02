@@ -1,5 +1,4 @@
-# venitor
-
+# venit
 A free platform matching high-school students to **companies, research labs, programs,
 and opportunities** by shared interest tags. This pass ships the **listings database**:
 a browsable, tag-matched set of ~8,700 entries: niche startups, large well-known
