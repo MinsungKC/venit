@@ -2,7 +2,7 @@
 
 A free platform matching high-school students to **companies, research labs, programs,
 and opportunities** by shared interest tags. This pass ships the **listings database**:
-a browsable, tag-matched set of ~8,700 entries: niche startups, large well-known
+a browsable, tag-matched set of over 15000 entries: niche startups, large well-known
 companies, ~3,900 university research groups across 54 schools, and pre-college programs.
 Many are **not actively recruiting** but are still discoverable by fit (you find the
 best fit place; the place can find fitting students).
